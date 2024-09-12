@@ -1,22 +1,422 @@
 html {
-  font-size: 14px;
+    font-size: 12px;
+}
+@font-face {
+    font-family: 'poppins-black';
+    src: url('../font/poppins-black.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'poppins-light';
+    src: url('../font/poppins-light.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'poppins-regular';
+    src: url('../font/poppins-regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'poppins-medium';
+    src: url('../font/poppins-medium.ttf') format('truetype');
+}
+body {
+    font-family: poppins-regular !important;
+    font-size: 12px !important;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 12px;
+    }
 }
 
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #4674ee !important;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    /*font-size:14px !important;*/
 }
+button {
+    font-size: 14px !important;
+}
+/*.choices .choices__input {
+    padding: 10px !important;
+}*/
+
+
+
+
+
+.form-container {
+    background-color: #ffffff; /* White background for the form */
+    border: 2px solid #4674ee; /* Blue border */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+
+    margin: auto;
+}
+
+.form-label {
+    font-weight: bold; /* Bold labels */
+    color: #333; /* Darker text color for labels */
+}
+
+.form-select, .form-control, .form-check-input {
+    border-radius: 5px; /* Slightly rounded inputs */
+}
+
+.form-check-label {
+    margin-left: 10px; /* Space between checkbox/toggle and label */
+    color: #555; /* Slightly lighter text for check labels */
+}
+
+.form-check-input:checked {
+    background-color: rgba(18,36,84,255) !important; /* Blue color for checked boxes */
+    border-color: rgba(18,36,84,255) !important;
+}
+
+.btn-primary {
+    background-color: #007bff; /* Custom button color */
+    border-color: #007bff;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        border-color: #004085;
+    }
+
+/******************************************Dashboard Task button  *************************************/
+
+.new-task-dashboard-data .form-select {
+    font-size: 12px !important;
+}
+
+.new-task-dashboard-data .input-group-text {
+    font-size: 12px !important;
+}
+
+.new-task-dashboard-data .input-group-text {
+    flex-shrink: 0 !important;
+    font-size: 12px !important;
+    height: 30px !important;
+}
+
+.small-input {
+    font-size: 12px !important; /* Decrease font size */
+    height: 30px !important; /* Decrease input box height */
+    padding: 2px 8px !important; /* Adjust padding for smaller size */
+}
+
+
+.new-task-dashboard-data .choices__inner {
+    min-height: 30px !importan; /* Match the height with the input */
+    font-size: 12px !importan; /* Match font size */
+    padding: 2px 8px !importan;
+}
+
+.new-task-dashboard-data .choices__list--single .choices__item {
+    font-size: 12px !importan; /* Adjust font size of the selected item */
+}
+
+.new-task-dashboard-data .choices__input {
+    height: 28px !important; /* Reduce height of search input */
+    font-size: 12px !important; /* Reduce font size in the search input */
+}
+
+.new-task-dashboard-data .choices {
+    height: 30px !important;
+    border: 1px solid #eee4e4;
+}
+
+
+
+/*********************************************************************************************************/
+
+/****************************************Repeat On MutiSelect input css **********************************/
+
+.input-group.w-100 {
+    width: 100%;
+    display: flex; /* Use flexbox to align items in the same line */
+    align-items: center; /* Align items vertically in the center */
+}
+
+/* Ensure the input group text and form select have consistent height */
+
+/* Adjust the choices container to ensure it doesn't overflow */
+.choices {
+    flex-grow: 1; /* Allow the Choices container to take available space */
+    width: auto !important; /* Prevent it from enforcing 100% width */
+    min-width: 0; /* Prevent minimum width from causing overflow */
+}
+
+/* Ensure the inner choices input fits well within its container */
+.choices__inner {
+    width: 100% !important; /* Ensure the inner container is full width */
+    border-radius: 0 !important; /* Optional: remove rounded corners */
+    min-height: 36px !important; /* Adjust as needed to match input height */
+    padding: 0.375rem 0.75rem; /* Adjust padding for consistency */
+    /*height: 46px !important;*/
+}
+
+/* Optional: Adjust the select element's styling for better fit */
+.input-group .form-select {
+    flex-grow: 1; /* Allow it to grow within the flex container */
+    width: 0; /* Prevent it from having an inherent width */
+    min-width: 0; /* Prevent any minimum width restrictions */
+}
+
+/*.repeats-on-text {
+    height: 46px;
+}*/
+
+/*****************************************************************************************/
+
+
+    @media (max-width:668px) {
+        .form-container {
+            width: 100% !important;
+        }
+    }
+
+
+    /************************************ Task code **************************************/
+
+.table thead th {
+    background-color: #f2f0f0 !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Horizontal, Vertical, Blur, Color */
+}
+
+.order-main-header {
+    background: #888888 !important;
+}
+
+.table tbody .order-subheader {
+    background-color: #e2e3f3;
+}
+
+.table tbody .order-footer {
+    border-top: 1px solid #000;
+}
+
+.table tbody tr {
+    background-color: #f8f9fa;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    /* text-align: center; */
+    padding: 8px;
+}
+
+.table .order-number {
+    font-weight: bold;
+}
+
+.table .subheader-cell {
+    background: #888888 !important;
+    text-align: left;
+    font-weight: bold;
+}
+
+.table .text-center {
+    text-align: center;
+}
+
+
+.table .text-right {
+    text-align: right;
+}
+
+.group-3d {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.02);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 2px solid #000;
+}
+
+.table-bordered td,
+.table-bordered th {
+    border: 1px solid #dee2e6 !important;
+}
+
+/************************************************************************************************/
+
+/******************************************Group Data Section*************************************************/
+
+.group-data-action-container a{
+    text-decoration:none;
+    color:black;
+}
+
+
+/***********************************************************************************************************/
+
+/********************************************* Group Tab Data *********************************************/
+
+
+/* Custom width and height for the modal dialog */
+.custom-modal-size .modal-dialog {
+    max-width: 514px;
+    max-height: 300px;
+    margin: 1rem auto;
+}
+
+.custom-modal-size .modal-content {
+    width: 100%;
+    height: 100%;
+}
+
+
+.custom-modal-size .modal-body {
+    height: calc(100% - 70px);
+    overflow-y: auto;
+}
+
+.nav-tabs .nav-link {
+    font-weight: bold;
+}
+
+.list-group-item input[type="radio"] {
+    margin-right: 10px;
+}
+/* Custom backdrop with slight transparency */
+.modal-backdrop {
+    background-color: rgb(136 122 122 / 50%) !important; /* Adjust the opacity (0.5 is 50% opacity) */
+}
+
+/* Customize the scrollbar */
+::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+}
+
+/* The track (background) of the scrollbar */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Background color of the track */
+    border-radius: 10px; /* Rounded corners for the track */
+}
+
+/* The draggable part of the scrollbar */
+::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners for the thumb */
+    border: 2px solid #f1f1f1; /* Optional border around the thumb */
+}
+
+    /* Change the thumb color when hovering */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+
+/*************************************************************************************************************/
+
+
+/*************************************** Login form CSS *********************************/
+.main-form-content {
+    width: 50%;
+    border-radius: 20px;
+    box-shadow: 0 5px 5px rgba(0,0,0,.4);
+    margin: 5em auto;
+    display: flex;
+}
+
+.company__info {
+    background-color: #008080;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+}
+
+.fa-android {
+    font-size: 3em;
+}
+
+@media screen and (max-width: 640px) {
+    .main-form-content {
+        width: 90%;
+    }
+
+    .company__info {
+        display: none;
+    }
+
+    .login__form {
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+    }
+}
+
+@media screen and (min-width: 642px) and (max-width:800px) {
+    .main-form-content {
+        width: 70%;
+    }
+}
+
+@media screen and (min-width: 300px) and (max-width:642px) {
+    .main-form-content {
+        width: 90%;
+    }
+}
+
+.row > h2 {
+    color: #008080;
+}
+
+.login__form {
+    background-color: #fff;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+form {
+    padding: 0 2em;
+}
+
+.form__input {
+    width: 89%;
+    border: 0px solid transparent;
+    border-radius: 0;
+    border-bottom: 1px solid #aaa;
+    padding: 1em .5em .5em;
+    padding-left: 2em;
+    outline: none;
+    margin: 1.5em auto;
+    transition: all .5s ease;
+}
+
+    .form__input:focus {
+        border-bottom-color: #008080;
+        box-shadow: 0 0 5px rgba(0,80,80,.4);
+        border-radius: 4px;
+    }
+
+.form-btn-data {
+    transition: all .5s ease;
+    width: 70%;
+    border-radius: 30px;
+    color: #008080;
+    font-weight: 600;
+    background-color: #fff;
+    border: 1px solid #008080;
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+}
+
+    .form-btn-data:hover, .form-btn-data:focus {
+        background-color: #008080;
+        color: #fff;
+    }
+
+/**************************************************************************************/

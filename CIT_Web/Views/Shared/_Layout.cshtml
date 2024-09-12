@@ -6,41 +6,364 @@
     <title>@ViewData["Title"] - CIT_Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CIT_Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Fargo.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/index.css"/>
+    <link rel="stylesheet" href="~/css/site.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+          rel="stylesheet" />
+
+
+    <style>
+        .side-navbar.closed {
+            display: none;
+            transition: transform 0.3s ease;
+        }
+
+        .full-width {
+            width: 100%;
+        }
+
+        .container-fluid {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        .btn-color {
+            background: #032b56 !important;
+            color: white !important;
+        }
+    </style>
 </head>
+    
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CIT_Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="IndexCustomer">Customer</a>
-                        </li>
-                    </ul>
+  <div class="container-fluid">
+        <!-- navbar -->
+        <div class="row">
+            <div class="col-12">
+                <nav class="navbar navbar-light bg-light justify-content-between" style="position:fixed; z-index:1000;width:100%; ">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-link p-0 me-3 ms-4 fs-4"
+                                type="button"
+                                id="toggleSidebar"
+                                aria-controls="offcanvasExample"
+                                style="text-decoration: none; color: black">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <a class="navbar-brand d-flex align-items-center" href="#">
+                            <img src="~/assets/Images/logomain.png"
+                                 alt="Logo"
+                                 class="me-2"
+                                 height="30px"
+                                 style="mix-blend-mode: multiply" />
+                            <span>Fargo</span>
+                        </a>
+                    </div>
+                    <div class="d-flex">
+                        <a href="#" class="ms-3  text-center text-black" style="margin-right:20px !important; text-decoration:none">Active Tasks</a>
+                    </div>
+                    <div class="nav-icon-data  d-flex align-items-center">
+                        <a class="nav-link me-3 text-black" href="#">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </a>
+                        <a class="nav-link me-3 text-black" href="#"><i class="bi bi-journal-text"></i> Learn</a>
+                  
+
+                        <i class="bi bi-plus-circle-fill me-3"></i>
+                    
+                        
+                        <i class="bi bi-file-earmark-arrow-up me-3"></i>
+                        <i class="bi bi-gear me-3"></i>
+                        <i class="bi bi-question-circle-fill me-3"></i>
+                    </div>
+                </nav>
+            </div>
+        
+        </div>
+
+        <!-- navbar end -->
+
+        <div class="row flex-nowrap">
+            <div class="d-flex" style="margin-top:55px">
+                <!-- Side Bar -->
+                <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 side-navbar open closed"
+                     id="sidebar"
+                     style="width: auto">
+                    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-0 text-white min-vh-90">
+                        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
+                            id="menu">
+                            <li class="nav-item mt-1">
+                                <a href="#"
+                                   class="nav-link px-0 align-middle"
+                                   style="padding: 0px">
+                                    <div class="dropdown">
+                                        <a href="#"
+                                           class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                                           id="dropdownUser1"
+                                           data-bs-toggle="dropdown"
+                                           aria-expanded="false"
+                                           style="
+                                             margin-top: 20px !important;
+                                              padding: 0px !important;
+                                             ">
+                                            <img src="/assets/Images/avatar.png"
+                                                 alt="hugenerd"
+                                                 width="30"
+                                                 height="30"
+                                                 class="rounded-circle" />
+                                            <span class="text-dark ms-2 ms-1 ">Hariom User</span>
+                                        </a>
+
+                                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow"
+                                            style="    background: floralwhite;">
+                                            <li>
+                                                <a class="dropdown-item text-white" href="#">New project...</a>
+                                            </li>
+                                            <li><a class="dropdown-item text-white" href="#">Settings</a></li>
+                                            <li><a class="dropdown-item text-white" href="#">Profile</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider" />
+                                            </li>
+                                            <li><a class="dropdown-item text-white" asp-action="Login" asp-controller="Account">Sign out</a></li>
+                                        </ul>
+                                    </div>
+                                </a>
+                            </li>
+                            <hr class="user" />
+                            <li class="nav-item mt-1">
+                                <a asp-action="Overview" asp-controller="Dashboard" class="nav-link align-middle px-0 active">
+                                    <i class=" bi-speedometer2"></i>
+                                    <span class="ms-1 ">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a
+                                   class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false"
+                                   asp-action="Index" asp-controller="NewTask"
+                                >
+                                    <i class="bi bi-list-task"></i>
+                                    <span class="ms-1 ">Task</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-action="Index" asp-controller="Calendar"
+                                class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-calendar-date"></i>
+                                    <span class="ms-1">Calendar</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#"
+                                   data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false"
+                                   class="nav-link px-0 align-middle">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                    <span class="ms-1 ">Analytics</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#"
+                                   data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false"
+                                   class="nav-link px-0 align-middle">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span class="ms-1 ">Users</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-person-fill-add"></i>
+                                    <span class="ms-1 ">Roster</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="#" class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-car-front-fill"></i>
+                                    <span class="ms-1 ">Vehicles</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="#" class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-bookmark-check"></i>
+                                    <span class="ms-1 ">Inspections</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a asp-action="IndexCustomer" asp-controller="Customer" class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-houses-fill"></i>
+                                    <span class="ms-1 ">Customers</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-person-square"></i>
+                                    <span class="ms-1">Contacts</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-bag"></i>
+                                    <span class="ms-1 ">Products</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-wrench"></i>
+
+                                    <span class="ms-1 ">Extensions</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="#" class="nav-link px-0 align-middle" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false">
+                                    <i class="bi bi-gear-fill"></i>
+
+                                    <span class="ms-1  ">Settings</span>
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                    @* <hr class="vertical-hr" style="height:auto;" /> *@
+                </div>
+                <!-- End Side Bar -->
+                @* <hr class="vertical-hr" style="height:auto;"/> *@
+                <div id="mainContent" style="width: 100%" >
+                    <!-- Tab -->
+@*                     <div class="tab-data d-flex justify-content-between align-items-center" style="margin-top:10px;">
+                        <ul class="nav nav-tabs ms-3" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active"
+                                   id="Active-tab"
+                                   data-bs-toggle="tab"
+                                   href="#"
+                                   role="tab"
+                                   aria-controls="Active"
+                                   aria-selected="true">Active</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link"
+                                   id="Unattended-tab"
+                                   data-bs-toggle="tab"
+                                   href="#"
+                                   role="tab"
+                                   aria-controls="Unattended"
+                                   aria-selected="false">Unattended</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link"
+                                   id="Completed-tab"
+                                   data-bs-toggle="tab"
+                                   href="#"
+                                   role="tab"
+                                   aria-controls="Completed"
+                                   aria-selected="false">Completed</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link"
+                                   id="Search-tab"
+                                   data-bs-toggle="tab"
+                                   href="#"
+                                   role="tab"
+                                   aria-controls="Search"
+                                   aria-selected="false">Search</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link"
+                                   id="Recurring-tab"
+                                   data-bs-toggle="tab"
+                                   href="#"
+                                   role="tab"
+                                   aria-controls="Recurring"
+                                   aria-selected="false">Recurring</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link"
+                                   id="Cancelled-tab"
+                                   data-bs-toggle="tab"
+                                   href="#"
+                                   role="tab"
+                                   aria-controls="Cancelled"
+                                   aria-selected="false">Cancelled</a>
+                            </li>
+                        </ul>
+                        <div class="btn-group me-1">
+                            <div class="tab-btn d-flex align-items-center">
+                                <div class="dropdown-calendar me-2">
+                                    <button class="btn btn-outline-secondary dropdown-toggle"
+                                            type="button"
+                                            id="dropdownMenuButton"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        <i class="bi bi-calendar"></i> All Days
+                                    </button>
+                                    <ul class="dropdown-menu"
+                                        aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item" href="#">Day 1</a></li>
+                                        <li><a class="dropdown-item" href="#">Day 2</a></li>
+                                        <li><a class="dropdown-item" href="#">Day 3</a></li>
+                                        <li><a class="dropdown-item" href="#">Day 4</a></li>
+                                        <li><a class="dropdown-item" href="#">Day 5</a></li>
+                                    </ul>
+                                </div>
+                                <div class="import-btn me-2">
+                                    <a class="btn btn-outline-secondary d-flex align-items-center " style="color:rgb(130 127 127);"><i class="bi bi-file-earmark-pdf me-1"></i> Import</a>
+                                </div>
+                                <div class="dropdown-new-task  me-2" style="width:91px !important">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" id="btnAddTsk" data-bs-target="#myNewTaskModal">
+                                        <i class="bi bi-plus"></i> New Task
+                                    </button>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+ *@                  
+                      @* <hr class="mt-2" /> *@
+
+
+
+                    <!-- Tab End -->
+
+                    <div class="ms-1 me-1">
+                        <main role="main" class="pb-3">
+                            @RenderBody()
+                        </main>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - CIT_Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
