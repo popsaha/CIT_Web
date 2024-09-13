@@ -1,0 +1,490 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+
+@* *********************************************Task popup ************************************************* *@
+
+<div class="modal fade new-task-dashboard-data" id="myModal" tabindex="-1" aria-labelledby="myNewTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header" style="padding: 10px;">
+                <h5 class="modal-title" id="myModalLabel">New Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="modal-content" class="modal-body">
+                <div>
+                    <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i> Multiple pickup and delivery task  can be liked by the same Order ID</p>
+                </div>
+
+                <div class="row align-items-center g-0">
+                    <!-- OrderType Dropdown -->
+                    <div class="col-md-4 col-sm-12">
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-file-text-fill"></i></div>
+                            <select class="form-select small-input" id="orderType" name="orderType">
+                                <option value="">Select Order Type</option>
+                                <option value="Standing">Standing</option>
+                                <option value="Scheduled">Scheduled</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Priority Dropdown -->
+                    <div class="col-md-4 col-sm-12">
+                        <div class="input-group">
+                            <div class="input-group-text">Priority</div>
+                            <select class="form-select small-input" id="priority" name="priority">
+                                <option value="">Select Priority</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Order ID Input -->
+                    <div class="col-md-4 col-sm-12">
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-credit-card-2-front-fill"></i></div>
+                            <input type="number" placeholder="Enter Order Id" class="form-control small-input" id="OrderId" name="OrderId" min="1" max="100">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-12 col-sm-12 mb-2 mt-2">
+                    <div class="input-group">
+                        <div class="input-group-text"><i class="bi bi-clipboard-fill"></i></div>
+                        <select class="form-select small-input" id="PickUpType" name="PickUpType">
+                            <option value="">Select Pickup Type</option>
+                            <option value="CIT">CIT</option>
+                            <option value="BSS">BSS</option>
+                            <option value="ATM">ATM</option>
+                            <option value="Airlift">Airlift</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="row align-items-center mt-3 ">
+                    <h6>Sender / Pickup Location</h6>
+
+                    <div class="row g-0 mx-auto">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="input-group">
+                                <div class="input-group-text ms-3">
+                                    <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Requester" -->
+                                </div>
+                                <select id="requesterName" class="form-select small-input" name="requesterName">
+                                    <option value="">Select Requester's Name</option>
+                                    <option value="John Doe">John Doe</option>
+                                    <option value="Jane Smith">Jane Smith</option>
+                                    <option value="Alice Johnson">Alice Johnson</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12 pe-3">
+                            <div class="input-group ">
+                                <div class="input-group-text ">
+                                    <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
+                                </div>
+                                <select id="pickupLocation" class="form-select small-input" name="pickupLocation">
+                                    <option value="">Select Pickup Location</option>
+                                    <option value="loc1">Location 1</option>
+                                    <option value="loc2">Location 2</option>
+                                    <option value="loc3">Location 3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center mt-3">
+                        <h6>Recipient / Destination Location</h6>
+                        <div class="col-3">
+                            <div class="form-check  ms-1">
+                                <input type="checkbox" class="form-check-input" id="isVault" name="isVault">
+                                <label class="form-check-label" for="isVault">IsVault</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-12  " id="vaultLocationContainer">
+                            <div class="input-group">
+                                <div class="input-group-text">
+                                    <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
+                                </div>
+                                <select id="vaultLocation" class="form-select small-input" name="vaultLocation">
+                                    <option value="">Select Vault Location</option>
+                                    <option value="loc1">Location 1</option>
+                                    <option value="loc2">Location 2</option>
+                                    <option value="loc3">Location 3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-check  ms-1" id="isVaultFinalContainer">
+                                <input type="checkbox" class="form-check-input" id="isVaultFinal" name="isVaultFinal">
+                                <label class="form-check-label" for="isVaultFinal">isVault - final destination</label>
+                            </div>
+                        </div>
+                        <div class="row g-0 mt-3 mb-3 ms-3 pe-2">
+                            <!-- Recipient's Name Dropdown -->
+                            <div class="col-md-6 col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-text">
+                                        <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Recipient" -->
+                                    </div>
+                                    <select id="recipientName" class="form-select small-input" name="recipientName">
+                                        <option value="">Select Recipient's Name</option>
+                                        <option value="1">Michael Brown</option>
+                                        <option value="2">Emily Davis</option>
+                                        <option value="3">Chris Wilson</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Delivery Location Dropdown -->
+                            <div class="col-md-6 col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-text">
+                                        <i class="bi bi-geo-fill"></i> <!-- Replace with an appropriate icon for "Delivery Location" -->
+                                    </div>
+                                    <select id="deliveryLocation" class="form-select small-input" name="deliveryLocation">
+                                        <option value="">Select Delivery Location</option>
+                                        <option value="locA">Location A</option>
+                                        <option value="locB">Location B</option>
+                                        <option value="locC">Location C</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-0">
+
+                            <!-- Repeat This Task Toggle -->
+                            <div class="form-check form-switch mb-2 fw-bold">
+                                <input class="form-check-input" type="checkbox" id="repeatTask" name="repeatTask">
+                                <label class="form-check-label" for="repeatTask">Repeat this task</label>
+                            </div>
+
+                            <!-- Repeats Section (Initially Hidden) -->
+                            <div class="row align-items-center g-0 repeats-section" id="repeatsSection">
+                                <!-- Repeats Dropdown -->
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group w-100">
+                                        <div class="input-group-text">Repeats</div>
+                                        <select class="form-select small-input" id="repeatsMode" name="repeats">
+                                            <option value="">Select Repeats</option>
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly">Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- Ends On Calendar -->
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group w-100">
+                                        <div class="input-group-text">Ends on</div>
+                                        <input type="date" class="form-control small-input" id="endsOn" name="endsOn">
+                                    </div>
+                                </div>
+                                <!-- Repeats On Multi-select Dropdown -->
+                                <div class="col-md-12 col-sm-12 mb-3">
+                                    <div class="input-group w-100">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text repeats-on-text">Repeats On</span>
+                                        </div>
+                                        <select id="choices-multiple-remove-button" class="form-select small-input" name="options" multiple>
+                                            <option value="Sunday">Sunday</option>
+                                            <option value="Monday">Monday</option>
+                                            <option value="Tuesday">Tuesday</option>
+                                            <option value="Wednesday">Wednesday</option>
+                                            <option value="Thursday">Thursday</option>
+                                            <option value="Friday">Friday</option>
+                                            <option value="Saturday">Saturday</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="modal-footer d-flex justify-content-between" style="font-size:12px !important; padding:0px !important">
+                    <button type="button" style="font-size:12px !important;" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
+                    <div>
+                        <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button>
+                        <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal"><i class="bi bi-file-earmark-lock-fill"></i> Save and close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* ************************************************************************************************************ *@
+
+
+
+
+<div class="tab-container mt-3  ms-3" style="width: 100% ;">
+    <div class="group-data-action-container d-flex justify-content-between">
+        <div class="d-flex align-items-center">
+            <a class="ms-2 me-3" href="# ">
+                <i class="bi bi-person-check-fill"></i>
+            </a>
+            <a class="me-3" href="#"><i class="bi bi-pencil-square"></i></a>
+            <a class="me-3" href="#"> <i class="bi bi-trash-fill"></i></a>
+            <a class="me-3" href="#"><i class="bi bi-arrow-down-circle-fill"></i></a>
+            <a class="me-3" href="#"> <i class="bi bi-gear-fill"></i></a>
+
+            <button class="btn btn-color group-button" data-bs-toggle="Groupmodal" data-bs-target="#groupModal" id="groupPopup">Task Grouping</button>
+            <div class="dropdown-new-task  me-2 ms-3" style="width:91px !important">
+                <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk" data-bs-target="#myNewTaskModal">
+                    <i class="bi bi-plus"></i> New Task
+                </button>
+            </div>
+        </div>
+        <div class="d-flex " style="    margin-right: 21px;">
+
+            <input type="text" placeholder="Search..." style="padding:5px" />
+        </div>
+    </div>
+    <div class="" style="overflow-x:auto !important; margin-right: 21px;">
+        <table class="table  mt-3">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>PickUp</th>
+                    <th>Delivery</th>
+                    <th>Recipient</th>
+                    <th>Crew Commander</th>
+                    <th>Lead Vehicle</th>
+                    <th>Chase Vehicle</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Standing Order Header -->
+                <tr class="order-header">
+                    <td colspan="11" class="subheader-cell" style="background:#d9d9db !important; ">Standing Order</td>
+                </tr>
+
+                <!-- First Order -->
+                <tr class="order-subheader">
+                    <td colspan="11" class="standing-order-no">T935265</td>
+                </tr>
+                <tr class="table-border">
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>Connaught Place, Delhi</td>
+                    <td>Chandni Chowk, Delhi</td>
+                    <td>ABC Bank, Chandni</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>10:00 AM</td>
+                    <td>Unassigned</td>
+                    <td>ATM</td>
+                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>Karol Bagh, Delhi</td>
+                    <td>Chandni Chowk, Delhi</td>
+                    <td>ABC Bank, Chandni</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Unassigned</td>
+                    <td>ATM</td>
+                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+
+                <!-- Second Order -->
+                <tr class="order-subheader">
+                    <td colspan="11" class="standing-order-no">T235483</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>MG Road, Bengaluru</td>
+                    <td>Koramangala, Bengaluru</td>
+                    <td>XYZ Pvt Ltd, Koram</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>11:30 AM</td>
+                    <td>Unassigned</td>
+                    <td>CIT</td>
+                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>Indiranagar</td>
+                    <td>Jayanagar</td>
+                    <td>XYZ Pvt Ltd, Koram</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Unassigned</td>
+                    <td>CIT</td>
+                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+
+                <!-- Scheduled Order Header -->
+                <tr class="order-header">
+                    <td colspan="11" class="subheader-cell" style="background:#d9d9db !important; ">Scheduled Order</td>
+                </tr>
+
+
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>Marine Drive, Mumbai</td>
+                    <td>Fort, Mumbai</td>
+                    <td>DEF Corp, Fort</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>1:15 PM</td>
+                    <td>Unassigned</td>
+                    <td>CIT</td>
+                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>Salt Lake, Kolkata</td>
+                    <td>Howrah, Kolkata</td>
+                    <td>GHI Bank, Howrah</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>3:00 PM</td>
+                    <td>Unassigned</td>
+                    <td>Airlift</td>
+                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>Anna Nagar, Chennai</td>
+                    <td>T Nagar, Chennai</td>
+                    <td>JKL Ltd, T Nagar</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>9:45 AM</td>
+                    <td>Unassigned</td>
+                    <td>ATM</td>
+                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox"></td>
+                    <td>Sector 18, Noida</td>
+                    <td>Sector 62, Noida</td>
+                    <td>MNO Inc, Sec 62</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>2:30 PM</td>
+                    <td>Unassigned</td>
+                    <td>CIT</td>
+                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+
+
+@* **************************************Grouped data modal************************* *@
+
+<!-- Modal -->
+<div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groupModalLabel" style="font-size:14px !important">Selected Orders</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="ms-4 mt-4" style="font-size:14px !important">
+                <span>Group Name : </span>
+                <input type="text" placeholder="Enter Group..." style="padding:0px 3px" />
+            </div>
+            <div class="modal-body" id="modal-content" style="overflow-x:auto">
+                <table class="table table-bordered" style="font-size:12px !important">
+                    <thead>
+                        <tr>
+                            <th>PickUp</th>
+                            <th>Delivery</th>
+                            <th>Recipient</th>
+
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="selectedOrdersTableBody">
+                        <!-- Selected orders will be added here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
+                <a type="button" class="btn btn-color" asp-action="GroupData" style="font-size:14px !important">Save</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.group-button').addEventListener('click', function () {
+        $("[id*=groupPopup]").click(function () {
+            $('#Groupmodal').modal('show');
+        });
+
+        const selectedOrdersTableBody = document.getElementById('selectedOrdersTableBody');
+        selectedOrdersTableBody.innerHTML = ''; // Clear the table body
+
+        // Gather selected data
+        document.querySelectorAll('.row-checkbox:checked').forEach(function (checkbox) {
+            const row = checkbox.closest('tr');
+            const pickup = row.cells[1].textContent;
+            const delivery = row.cells[2].textContent;
+            const recipient = row.cells[3].textContent;
+
+            const time = row.cells[7].textContent;
+            const status = row.cells[8].textContent;
+            const type = row.cells[9].textContent;
+
+            // Create table row for each selected row
+            const tableRow = document.createElement('tr');
+            tableRow.innerHTML = `
+                                <td>${pickup}</td>
+                                <td>${delivery}</td>
+                                <td>${recipient}</td>
+
+                                <td>${time}</td>
+                                <td>${status}</td>
+                                <td>${type}</td>
+                            `;
+            selectedOrdersTableBody.appendChild(tableRow);
+        });
+    });
+</script>
+
