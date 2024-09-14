@@ -17,7 +17,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div id="modal-content" class="modal-body">
-                <div>
+                <div id="orderMessage" style="display: none;">
                     <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i> Multiple pickup and delivery task  can be liked by the same Order ID</p>
                 </div>
 
@@ -446,7 +446,9 @@
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
-                <a type="button" class="btn btn-color" asp-action="GroupData" style="font-size:14px !important">Save</a>
+                <form asp-action="Index" asp-controller="Assignment" target="_blank">
+                    <button type="submit" class="btn btn-color" style="font-size:14px !important">Save</button>
+                </form>
             </div>
         </div>
     </div>

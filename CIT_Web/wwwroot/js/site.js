@@ -93,8 +93,17 @@ isVaultCheckbox.addEventListener('change', toggleIsVaultFinal);
 //*************************************************************************************************
 
 
-//******************************************group tab js **************************************
+//******************************************if OrderId enter then show message js **************************************
 
+document.getElementById('OrderId').addEventListener('input', function () {
+    var orderId = document.getElementById('OrderId').value;
+    var orderMessage = document.getElementById('orderMessage');
 
+    if (orderId >= 1) {
+        orderMessage.style.display = 'block';
+    } else {
+        orderMessage.style.display = 'none';
+    }
+});
 
 //***********************************************************************************************

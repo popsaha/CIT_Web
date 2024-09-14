@@ -223,6 +223,15 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link px-0 align-middle @(ViewContext.RouteData.Values["controller"].ToString() == "Assignment" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")" data-bs-toggle="nav"
+                                   role="nav"
+                                   aria-selected="false"
+                                   asp-action="Index" asp-controller="Assignment">
+                                    <i class="bi bi-clipboard-check"></i> <!-- Assignment icon -->
+                                    <span class="ms-1">Assignment</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a asp-action="Index" asp-controller="Calendar"
                                 class="nav-link px-0 align-middle" data-bs-toggle="nav"
                                    role="nav"
