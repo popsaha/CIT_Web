@@ -10,6 +10,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddHttpClient<IBranchService, BranchServicecs>();
+builder.Services.AddScoped<IBranchService, BranchServicecs>();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
