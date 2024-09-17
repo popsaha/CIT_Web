@@ -14,6 +14,8 @@ builder.Services.AddHttpClient<IBranchService, BranchServicecs>();
 builder.Services.AddScoped<IBranchService, BranchServicecs>();
 builder.Services.AddHttpClient<IOrderTypeService, OrderTypeService>();
 builder.Services.AddScoped<IOrderTypeService, OrderTypeService>();
+builder.Services.AddHttpClient<IRegionService, RegionService>();
+builder.Services.AddScoped<IRegionService, RegionService>();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 

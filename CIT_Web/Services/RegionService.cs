@@ -1,29 +1,26 @@
 ﻿using CIT_Utility;
 using CIT_Web.Models;
-using CIT_Web.Models.Dto.Branch;
+using CIT_Web.Models.Dto.Region;
 using CIT_Web.Services.IServices;
 
 namespace CIT_Web.Services
 {
-    public class BranchServicecs : BaseService, IBranchService
+    public class RegionService :BaseService, IRegionService
     {
         private readonly IHttpClientFactory _clientFactory;
         private string citUrl;
-
-        public BranchServicecs(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
+        public RegionService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(httpClient)
         {
             _clientFactory = clientFactory;
             citUrl = configuration.GetValue<string>("ServiceUrls:CitAPI");
-
         }
-        public Task<T> CreateAsync<T>(BranchCreateDTO dto)
+        public Task<T> CreateAsync<T>(RegionCreateDTO dto)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = citUrl + "/api/Branch",
-
+                Url = citUrl + "api/Region"
             });
         }
 
@@ -32,7 +29,8 @@ namespace CIT_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = citUrl + "/api/Customer" + id ,
+                Url = citUrl + "api/Region" + id,
+
             });
         }
 
@@ -40,8 +38,8 @@ namespace CIT_Web.Services
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
-                Url = citUrl + "/api/Branch/GetAllbranch",
+                ApiType = SD.ApiType.GET ,
+                Url = citUrl + "api/Region",
             });
         }
 
@@ -49,18 +47,18 @@ namespace CIT_Web.Services
         {
             return SendAsync<T>(new APIRequest()
             {
-                ApiType= SD.ApiType.GET,
-                Url = citUrl + "/api/Branch" + id,
+                ApiType = SD.ApiType.GET,
+                Url = citUrl + "api/Region" + id
             });
         }
 
-        public Task<T> UpdateAsync<T>(BranchUpdateDTO dto)
+        public Task<T> UpdateAsync<T>(RegionUpdateDTO dto)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.PUT,
                 Data = dto,
-                Url = citUrl + "/api/Branch" + dto.BranchID ,
+                Url = citUrl + "api/Region" + dto.RegionID,
             });
         }
     }

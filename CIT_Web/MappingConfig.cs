@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CIT_Web.Models.Dto.Customer;
 
+
 namespace CIT_Web
 {
     public class MappingConfig : Profile
@@ -8,7 +9,9 @@ namespace CIT_Web
         public MappingConfig()
         {
             CreateMap<CustomerDTO, CustomerCreateDTO>().ReverseMap();
-            CreateMap<CustomerDTO, CustomerUpdateDTO>().ReverseMap();
+            CreateMap<CustomerDTO, CustomerCreateDTO>().ReverseMap();
+
+        
 
         }
     }
