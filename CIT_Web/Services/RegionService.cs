@@ -9,7 +9,7 @@ namespace CIT_Web.Services
     {
         private readonly IHttpClientFactory _clientFactory;
         private string citUrl;
-        public RegionService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(httpClient)
+        public RegionService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
         {
             _clientFactory = clientFactory;
             citUrl = configuration.GetValue<string>("ServiceUrls:CitAPI");
