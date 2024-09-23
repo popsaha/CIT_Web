@@ -10,10 +10,30 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+builder.Services.AddHttpClient<ITaskListService, TaskListService>();
+builder.Services.AddScoped<ITaskListService, TaskListService>();
+
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddHttpClient<ITaskGroupService, TaskGroupService>();
+builder.Services.AddScoped<ITaskGroupService, TaskGroupService>();
 
+builder.Services.AddHttpClient<ITaskGroupListService, TaskGroupListService>();
+builder.Services.AddScoped<ITaskGroupListService, TaskGroupListService>();
+
+builder.Services.AddHttpClient<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+
+builder.Services.AddHttpClient<ICrewCommanderService, CrewCommanderService>();
+builder.Services.AddScoped<ICrewCommanderService, CrewCommanderService>();
+
+builder.Services.AddHttpClient<IVehicleAssignmentService, VehicleAssignmentService>();
+builder.Services.AddScoped<IVehicleAssignmentService, VehicleAssignmentService>();
+
+// Add services to the container.
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -26,6 +46,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
