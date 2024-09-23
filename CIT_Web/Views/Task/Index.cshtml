@@ -1,235 +1,348 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model CIT_Web.Models.ViewModel.TaskCreateVM
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/js/bootstrap-multiselect.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
 
+<script type="text/javascript">
+    $('document').ready(function () {
 
+        $("#btnAddTsk").click(function () {
+            $('#myModal').show();
+        })
 
-@* *********************************************Task popup ************************************************* *@
+        $("#btnAddTaskInRows").click(function () {
+            debugger
+           // var Valid = true;
+            var Valid = Validation()
+            if (Valid == true) {
+                $('#add-save-btn').prop('disabled', true);
+                $("#btnAddmoreTask").click();
+            }
 
-<div class="modal fade new-task-dashboard-data" id="myModal" tabindex="-1" aria-labelledby="myNewTaskModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content ">
-            <div class="modal-header" style="padding: 10px;">
-                <h5 class="modal-title" id="myModalLabel">New Task</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div id="modal-content" class="modal-body">
-                <div id="orderMessage" style="display: none;">
-                    <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i> Multiple pickup and delivery task  can be liked by the same Order ID</p>
+        })
+        $("#CustomerId").change(function () {
+            debugger
+            var CustomerId = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/Task/GetBranchNameById",
+                data: { "CustomerId": CustomerId },
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    var Branchlst = '<option value="">Select</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
+                    }
+                    $("#BranchID").html(Branchlst);
+                }
+            })
+        })
+
+        $("#CustomerRecipiantId").change(function () {
+            debugger
+            var CustomerId = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/Task/GetBranchNameById",
+                data: { "CustomerId": CustomerId },
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    var Branchlst = '<option value="">Select</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
+                    }
+                    $("#CustomerRecipiantLocationId").html(Branchlst);
+                }
+            })
+        })
+
+        $("#choices-multiple-remove-button").change(function () {
+            debugger
+            var Days = $(this).val();
+            $("#RepeatDaysName").val(Days);
+        })
+    });
+
+    function Validation() {
+        debugger
+        var IsValid = true;
+        var OrderTypeID = $("#orderType").val();
+        var PriorityId = $("#priority").val();
+        var OrderId = $("#OrderId").val();
+        var PickUpTypeId = $("#PickUpType").val();
+        var Createorderdate = $("#OrderCreateDate").val();
+        var CustomerId = $("#CustomerId").val();
+        var BranchID = $("#BranchID").val();
+        var VaultId = $("#VaultID").val();
+
+        var CustomerRecipiantId = $("#CustomerRecipiantId").val();
+        var CustomerRecipiantLocationId = $("#CustomerRecipiantLocationId").val();
+
+        var MyRadio_repeatTask = $('input[name=repeatTask]:checked').val();
+
+        var isVault = $('#isVault').prop('checked');
+        var isVaultFinal = $('#isVaultFinal').prop('checked');
+
+        if (OrderTypeID == "0" || OrderTypeID == undefined) {
+            $("#orderType").css("border", "1px solid red");
+            IsValid = false;
+        }
+        if (PriorityId == "0" || PriorityId == undefined) {
+            $("#priority").css("border", "1px solid red");
+            IsValid = false;
+        }
+        if (OrderId == "" || OrderId == undefined) {
+            $("#OrderId").css("border", "1px solid red");
+            IsValid = false;
+        }
+
+        if (PickUpTypeId == "0" || PickUpTypeId == undefined) {
+            $("#PickUpType").css("border", "1px solid red");
+            IsValid = false;
+        }
+        if (Createorderdate == "" || Createorderdate == undefined) {
+            $("#OrderCreateDate").css("border", "1px solid red");
+            IsValid = false;
+        }
+
+        if (CustomerId == "0" || CustomerId == undefined) {
+            $("#CustomerId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        if (BranchID == "0" || BranchID == null) {
+            $("#BranchID").css("border", "1px solid red");
+            IsValid = false;
+        }
+
+        if ((VaultId == "0" || VaultId == null) && isVault==true) {
+            $("#VaultID").css("border", "1px solid red");
+            IsValid = false;
+        }
+
+        if ((CustomerRecipiantId == "0" || CustomerRecipiantId == undefined) && isVaultFinal != true) {
+            $("#CustomerRecipiantId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        if ((CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == null) && isVaultFinal != true) {
+            $("#CustomerRecipiantLocationId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        return IsValid;
+    }
+</script>
+<form enctype="multipart/form-data" asp-controller="Task" ,asp-action="Index" method="post">
+    <input asp-for="RepeatDaysName" type="hidden" />
+    <div class="modal fade new-task-dashboard-data" id="myModal" aria-labelledby="myNewTaskModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 10px;">
+                    <h5 class="modal-title" id="myModalLabel">New Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div id="modal-content" class="modal-body">
+                    <div id="orderMessage" style="display: none;">
+                        <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i> Multiple pickup and delivery task  can be liked by the same Order ID</p>
+                    </div>
 
-                <div class="row align-items-center g-0">
-                    <!-- OrderType Dropdown -->
-                    <div class="col-md-4 col-sm-12">
-                        <div class="input-group">
-                            <div class="input-group-text"><i class="bi bi-file-text-fill"></i></div>
-                            <select class="form-select small-input" id="orderType" name="orderType">
-                                <option value="">Select Order Type</option>
-                                <option value="Standing">Standing</option>
-                                <option value="Scheduled">Scheduled</option>
-                            </select>
+                    <div class="row align-items-center g-0">
+                        <!-- OrderType Dropdown -->
+                        <div class="col-md-4 col-sm-12">
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-file-text-fill"></i></div>
+                                <select asp-for="OrderTypeID" class="form-select small-input" id="orderType"
+                                        asp-items="@(new SelectList(@Model.OrderTypelist,"OrderTypeID","TypeName"))">
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Priority Dropdown -->
+                        <div class="col-md-4 col-sm-12">
+                            <div class="input-group">
+                                <div class="input-group-text">Priority</div>
+                                <select asp-for="PriorityId" class="form-select small-input" id="priority"
+                                        asp-items="@(new SelectList(@Model.PriorityMasterlist,"PriorityId","PriorityName"))">
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Order ID Input -->
+                        <div class="col-md-4 col-sm-12">
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-credit-card-2-front-fill"></i></div>
+                                <input asp-for="OrderId" class="form-control small-input" placeholder="Enter Order Id" />
+                                @* <input type="number" placeholder="Enter Order Id" class="form-control small-input" id="OrderId" name="OrderId" min="1" max="100"> *@
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Priority Dropdown -->
-                    <div class="col-md-4 col-sm-12">
-                        <div class="input-group">
-                            <div class="input-group-text">Priority</div>
-                            <select class="form-select small-input" id="priority" name="priority">
-                                <option value="">Select Priority</option>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                            </select>
+                    <div class="row align-items-center g-0">
+                        <div class="col-md-6 col-sm-12 mb-2 mt-2">
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-clipboard-fill"></i></div>
+                                <select asp-for="PickUpTypeId" class="form-select small-input" id="PickUpType"
+                                        asp-items="@(new SelectList(Model.Picktypemasterlst,"PickUpTypeId","PickUpTypeName"))">
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Order ID Input -->
-                    <div class="col-md-4 col-sm-12">
-                        <div class="input-group">
-                            <div class="input-group-text"><i class="bi bi-credit-card-2-front-fill"></i></div>
-                            <input type="number" placeholder="Enter Order Id" class="form-control small-input" id="OrderId" name="OrderId" min="1" max="100">
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-12 col-sm-12 mb-2 mt-2">
-                    <div class="input-group">
-                        <div class="input-group-text"><i class="bi bi-clipboard-fill"></i></div>
-                        <select class="form-select small-input" id="PickUpType" name="PickUpType">
-                            <option value="">Select Pickup Type</option>
-                            <option value="CIT">CIT</option>
-                            <option value="BSS">BSS</option>
-                            <option value="ATM">ATM</option>
-                            <option value="Airlift">Airlift</option>
-                        </select>
-                    </div>
-                </div>
-
-
-                <div class="row align-items-center mt-3 ">
-                    <h6>Sender / Pickup Location</h6>
-
-                    <div class="row g-0 mx-auto">
                         <div class="col-md-6 col-sm-12">
                             <div class="input-group">
-                                <div class="input-group-text ms-3">
-                                    <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Requester" -->
-                                </div>
-                                <select id="requesterName" class="form-select small-input" name="requesterName">
-                                    <option value="">Select Requester's Name</option>
-                                    <option value="John Doe">John Doe</option>
-                                    <option value="Jane Smith">Jane Smith</option>
-                                    <option value="Alice Johnson">Alice Johnson</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-12 pe-3">
-                            <div class="input-group ">
-                                <div class="input-group-text ">
-                                    <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
-                                </div>
-                                <select id="pickupLocation" class="form-select small-input" name="pickupLocation">
-                                    <option value="">Select Pickup Location</option>
-                                    <option value="loc1">Location 1</option>
-                                    <option value="loc2">Location 2</option>
-                                    <option value="loc3">Location 3</option>
-                                </select>
+                                <input asp-for="OrderCreateDate" type="date" class="form-control small-input">
                             </div>
                         </div>
                     </div>
 
-                    <div class="row align-items-center mt-3">
-                        <h6>Recipient / Destination Location</h6>
-                        <div class="col-3">
-                            <div class="form-check  ms-1">
-                                <input type="checkbox" class="form-check-input" id="isVault" name="isVault">
-                                <label class="form-check-label" for="isVault">IsVault</label>
-                            </div>
-                        </div>
-                        <div class="col-md-5 col-sm-12  " id="vaultLocationContainer">
-                            <div class="input-group">
-                                <div class="input-group-text">
-                                    <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
-                                </div>
-                                <select id="vaultLocation" class="form-select small-input" name="vaultLocation">
-                                    <option value="">Select Vault Location</option>
-                                    <option value="loc1">Location 1</option>
-                                    <option value="loc2">Location 2</option>
-                                    <option value="loc3">Location 3</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-check  ms-1" id="isVaultFinalContainer">
-                                <input type="checkbox" class="form-check-input" id="isVaultFinal" name="isVaultFinal">
-                                <label class="form-check-label" for="isVaultFinal">isVault - final destination</label>
-                            </div>
-                        </div>
-                        <div class="row g-0 mt-3 mb-3 ms-3 pe-2">
-                            <!-- Recipient's Name Dropdown -->
+                    <div class="row align-items-center mt-3 ">
+                        <h6>Sender / Pickup Location</h6>
+
+                        <div class="row g-0 mx-auto">
                             <div class="col-md-6 col-sm-12">
                                 <div class="input-group">
-                                    <div class="input-group-text">
-                                        <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Recipient" -->
+                                    <div class="input-group-text ms-3">
+                                        <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Requester" -->
                                     </div>
-                                    <select id="recipientName" class="form-select small-input" name="recipientName">
-                                        <option value="">Select Recipient's Name</option>
-                                        <option value="1">Michael Brown</option>
-                                        <option value="2">Emily Davis</option>
-                                        <option value="3">Chris Wilson</option>
+                                    <select asp-for="CustomerId" class="form-select small-input"
+                                            asp-items="@(new SelectList(Model.customerslist,"CustomerId","CustomerName"))">
                                     </select>
                                 </div>
                             </div>
-
-                            <!-- Delivery Location Dropdown -->
-                            <div class="col-md-6 col-sm-12">
-                                <div class="input-group">
-                                    <div class="input-group-text">
-                                        <i class="bi bi-geo-fill"></i> <!-- Replace with an appropriate icon for "Delivery Location" -->
+                            <div class="col-md-6 col-sm-12 pe-3">
+                                <div class="input-group ">
+                                    <div class="input-group-text ">
+                                        <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
                                     </div>
-                                    <select id="deliveryLocation" class="form-select small-input" name="deliveryLocation">
-                                        <option value="">Select Delivery Location</option>
-                                        <option value="locA">Location A</option>
-                                        <option value="locB">Location B</option>
-                                        <option value="locC">Location C</option>
+                                    <select asp-for="BranchID" class="form-select small-input">
                                     </select>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mt-0">
-
-                            <!-- Repeat This Task Toggle -->
-                            <div class="form-check form-switch mb-2 fw-bold">
-                                <input class="form-check-input" type="checkbox" id="repeatTask" name="repeatTask">
-                                <label class="form-check-label" for="repeatTask">Repeat this task</label>
+                        <div class="row align-items-center mt-3">
+                            <h6>Recipient / Destination Location</h6>
+                            <div class="col-3">
+                                <div class="form-check  ms-1">
+                                    <input asp-for="isVault" type="checkbox" class="form-check-input">
+                                    <label class="form-check-label" for="isVault">IsVault</label>
+                                </div>
                             </div>
-
-                            <!-- Repeats Section (Initially Hidden) -->
-                            <div class="row align-items-center g-0 repeats-section" id="repeatsSection">
-                                <!-- Repeats Dropdown -->
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="input-group w-100">
-                                        <div class="input-group-text">Repeats</div>
-                                        <select class="form-select small-input" id="repeatsMode" name="repeats">
-                                            <option value="">Select Repeats</option>
-                                            <option value="daily">Daily</option>
-                                            <option value="weekly">Weekly</option>
-                                            <option value="monthly">Monthly</option>
-                                        </select>
+                            <div class="col-md-5 col-sm-12  " id="vaultLocationContainer">
+                                <div class="input-group">
+                                    <div class="input-group-text">
+                                        <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
                                     </div>
+                                    <select asp-for="VaultID" class="form-select small-input"
+                                            asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
+                                    </select>
                                 </div>
-                                <!-- Ends On Calendar -->
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check  ms-1" id="isVaultFinalContainer">
+                                    <input asp-for="isVaultFinal" type="checkbox" class="form-check-input" name="isVaultFinal">
+                                    <label class="form-check-label" for="isVaultFinal">isVault - final destination</label>
+                                </div>
+                            </div>
+                            <div class="row g-0 mt-3 mb-3 ms-3 pe-2">
+                                <!-- Recipient's Name Dropdown -->
                                 <div class="col-md-6 col-sm-12">
-                                    <div class="input-group w-100">
-                                        <div class="input-group-text">Ends on</div>
-                                        <input type="date" class="form-control small-input" id="endsOn" name="endsOn">
-                                    </div>
-                                </div>
-                                <!-- Repeats On Multi-select Dropdown -->
-                                <div class="col-md-12 col-sm-12 mb-3">
-                                    <div class="input-group w-100">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text repeats-on-text">Repeats On</span>
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Recipient" -->
                                         </div>
-                                        <select id="choices-multiple-remove-button" class="form-select small-input" name="options" multiple>
-                                            <option value="Sunday">Sunday</option>
-                                            <option value="Monday">Monday</option>
-                                            <option value="Tuesday">Tuesday</option>
-                                            <option value="Wednesday">Wednesday</option>
-                                            <option value="Thursday">Thursday</option>
-                                            <option value="Friday">Friday</option>
-                                            <option value="Saturday">Saturday</option>
+                                        <select asp-for="CustomerRecipiantId" class="form-select small-input"
+                                                asp-items="@(new SelectList(Model.customerslist,"CustomerId","CustomerName"))">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Delivery Location Dropdown -->
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <i class="bi bi-geo-fill"></i> <!-- Replace with an appropriate icon for "Delivery Location" -->
+                                        </div>
+                                        <select asp-for="CustomerRecipiantLocationId" class="form-select small-input">
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
+                            <div class="mt-0">
 
+                                <!-- Repeat This Task Toggle -->
+                                <div class="form-check form-switch mb-2 fw-bold">
+                                    <input class="form-check-input" type="checkbox" id="repeatTask" name="repeatTask">
+                                    <label class="form-check-label" for="repeatTask">Repeat this task</label>
+                                </div>
+
+                                <!-- Repeats Section (Initially Hidden) -->
+                                <div class="row align-items-center g-0 repeats-section" id="repeatsSection">
+                                    <!-- Repeats Dropdown -->
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="input-group w-100">
+                                            <div class="input-group-text">Repeats</div>
+                                            <select asp-for="RepeatId" class="form-select small-input" id="repeatsMode"
+                                                    asp-items="@(new SelectList(Model.repeatsaskmasterslist, "RepeatId", "RepeatName"))">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Ends On Calendar -->
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="input-group w-100">
+                                            <div class="input-group-text">Ends on</div>
+                                            <input asp-for="EndOnDate" type="date" class="form-control small-input" id="endsOn">
+                                        </div>
+                                    </div>
+                                    <!-- Repeats On Multi-select Dropdown -->
+                                    <div class="col-md-12 col-sm-12 mb-3">
+                                        <div class="input-group w-100">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text repeats-on-text">Repeats On</span>
+                                            </div>
+                                            @* <select asp-for="RepeatDaysName" class="form-select small-input" multiple="multiple"
+                                            asp-items="@(new SelectList(Model.repeatsInDaysMasterslist, "RepeatDaysName", "RepeatInDay"))">
+                                            </select> *@
+                                            <select id="choices-multiple-remove-button" class="form-select small-input" name="options" multiple>
+                                                <option value="Sunday">Sunday</option>
+                                                <option value="Monday">Monday</option>
+                                                <option value="Tuesday">Tuesday</option>
+                                                <option value="Wednesday">Wednesday</option>
+                                                <option value="Thursday">Thursday</option>
+                                                <option value="Friday">Friday</option>
+                                                <option value="Saturday">Saturday</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="modal-footer d-flex justify-content-between" style="font-size:12px !important; padding:0px !important">
+                        <button type="button" style="font-size:12px !important;" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
+                        <div>
+                            <input type="button" style="font-size:12px !important;" class="btn btn-color" value="Save & Add more location to this Task" id="btnAddTaskInRows" style="background:#132553 bi bi-file-earmark-pdf !important;">
+                            <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
+                            @* <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button> *@
+                            <button type="button" id="btnsave" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal"><i class="bi bi-file-earmark-lock-fill"></i> Save and close</button>
                         </div>
 
                     </div>
-                </div>
-
-
-                <div class="modal-footer d-flex justify-content-between" style="font-size:12px !important; padding:0px !important">
-                    <button type="button" style="font-size:12px !important;" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
-                    <div>
-                        <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button>
-                        <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal"><i class="bi bi-file-earmark-lock-fill"></i> Save and close</button>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
 
+</form>
 
 @* ************************************************************************************************************ *@
 
@@ -249,7 +362,7 @@
 
             <button class="btn btn-color group-button" data-bs-toggle="Groupmodal" data-bs-target="#groupModal" id="groupPopup">Task Grouping</button>
             <div class="dropdown-new-task  me-2 ms-3" style="width:91px !important">
-                <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk" data-bs-target="#myNewTaskModal">
+                <button type="button" class="btn btn-outline-secondary btn-color" id="btnAddTsk">
                     <i class="bi bi-plus"></i> New Task
                 </button>
             </div>
@@ -477,14 +590,14 @@
             // Create table row for each selected row
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                <td>${pickup}</td>
-                                <td>${delivery}</td>
-                                <td>${recipient}</td>
+                                                                                                                                                        <td>${pickup}</td>
+                                                                                                                                                        <td>${delivery}</td>
+                                                                                                                                                        <td>${recipient}</td>
 
-                                <td>${time}</td>
-                                <td>${status}</td>
-                                <td>${type}</td>
-                            `;
+                                                                                                                                                        <td>${time}</td>
+                                                                                                                                                        <td>${status}</td>
+                                                                                                                                                        <td>${type}</td>
+                                                                                                                                                    `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });

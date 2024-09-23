@@ -2,6 +2,7 @@
 using CIT_Web.Models;
 using CIT_Web.Services.IServices;
 using Newtonsoft.Json;
+using System;
 using System.Text;
 
 namespace CIT_Web.Services
@@ -15,6 +16,7 @@ namespace CIT_Web.Services
             this.responseModel = new();
             this.httpClient = httpClient;
         }
+
         public async Task<T> SendAsync<T>(APIRequest apiRequest)
         {
             try

@@ -1,19 +1,29 @@
 using CIT_Web;
 using CIT_Web.Services;
 using CIT_Web.Services.IServices;
+//using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//                .AddJwtBearer(options =>
+//                {
+//                    options.Audience = "aud";
+//                    options.Authority = "http://localhost:5112";
+//                    //options.TokenValidationParameters.ValidIssuers = "issuers";
+//                });
+
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
-
+builder.Services.AddScoped<ItaskService, TaskService>();
 
 var app = builder.Build();
 
