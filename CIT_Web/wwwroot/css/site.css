@@ -179,6 +179,40 @@ button {
 /*****************************************************************************************/
 
 
+/* *************************************Scrollbar in task module************************    */
+.table-wrapper {
+    max-height: 90vh; /* Adjust height as needed */
+    overflow-y: scroll; /* Allow vertical scroll */
+    scrollbar-width: none; /* For Firefox, hide scrollbar */
+}
+
+    .table-wrapper::-webkit-scrollbar {
+        display: none; /* For WebKit browsers, hide scrollbar */
+    }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sticky-header th {
+    position: sticky;
+    top: 0;
+    background-color: #f1f1f1; /* Customize color as needed */
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+.order-header {
+    background-color: #d9d9db;
+}
+
+.order-subheader {
+    font-weight: bold;
+    background-color: #eaeaea;
+}
+/* ******************************************************************************** */
+
     @media (max-width:668px) {
         .form-container {
             width: 100% !important;

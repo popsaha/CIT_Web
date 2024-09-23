@@ -1,11 +1,11 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model TaskGroupVehicleViewModel
+
 @{
+    var groupedData = Model.TaskGroups.GroupBy(item => item.GroupName).ToList();
 }
 
 
-<div class="container mt-3">
+ @* <div class="container mt-3">
     <div class="d-flex align-items-center mb-3" style="">
         <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#assignModal">Vehicle Selection</button>
         <button class="btn btn-color">Shuffle</button>
@@ -84,9 +84,55 @@
             </tbody>
         </table>
     </div>
-</div>
+</div>  *@
 
-
+<div class="container-fluid mt-3">
+    <div class="d-flex align-items-center mb-3" style="">
+        <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#assignModal">Vehicle Selection</button>
+        <button class="btn btn-color">Shuffle</button>
+    </div>
+        <div class="" style="overflow-x:auto">
+            <table class="table table-bordered ">
+                <thead>
+                    <tr>
+                         
+                        <th>Pickup Customer Name</th>
+                        <th>Pickup Location</th>
+                        <th>Delivery Customer Name</th>
+                        <th>Delivery Location</th>
+                    <th>Pickup Type</th>
+                    <th>Group</th>
+                    <th>Crew Commander</th>
+                    <th>Lead Vehicle</th>
+                    <th>Chase Vehicle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var group in groupedData)
+                    {
+                        @foreach(var item in group)
+                        {
+                            <tr>
+                                 <td>   @item.PickupCustomerName</td>
+                            <td>@item.PickupLocation </td>
+                                 <td>   @item.DeliveryCustomerName</td>
+                            <td>@item.DeliveryLocation </td>
+                                 <td>@item.PickupType</td>
+                                @if (item == group.First())
+                                {
+                                    <td rowspan="@group.Count()">@group.Key</td>
+                                }
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</di>
 
 
 @* ***************************************Group Modal ******************************************** *@
@@ -126,219 +172,62 @@
 
                 <!-- Tab content -->
                 <div class="tab-content mt-3" style="height: 200px;">
-                    <div class="tab-pane fade assignment-container show active " id="leadVehicleDriver-tab" role="tabpanel" aria-labelledby="lead-tab">
-                        <h5 style="" class="ps-3  ">Select a Lead Vehicle driver to assign tasks:</h5>
-                        <div class=" p-3 ">
-
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver1">
-                                        JKL-9101
-                                    </label>
+                    <!-- Lead Vehicle Tab -->
+                    <div class="tab-pane fade show active" id="leadVehicleDriver-tab" role="tabpanel" aria-labelledby="leadVehicle-tab">
+                        <h5>Select a Lead Vehicle driver to assign tasks:</h5>
+                        <div class="p-3">
+                            @foreach (var vehicle in Model.Vehicles.Where(v => v.VehicleType == "Lead"))
+                            {
+                                <div class="form-check d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input class="form-check-input lead-vehicle-checkbox" type="checkbox" name="leadVehicleDriver" id="leadVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
+                                        <i class="bi bi-car-front-fill" style="font-size: 25px;"></i>
+                                        <label class="form-check-label" for="leadVehicleDriver_@vehicle.VehicleID">
+                                            @vehicle.RegistrationNo
+                                        </label>
+                                    </div>
                                 </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver2">
-                                        MNO-1122
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver1">
-                                        PQR-3344
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver2">
-                                        DEF-5566
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver1">
-                                        GHI-7788
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver2">
-                                        STU-9900
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver1">
-                                        LMN-4455
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver2">
-                                        VWX-6677
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver1">
-                                        123-XYZ
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver2">
-                                        789-ABC
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver1">
-                                        999-PQR
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver2">
-                                        101-JKL
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver1">
-                                        ABC-1234
-                                    </label>
-                                </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-                                    <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                    <label class="form-check-label " for="driver2">
-                                        XYZ-5678
-                                    </label>
-                                </div>
-
-                            </div>
-
-
+                            }
                         </div>
                     </div>
 
-
-                    <div class="tab-pane fade assignment-container" id="chaseVehicleDriver-tab" role="tabpanel" aria-labelledby="chase-tab">
-                        <h5 style="" class="ps-3 ">Select a Chase vehicle Driver to assign tasks:</h5>
-                        <div class=" p-3 ">
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-
-                                    <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;"
-                                         alt="Avatar" />
-                                    <label class="form-check-label " for="driver1">
-                                        Felix L. Dan
-                                    </label>
+                    <!-- Chase Vehicle Tab -->
+                    <div class="tab-pane fade" id="chaseVehicleDriver-tab" role="tabpanel" aria-labelledby="chaseVehicle-tab">
+                        <h5>Select a Chase Vehicle driver to assign tasks:</h5>
+                        <div class="p-3">
+                            @foreach (var vehicle in Model.Vehicles.Where(v => v.VehicleType == "Chase"))
+                            {
+                                <div class="form-check d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input class="form-check-input chase-vehicle-checkbox" type="checkbox" name="chaseVehicleDriver" id="chaseVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
+                                        <i class="bi bi-truck" style="font-size: 25px;"></i>
+                                        <label class="form-check-label" for="chaseVehicleDriver_@vehicle.VehicleID">
+                                            @vehicle.RegistrationNo
+                                        </label>
+                                    </div>
                                 </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-
-                                    <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;"
-                                         alt="Avatar" />
-                                    <label class="form-check-label " for="driver2">
-                                        Jhon
-                                    </label>
-                                </div>
-
-                            </div>
-
+                            }
                         </div>
                     </div>
 
+                    <!-- Crew Commander Tab -->
                     <div class="tab-pane fade assignment-container" id="crewCommandor-tab" role="tabpanel" aria-labelledby="crew-tab">
-                        <h5 style="" class="ps-3 ">Select a  Crew Commander to assign tasks:</h5>
-                        <div class=" p-3 ">
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
-
-                                    <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;"
-                                         alt="Avatar" />
-                                    <label class="form-check-label " for="driver1">
-                                        Felix L. Dan
-                                    </label>
+                        <h5>Select a  Crew Commander to assign tasks:</h5>
+                        <div class="p-3">
+                            @foreach (var crewCommander in Model.CrewCommanders)
+                            {
+                                <div class="form-check d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.CrewCommanderId" value="@crewCommander.CrewCommanderId">
+                                        <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
+                                        <label class="form-check-label" for="crewCommander_@crewCommander.CrewCommanderId">
+                                            @crewCommander.Name
+                                        </label>
+                                    </div>
                                 </div>
-
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
-
-                                    <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;"
-                                         alt="Avatar" />
-                                    <label class="form-check-label " for="driver2">
-                                        Jhon
-                                    </label>
-                                </div>
-
-                            </div>
-
+                            }
                         </div>
                     </div>
-
 
                     <div class="tab-pane fade assignment-container" id="police-tab" role="tabpanel" aria-labelledby="policeData-tab">
                         <h5 style="" class="ps-3 ">  Police to assign tasks:</h5>
@@ -375,7 +264,7 @@
 
                 <div class="modal-footer d-flex justify-content-between">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-color">Assign</button>
+                    <button type="button" class="btn btn-color" id="submitSelection">Assign</button>
                 </div>
             </div>
         </div>
@@ -383,4 +272,66 @@
 
 
 </div>
+<script src="~/js/config.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add the click event listener to the button with the ID 'submitSelection'
+        document.getElementById('submitSelection').addEventListener('click', function () {
+            // Collect selected Lead Vehicle IDs as an array
+            const leadVehicleIDs = Array.from(document.querySelectorAll('.lead-vehicle-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.value));
+
+            // Collect selected Chase Vehicle IDs as an array
+            const chaseVehicleIDs = Array.from(document.querySelectorAll('.chase-vehicle-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.value));
+
+            // Collect selected Crew Commander IDs as an array
+            const crewCommanderIDs = Array.from(document.querySelectorAll('.crew-commander-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.value));
+
+
+            // Check if the number of IDs are the same
+            if (leadVehicleIDs.length !== chaseVehicleIDs.length ||
+                leadVehicleIDs.length !== crewCommanderIDs.length) {
+                alert('The number of IDs for Lead Vehicles, Chase Vehicles, and Crew Commanders must be the same.');
+                return; // Exit the function if the counts do not match
+            }
+
+            // Prepare the data in the required format
+            const requestData = {
+                leadID: leadVehicleIDs,
+                chaseID: chaseVehicleIDs,
+                crewCommanderID: crewCommanderIDs
+            };
+            console.log("requestData", requestData)
+            // Send data to the API using fetch
+            fetch(`${API_BASE_URL}/api/VehicleAssignment/AddAssignOrder`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData) // Ensure this matches the expected DTO
+            })
+                .then(response => {
+                    console.log(response); // Log response for debugging
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                })
+                .then(data => {
+                    alert('Selection submitted successfully!');
+                    console.log('Success:', data);
+                })
+                .catch(error => {
+                    // alert(`An error occurred: ${error.message}`);
+                    console.error('Error:', error);
+                });
+
+
+        });
+    });
+
+
+</script>
 

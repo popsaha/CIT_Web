@@ -109,10 +109,11 @@
         #assignModal .nav-link.active {
             color: #032b56;
         }
+   
+
     </style>
 </head>
-    
-
+   
 <body>
   <div class="container-fluid">
         <!-- navbar -->
@@ -214,10 +215,10 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link px-0 align-middle  @(ViewContext.RouteData.Values["controller"].ToString() == "Task" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")" data-bs-toggle="nav"
+                                <a class="nav-link px-0 align-middle  @(ViewContext.RouteData.Values["controller"].ToString() == "TaskList" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")" data-bs-toggle="nav"
                                    role="nav"
                                    aria-selected="false"
-                                   asp-action="Index" asp-controller="Task"
+                                   asp-action="Index" asp-controller="TaskList"
                                 >
                                     <i class="bi bi-list-task"></i>
                                     <span class="ms-1 ">Task</span>
@@ -470,5 +471,7 @@
         const choices3 = new Choices('#recipientName', { searchEnabled: true });
         const choices4 = new Choices('#deliveryLocation', { searchEnabled: true });
     </script>
+
+
 </body>
 </html>

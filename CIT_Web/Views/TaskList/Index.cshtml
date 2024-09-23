@@ -347,183 +347,88 @@
 @* ************************************************************************************************************ *@
 
 
-
-
-<div class="tab-container mt-3  ms-3" style="width: 100% ;">
+<div class="tab-container-task-header mt-3 ms-3" style="width: 100%;">
     <div class="group-data-action-container d-flex justify-content-between">
         <div class="d-flex align-items-center">
-            <a class="ms-2 me-3" href="# ">
-                <i class="bi bi-person-check-fill"></i>
-            </a>
+            <a class="ms-2 me-3" href="#"><i class="bi bi-person-check-fill"></i></a>
             <a class="me-3" href="#"><i class="bi bi-pencil-square"></i></a>
-            <a class="me-3" href="#"> <i class="bi bi-trash-fill"></i></a>
+            <a class="me-3" href="#"><i class="bi bi-trash-fill"></i></a>
             <a class="me-3" href="#"><i class="bi bi-arrow-down-circle-fill"></i></a>
-            <a class="me-3" href="#"> <i class="bi bi-gear-fill"></i></a>
-
+            <a class="me-3" href="#"><i class="bi bi-gear-fill"></i></a>
             <button class="btn btn-color group-button" data-bs-toggle="Groupmodal" data-bs-target="#groupModal" id="groupPopup">Task Grouping</button>
             <div class="dropdown-new-task  me-2 ms-3" style="width:91px !important">
-                <button type="button" class="btn btn-outline-secondary btn-color" id="btnAddTsk">
+                <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk" data-bs-target="#myNewTaskModal">
                     <i class="bi bi-plus"></i> New Task
                 </button>
             </div>
         </div>
-        <div class="d-flex " style="    margin-right: 21px;">
-
-            <input type="text" placeholder="Search..." style="padding:5px" />
+        <div class="d-flex" style="margin-right: 21px;">
+            <input type="text" placeholder="Search..." style="padding: 5px" />
         </div>
     </div>
-    <div class="" style="overflow-x:auto !important; margin-right: 21px;">
-        <table class="table  mt-3">
-            <thead>
+</div>
+
+<div class="tab-container mt-3 ms-3" style="width: 100%;">
+    <div class="table-wrapper" style=" max-height:90vh; margin-right: 21px;">
+        <table class="table mt-3">
+            <thead class="sticky-header table-hover">
                 <tr>
                     <th></th>
-                    <th>PickUp</th>
-                    <th>Delivery</th>
-                    <th>Recipient</th>
+                    <th>Pickup Customer</th>
+                    <th>Pickup Location</th>
+                    <th>Delivery Customer</th>
+                    <th>Delivery Location</th>
                     <th>Crew Commander</th>
                     <th>Lead Vehicle</th>
                     <th>Chase Vehicle</th>
                     <th>Time</th>
-                    <th>Status</th>
                     <th>Type</th>
+                    <th class="d-none">TaskId</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Standing Order Header -->
-                <tr class="order-header">
-                    <td colspan="11" class="subheader-cell" style="background:#d9d9db !important; ">Standing Order</td>
-                </tr>
+                @foreach (var typeGroup in Model.GroupBy(t => t.OrderType))
+                {
+                    <!-- Render the group header for TypeName -->
+                    <tr class="order-header">
+                        <td colspan="11" class="subheader-cell" style="background:#d9d9db !important;">
+                            <div>@typeGroup.Key</div>
+                        </td>
+                    </tr>
 
-                <!-- First Order -->
-                <tr class="order-subheader">
-                    <td colspan="11" class="standing-order-no">T935265</td>
-                </tr>
-                <tr class="table-border">
-                    <td><input type="checkbox" class="row-checkbox"></td>
-                    <td>Connaught Place, Delhi</td>
-                    <td>Chandni Chowk, Delhi</td>
-                    <td>ABC Bank, Chandni</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>10:00 AM</td>
-                    <td>Unassigned</td>
-                    <td>ATM</td>
-                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="row-checkbox"></td>
-                    <td>Karol Bagh, Delhi</td>
-                    <td>Chandni Chowk, Delhi</td>
-                    <td>ABC Bank, Chandni</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Unassigned</td>
-                    <td>ATM</td>
-                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                </tr>
+                    <!-- Group by OrderNumber inside each TypeName group -->
+                    @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
+                    {
+                        <!-- Render the group header for OrderNumber -->
+                        <tr class="order-subheader">
+                            <td colspan="11" class="standing-order-no fw">@orderGroup.Key</td>
+                        </tr>
 
-                <!-- Second Order -->
-                <tr class="order-subheader">
-                    <td colspan="11" class="standing-order-no">T235483</td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="row-checkbox"></td>
-                    <td>MG Road, Bengaluru</td>
-                    <td>Koramangala, Bengaluru</td>
-                    <td>XYZ Pvt Ltd, Koram</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>11:30 AM</td>
-                    <td>Unassigned</td>
-                    <td>CIT</td>
-                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="row-checkbox"></td>
-                    <td>Indiranagar</td>
-                    <td>Jayanagar</td>
-                    <td>XYZ Pvt Ltd, Koram</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Unassigned</td>
-                    <td>CIT</td>
-                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                </tr>
-
-                <!-- Scheduled Order Header -->
-                <tr class="order-header">
-                    <td colspan="11" class="subheader-cell" style="background:#d9d9db !important; ">Scheduled Order</td>
-                </tr>
-
-
-                <tr>
-                    <td><input type="checkbox" class="row-checkbox"></td>
-                    <td>Marine Drive, Mumbai</td>
-                    <td>Fort, Mumbai</td>
-                    <td>DEF Corp, Fort</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>1:15 PM</td>
-                    <td>Unassigned</td>
-                    <td>CIT</td>
-                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="row-checkbox"></td>
-                    <td>Salt Lake, Kolkata</td>
-                    <td>Howrah, Kolkata</td>
-                    <td>GHI Bank, Howrah</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>3:00 PM</td>
-                    <td>Unassigned</td>
-                    <td>Airlift</td>
-                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="row-checkbox"></td>
-                    <td>Anna Nagar, Chennai</td>
-                    <td>T Nagar, Chennai</td>
-                    <td>JKL Ltd, T Nagar</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>9:45 AM</td>
-                    <td>Unassigned</td>
-                    <td>ATM</td>
-                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox" class="row-checkbox"></td>
-                    <td>Sector 18, Noida</td>
-                    <td>Sector 62, Noida</td>
-                    <td>MNO Inc, Sec 62</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>2:30 PM</td>
-                    <td>Unassigned</td>
-                    <td>CIT</td>
-                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                </tr>
+                        <!-- Render each task in the OrderNumber group -->
+                        @foreach (var tasklist in orderGroup)
+                        {
+                            <tr class="table-border">
+                                <td><input type="checkbox" class="row-checkbox"></td>
+                                <td>@tasklist.PickupCustomerName</td>
+                                <td>@tasklist.PickupLocation</td>
+                                <td>@tasklist.DeliveryCustomerName</td>
+                                <td>@tasklist.DeliveryLocation</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>@tasklist.OrderDate</td>
+                                <td>@tasklist.PickupType</td>
+                                <td class="d-none">@tasklist.TaskId</td>
+                                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                            </tr>
+                        }
+                    }
+                }
             </tbody>
         </table>
     </div>
 </div>
-
-
-
-
-
 
 @* **************************************Grouped data modal************************* *@
 
@@ -537,19 +442,19 @@
             </div>
             <div class="ms-4 mt-4" style="font-size:14px !important">
                 <span>Group Name : </span>
-                <input type="text" placeholder="Enter Group..." style="padding:0px 3px" />
+                <input type="text" id="groupNameInput" placeholder="Enter Group..." style="padding:0px 3px" />
             </div>
             <div class="modal-body" id="modal-content" style="overflow-x:auto">
                 <table class="table table-bordered" style="font-size:12px !important">
                     <thead>
                         <tr>
-                            <th>PickUp</th>
-                            <th>Delivery</th>
-                            <th>Recipient</th>
+                            <th>Pickup Customer</th>
+                            <th>Delivery Customer</th>
+                            <th>Delivery Location</th>
 
                             <th>Time</th>
-                            <th>Status</th>
                             <th>Type</th>
+                            <th class="d-none">TaskID</th>
                         </tr>
                     </thead>
                     <tbody id="selectedOrdersTableBody">
@@ -559,15 +464,47 @@
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
-                <form asp-action="Index" asp-controller="Assignment" target="_blank">
-                    <button type="submit" class="btn btn-color" style="font-size:14px !important">Save</button>
+                <form method="post" asp-action="Index" asp-controller="Assignment"  target="_blank">
+                    @* target="_blank" *@
+                    <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
+
+
+@* ************************************JavaSript for To Add the Selected Item in Modal popup*********** *@
 <script>
+    let firstSelectedPickupType = null; // Variable to store the first selected PickupType (ATM or CIT)
+
+    document.querySelectorAll('.row-checkbox').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            const row = checkbox.closest('tr');
+            const currentPickupType = row.cells[9].textContent.trim(); // Get PickupType of the current row
+
+            // If this is the first selection, set the firstSelectedPickupType and allow selection
+            if (!firstSelectedPickupType && checkbox.checked) {
+                firstSelectedPickupType = currentPickupType;
+                return; // Allow the first selection, no further checks needed
+            }
+
+            // If the user tries to select a different PickupType, show an alert and deselect the checkbox
+            if (firstSelectedPickupType && firstSelectedPickupType !== currentPickupType) {
+                alert(`You can only select tasks with the same Pickup Type (${firstSelectedPickupType}).`);
+                checkbox.checked = false; // Deselect the checkbox to prevent invalid selection
+            }
+
+            // If all checkboxes are unchecked, reset the firstSelectedPickupType
+            const anyChecked = Array.from(document.querySelectorAll('.row-checkbox:checked')).length > 0;
+            if (!anyChecked) {
+                firstSelectedPickupType = null; // Reset after all selections are cleared
+            }
+        });
+    });
+
+    // Logic for grouping and showing the selected tasks in the modal
     document.querySelector('.group-button').addEventListener('click', function () {
         $("[id*=groupPopup]").click(function () {
             $('#Groupmodal').modal('show');
@@ -576,30 +513,90 @@
         const selectedOrdersTableBody = document.getElementById('selectedOrdersTableBody');
         selectedOrdersTableBody.innerHTML = ''; // Clear the table body
 
-        // Gather selected data
+        // Gather selected data from the grouped table
         document.querySelectorAll('.row-checkbox:checked').forEach(function (checkbox) {
             const row = checkbox.closest('tr');
-            const pickup = row.cells[1].textContent;
-            const delivery = row.cells[2].textContent;
-            const recipient = row.cells[3].textContent;
 
-            const time = row.cells[7].textContent;
-            const status = row.cells[8].textContent;
-            const type = row.cells[9].textContent;
+            // Collect the task details
+            const PickupCustomer = row.cells[1].textContent.trim();
+            const DeliveryCustomer = row.cells[2].textContent.trim();
+            const DeliveryLocation = row.cells[4].textContent.trim();
+            const time = row.cells[8].textContent.trim();
+            const type = row.cells[9].textContent.trim();  // PickupType (ATM or CIT)
+            const taskId = row.cells[10].textContent.trim();
 
-            // Create table row for each selected row
+            // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                                                                                                                                        <td>${pickup}</td>
-                                                                                                                                                        <td>${delivery}</td>
-                                                                                                                                                        <td>${recipient}</td>
+                                <td>${pickup}</td>
+                                <td>${delivery}</td>
+                                <td>${recipient}</td>
 
-                                                                                                                                                        <td>${time}</td>
-                                                                                                                                                        <td>${status}</td>
-                                                                                                                                                        <td>${type}</td>
-                                                                                                                                                    `;
+                                <td>${time}</td>
+                                <td>${status}</td>
+                                <td>${type}</td>
+                            `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
 </script>
 
+
+
+@* ************************************************************************************************ *@
+
+
+@* ****************************JavaScript to get the Taskid and GroupName ************************ *@
+<script src="~/js/config.js"></script>
+<script>
+    document.getElementById('saveGroupButton').addEventListener('click', function () {
+        const groupName = document.getElementById('groupNameInput').value.trim();
+
+        if (!groupName) {
+            alert("Please enter a group name.");
+            return;
+        }
+        const taskGroupDtos = [];
+
+        // Collect selected rows data
+        document.querySelectorAll('#selectedOrdersTableBody tr').forEach(function (row) {
+            const taskId = row.cells[5].textContent.trim();
+
+            // Create the DTO for each selected task
+            taskGroupDtos.push({
+                TaskId: parseInt(taskId),
+                GroupName: groupName
+            });
+        });
+        if (taskGroupDtos.length === 0) {
+            alert("No tasks selected.");
+            return;
+        }
+        console.log("taskGroupDtos", taskGroupDtos)
+
+       
+        // Send the data to the API
+        fetch(`${API_BASE_URL}/api/TaskGroup/AddTaskGroup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(taskGroupDtos)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    // Optionally, close the modal
+                    $('#Groupmodal').modal('hide');
+                }
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while saving the group.");
+            });
+    });
+</script>
+
+@* *********************************************************************************************** *@
