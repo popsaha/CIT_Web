@@ -1,138 +1,60 @@
-﻿@model TaskGroupVehicleViewModel
+﻿@model TaskGroupVehicleVM
 
 @{
     var groupedData = Model.TaskGroups.GroupBy(item => item.GroupName).ToList();
 }
 
-
- @* <div class="container mt-3">
+<div class="container-fluid mt-3">
     <div class="d-flex align-items-center mb-3" style="">
         <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#assignModal">Vehicle Selection</button>
-        <button class="btn btn-color">Shuffle</button>
+        <button class="btn btn-color" onclick="location.reload();" asp-controller="Assignment" asp-action="Index">Shuffle</button>
+
     </div>
     <div class="" style="overflow-x:auto">
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Pickup</th>
-                    <th>Destination</th>
+                    <th>Pickup Customer Name</th>
+                    <th>Pickup Location</th>
+                    <th>Delivery Customer Name</th>
+                    <th>Delivery Location</th>
+                    <th>Pickup Type</th>
                     <th>Group</th>
-                    <th>Crew Commander</th>
                     <th>Lead Vehicle</th>
                     <th>Chase Vehicle</th>
-
+                    <th>Crew Commander</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach (var group in groupedData)
+                {
+                    var groupFirstItem = group.First();
+                    foreach (var item in group)
+                    {
+                        <tr>
+                            <td>@item.PickupCustomerName</td>
+                            <td>@item.PickupLocation</td>
+                            <td>@item.DeliveryCustomerName</td>
+                            <td>@item.DeliveryLocation</td>
+                            <td>@item.PickupType</td>
 
-                <tr>
-                    <td>Connaught Place, Delhi</td>
-                    <td>Chandni Chowk, Delhi</td>
-                    <td rowspan="3">Group1</td>
-                    <td rowspan="3"></td>
-                    <td rowspan="3"></td>
-                    <td rowspan="3"></td>
-                </tr>
-                <tr>
-                    <td>Karol Bagh, Delhi</td>
-                    <td>Chandni Chowk, Delhi</td>
-
-                </tr>
-                <tr>
-                    <td>MG Road, Bengaluru</td>
-                    <td>Koramangala, Bengaluru</td>
-
-                </tr>
-
-                <tr>
-                    <td>Indiranagar</td>
-                    <td>Jayanagar</td>
-                    <td rowspan="3">Group2</td>
-                    <td rowspan="3"></td>
-                    <td rowspan="3"></td>
-                    <td rowspan="3"></td>
-                </tr>
-                <tr>
-                    <td>Marine Drive, Mumbai</td>
-                    <td>Fort, Mumba</td>
-
-                </tr>
-                <tr>
-                    <td>Salt Lake, Kolkata</td>
-                    <td>Howrah, Kolkata</td>
-
-                </tr>
-                <tr>
-                    <td>Anna Nagar, Chennai</td>
-                    <td>T Nagar, Chennai</td>
-                    <td rowspan="3">Group3</td>
-                    <td rowspan="3"></td>
-                    <td rowspan="3"></td>
-                    <td rowspan="3"></td>
-                </tr>
-                <tr>
-                    <td>Sector 18, Noida</td>
-                    <td>Sector 62, Noida</td>
-
-                </tr>
-                <tr>
-                    <td>Karol Bagh, Delhi</td>
-                    <td>Chandni Chowk, Delhi</td>
-
-                </tr>
-
+                            @if (item == groupFirstItem)
+                            {
+                                <td rowspan="@group.Count()">@group.Key</td>
+                                <td rowspan="@group.Count()">@groupFirstItem.LeadCarName</td>
+                                <td rowspan="@group.Count()">@groupFirstItem.ChaseCarName</td>
+                                <td rowspan="@group.Count()">@groupFirstItem.CrewCommander</td>
+      
+                            }
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>
-</div>  *@
 
-<div class="container-fluid mt-3">
-    <div class="d-flex align-items-center mb-3" style="">
-        <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#assignModal">Vehicle Selection</button>
-        <button class="btn btn-color">Shuffle</button>
-    </div>
-        <div class="" style="overflow-x:auto">
-            <table class="table table-bordered ">
-                <thead>
-                    <tr>
-                         
-                        <th>Pickup Customer Name</th>
-                        <th>Pickup Location</th>
-                        <th>Delivery Customer Name</th>
-                        <th>Delivery Location</th>
-                    <th>Pickup Type</th>
-                    <th>Group</th>
-                    <th>Crew Commander</th>
-                    <th>Lead Vehicle</th>
-                    <th>Chase Vehicle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var group in groupedData)
-                    {
-                        @foreach(var item in group)
-                        {
-                            <tr>
-                                 <td>   @item.PickupCustomerName</td>
-                            <td>@item.PickupLocation </td>
-                                 <td>   @item.DeliveryCustomerName</td>
-                            <td>@item.DeliveryLocation </td>
-                                 <td>@item.PickupType</td>
-                                @if (item == group.First())
-                                {
-                                    <td rowspan="@group.Count()">@group.Key</td>
-                                }
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</di>
+</div>
+
 
 
 @* ***************************************Group Modal ******************************************** *@
@@ -334,4 +256,10 @@
 
 
 </script>
+
+
+
+
+
+
 

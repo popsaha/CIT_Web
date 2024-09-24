@@ -59,7 +59,7 @@ namespace CIT_Web.Controllers
                 crewList = JsonConvert.DeserializeObject<List<CrewCommanderDTO>>(Convert.ToString(crewCommanderResponse.Result));
             }
 
-            var taskGroupVehicle = new TaskGroupVehicleViewModel
+            var taskGroupVehicle = new TaskGroupVehicleVM
             {
                 TaskGroups = taskGroups,
                 Vehicles = vehileList ,
