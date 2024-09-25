@@ -1,4 +1,5 @@
 ﻿@model CIT_Web.Models.ViewModel.TaskCreateVM
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -96,10 +97,10 @@
             $("#priority").css("border", "1px solid red");
             IsValid = false;
         }
-        if (OrderId == "" || OrderId == undefined) {
-            $("#OrderId").css("border", "1px solid red");
-            IsValid = false;
-        }
+        // if (OrderId == "" || OrderId == undefined) {
+        //     $("#OrderId").css("border", "1px solid red");
+        //     IsValid = false;
+        // }
 
         if (PickUpTypeId == "0" || PickUpTypeId == undefined) {
             $("#PickUpType").css("border", "1px solid red");
@@ -235,9 +236,9 @@
                                     <div class="input-group-text">
                                         <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
                                     </div>
-                                    <select asp-for="VaultID" class="form-select small-input"
+                                    @* <select asp-for="VaultID" class="form-select small-input"
                                             asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
-                                    </select>
+                                    </select> *@
                                 </div>
                             </div>
                             <div class="col-4">
@@ -329,10 +330,11 @@
                     <div class="modal-footer d-flex justify-content-between" style="font-size:12px !important; padding:0px !important">
                         <button type="button" style="font-size:12px !important;" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
                         <div>
-                            <input type="button" style="font-size:12px !important;" class="btn btn-color" value="Save & Add more location to this Task" id="btnAddTaskInRows" style="background:#132553 bi bi-file-earmark-pdf !important;">
+                            <input type="button" style="font-size:12px !important;" class="btn btn-color" value="Save & Add more location to this Task" id="btnsave" style="background:#132553 bi bi-file-earmark-pdf !important;">
                             <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
                             @* <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button> *@
-                            <button type="button" id="btnsave" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal"><i class="bi bi-file-earmark-lock-fill"></i> Save and close</button>
+                            <input type="button"  style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
+                            @* <i class="bi bi-file-earmark-lock-fill"></i> Save and close *@
                         </div>
 
                     </div>
@@ -377,21 +379,22 @@
                     <th>Pickup Location</th>
                     <th>Delivery Customer</th>
                     <th>Delivery Location</th>
+                    <th>Type</th>
                     <th>Crew Commander</th>
                     <th>Lead Vehicle</th>
                     <th>Chase Vehicle</th>
                     <th>Time</th>
-                    <th>Type</th>
+                    <th>Status</th>
                     <th class="d-none">TaskId</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-               @*  @foreach (var typeGroup in Model.GroupBy(t => t.OrderType))
+                @foreach (var typeGroup in Model.taskDTOlsts.GroupBy(t => t.OrderType))
                 {
                     <!-- Render the group header for TypeName -->
                     <tr class="order-header">
-                        <td colspan="11" class="subheader-cell" style="background:#d9d9db !important;">
+                        <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
                             <div>@typeGroup.Key</div>
                         </td>
                     </tr>
@@ -401,7 +404,7 @@
                     {
                         <!-- Render the group header for OrderNumber -->
                         <tr class="order-subheader">
-                            <td colspan="11" class="standing-order-no fw">@orderGroup.Key</td>
+                            <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
                         </tr>
 
                         <!-- Render each task in the OrderNumber group -->
@@ -411,13 +414,15 @@
                                 <td><input type="checkbox" class="row-checkbox"></td>
                                 <td>@tasklist.PickupCustomerName</td>
                                 <td>@tasklist.PickupLocation</td>
+                                
                                 <td>@tasklist.DeliveryCustomerName</td>
                                 <td>@tasklist.DeliveryLocation</td>
+                                <td>@tasklist.PickupType</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td>@tasklist.OrderDate</td>
-                                <td>@tasklist.PickupType</td>
+                                <td><span class="badge bg-secondary">Unassigned</span></td>
                                 <td class="d-none">@tasklist.TaskId</td>
                                 <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
                             </tr>
@@ -481,7 +486,7 @@
     document.querySelectorAll('.row-checkbox').forEach(function (checkbox) {
         checkbox.addEventListener('change', function () {
             const row = checkbox.closest('tr');
-            const currentPickupType = row.cells[9].textContent.trim(); // Get PickupType of the current row
+            const currentPickupType = row.cells[5].textContent.trim(); // Get PickupType of the current row
 
             // If this is the first selection, set the firstSelectedPickupType and allow selection
             if (!firstSelectedPickupType && checkbox.checked) {
@@ -520,21 +525,20 @@
             const PickupCustomer = row.cells[1].textContent.trim();
             const DeliveryCustomer = row.cells[2].textContent.trim();
             const DeliveryLocation = row.cells[4].textContent.trim();
-            const time = row.cells[8].textContent.trim();
-            const type = row.cells[9].textContent.trim();  // PickupType (ATM or CIT)
-            const taskId = row.cells[10].textContent.trim();
+            const time = row.cells[9].textContent.trim();
+            const type = row.cells[5].textContent.trim();  // PickupType (ATM or CIT)
+            const taskId = row.cells[11].textContent.trim();
 
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                <td>${pickup}</td>
-                                <td>${delivery}</td>
-                                <td>${recipient}</td>
-
-                                <td>${time}</td>
-                                <td>${status}</td>
-                                <td>${type}</td>
-                            `;
+                        <td>${PickupCustomer}</td>
+                        <td>${DeliveryCustomer}</td>
+                        <td>${DeliveryLocation}</td>
+                        <td>${time}</td>
+                        <td>${type}</td>
+                        <td class="d-none">${taskId}</td>
+                    `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });

@@ -25,6 +25,7 @@
         public List<RepeatsTaskMaster> repeatsaskmasterslist { get; set; }
         public List<RepeatsInDaysMaster> repeatsInDaysMasterslist { get; set; }
         public List<VaultLovationMaster> vaultLovationMasters { get; set; }
+        public List<TaskDTOlst> taskDTOlsts { get; set; }
     }
     public class CustomerDTO
     {
@@ -71,7 +72,7 @@
         public string VaultName { get; set; }
     }
 
-    public class TaskListDTO
+    public class TaskDTOlst
     {
         public int TaskId { get; set; }
         public string OrderType { get; set; }
@@ -83,4 +84,6 @@
         public string DeliveryLocation { get; set; }
         public DateTime OrderDate { get; set; }
     }
+
+
 }

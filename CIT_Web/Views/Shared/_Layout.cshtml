@@ -215,10 +215,10 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link px-0 align-middle  @(ViewContext.RouteData.Values["controller"].ToString() == "TaskList" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")" data-bs-toggle="nav"
+                                <a class="nav-link px-0 align-middle  @(ViewContext.RouteData.Values["controller"].ToString() == "Task" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")" data-bs-toggle="nav"
                                    role="nav"
                                    aria-selected="false"
-                                   asp-action="Index" asp-controller="TaskList"
+                                   asp-action="Index" asp-controller="Task"
                                 >
                                     <i class="bi bi-list-task"></i>
                                     <span class="ms-1 ">Task</span>
@@ -228,7 +228,7 @@
                                 <a class="nav-link px-0 align-middle @(ViewContext.RouteData.Values["controller"].ToString() == "Assignment" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")" data-bs-toggle="nav"
                                    role="nav"
                                    aria-selected="false"
-                                   asp-action="Index" asp-controller="Assignment">
+                                   asp-controller="Assignment"  asp-action="Index">
                                     <i class="bi bi-clipboard-check"></i> <!-- Assignment icon -->
                                     <span class="ms-1">Assignment</span>
                                 </a>

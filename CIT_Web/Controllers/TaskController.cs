@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.Task;
+using CIT_Web.Models.Dto.TaskList;
 using CIT_Web.Models.ViewModel;
+using CIT_Web.Services;
 using CIT_Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -13,23 +15,25 @@ namespace CIT_Web.Controllers
     public class TaskController : Controller
     {
         private readonly ItaskService _taskService;
+        private readonly ITaskListService _taskListService;
         private readonly IMapper _mapper;
-        public TaskController(ItaskService taskService, IMapper mapper)
+        public TaskController(ItaskService taskService, ITaskListService taskListService, IMapper mapper)
         {
             _taskService = taskService;
+            _taskListService = taskListService;
             _mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
             TaskCreateVM taskVM = new TaskCreateVM();
-            try
+            //TaskMainVM taskMain = new TaskMainVM();
+
+            var OrderType_response = await _taskService.GetAllOrderTypeAsync<APIResponse>();
+            if (OrderType_response != null && OrderType_response.IsSuccess)
             {
-                var OrderType_response = await _taskService.GetAllOrderTypeAsync<APIResponse>();
-                if (OrderType_response != null && OrderType_response.IsSuccess)
-                {
-                    taskVM.OrderTypelist = JsonConvert.DeserializeObject<List<OrderType>>(Convert.ToString(OrderType_response.Result));
-                    taskVM.OrderTypelist.Insert(0, new OrderType { OrderTypeID = 0, TypeName = "Select" });
-                }
+                taskVM.OrderTypelist = JsonConvert.DeserializeObject<List<OrderType>>(Convert.ToString(OrderType_response.Result));
+                taskVM.OrderTypelist.Insert(0, new OrderType { OrderTypeID = 0, TypeName = "Select" });
+            }
 
                 List<PriorityMaster> Prioritymasterlist = new List<PriorityMaster>{
                 new PriorityMaster{ PriorityId =0,PriorityName="select"},
@@ -75,17 +79,21 @@ namespace CIT_Web.Controllers
                     taskVM.customerslist.Insert(0, new CustomerDTO { CustomerId = 0, CustomerName = "select" });
                 }
 
-                var IsVaultLocation_response = await _taskService.GetAllVaultLocationAsync<APIResponse>();
-                if (IsVaultLocation_response != null && IsVaultLocation_response.IsSuccess)
-                {
-                    taskVM.vaultLovationMasters = JsonConvert.DeserializeObject<List<VaultLovationMaster>>(Convert.ToString(IsVaultLocation_response.Result));
-                    taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "select" });
-                }       
-            }
-            catch (Exception ex)
+            var IsVaultLocation_response = await _taskService.GetAllVaultLocationAsync<APIResponse>();
+            if (IsVaultLocation_response != null && IsVaultLocation_response.IsSuccess)
             {
-                throw;
+                taskVM.vaultLovationMasters = JsonConvert.DeserializeObject<List<VaultLovationMaster>>(Convert.ToString(IsVaultLocation_response.Result));
+                taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "select" });
             }
+
+         
+
+            var response = await _taskListService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                taskVM.taskDTOlsts = JsonConvert.DeserializeObject<List<TaskDTOlst>>(Convert.ToString(response.Result));
+            }
+
             return View(taskVM);
         }
         public async Task<JsonResult> GetBranchNameById(int CustomerId)
@@ -117,7 +125,7 @@ namespace CIT_Web.Controllers
             try
             {
                 TaskCreateDTO taskCreateDTO = new TaskCreateDTO();
-                taskCreateDTO.OrderId = taskcreateModel.OrderId;
+                taskCreateDTO.OrderId = "1";
                 taskCreateDTO.OrderTypeID = taskcreateModel.OrderTypeID;
                 taskCreateDTO.PriorityId = taskcreateModel.PriorityId;
                 taskCreateDTO.PickUpTypeId = taskcreateModel.PickUpTypeId;
@@ -125,10 +133,13 @@ namespace CIT_Web.Controllers
                 taskCreateDTO.BranchID = taskcreateModel.BranchID;
                 taskCreateDTO.CustomerRecipiantId = taskcreateModel.CustomerRecipiantId;
                 taskCreateDTO.CustomerRecipiantLocationId = taskcreateModel.CustomerRecipiantLocationId;
-                taskCreateDTO.RepeatId = taskcreateModel.RepeatId;
-                taskCreateDTO.RepeatDaysName = taskcreateModel.RepeatDaysName;
+                ////taskCreateDTO.RepeatId = taskcreateModel.RepeatId;
+                ////taskCreateDTO.RepeatDaysName = taskcreateModel.RepeatDaysName;
+                taskCreateDTO.RepeatId = 1;
+                taskCreateDTO.RepeatDaysName = "Monday";
                 taskCreateDTO.OrderCreateDate = taskcreateModel.OrderCreateDate;
-                taskCreateDTO.EndOnDate = taskcreateModel.OrderCreateDate;
+                taskCreateDTO.EndOnDate = DateTime.Now.ToString();
+                //taskCreateDTO.EndOnDate = taskcreateModel.OrderCreateDate;
                 taskCreateDTO.VaultID = taskcreateModel.VaultID;
                 taskCreateDTO.isVault = taskcreateModel.isVault;
                 taskCreateDTO.isVaultFinal = taskcreateModel.isVaultFinal;
@@ -142,7 +153,7 @@ namespace CIT_Web.Controllers
 
                 throw;
             }
-            return View();
+            return RedirectToAction("Index","Task");
         }
     }
 }
