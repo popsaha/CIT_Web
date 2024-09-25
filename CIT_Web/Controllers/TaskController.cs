@@ -22,40 +22,41 @@ namespace CIT_Web.Controllers
         public async Task<IActionResult> Index()
         {
             TaskCreateVM taskVM = new TaskCreateVM();
-
-            var OrderType_response = await _taskService.GetAllOrderTypeAsync<APIResponse>();
-            if (OrderType_response != null && OrderType_response.IsSuccess)
+            try
             {
-                taskVM.OrderTypelist = JsonConvert.DeserializeObject<List<OrderType>>(Convert.ToString(OrderType_response.Result));
-                taskVM.OrderTypelist.Insert(0, new OrderType { OrderTypeID = 0, TypeName = "Select" });
-            }
+                var OrderType_response = await _taskService.GetAllOrderTypeAsync<APIResponse>();
+                if (OrderType_response != null && OrderType_response.IsSuccess)
+                {
+                    taskVM.OrderTypelist = JsonConvert.DeserializeObject<List<OrderType>>(Convert.ToString(OrderType_response.Result));
+                    taskVM.OrderTypelist.Insert(0, new OrderType { OrderTypeID = 0, TypeName = "Select" });
+                }
 
-            List<PriorityMaster> Prioritymasterlist = new List<PriorityMaster>{
+                List<PriorityMaster> Prioritymasterlist = new List<PriorityMaster>{
                 new PriorityMaster{ PriorityId =0,PriorityName="select"},
                 new PriorityMaster{ PriorityId =1,PriorityName="Low"},
                 new PriorityMaster{ PriorityId =2,PriorityName="Medium"},
                 new PriorityMaster{ PriorityId =3,PriorityName="High"}
             };
-            taskVM.PriorityMasterlist = Prioritymasterlist;
+                taskVM.PriorityMasterlist = Prioritymasterlist;
 
-            List<PickTypeMaster> PickTypeMasterlist = new List<PickTypeMaster>{
+                List<PickTypeMaster> PickTypeMasterlist = new List<PickTypeMaster>{
                 new PickTypeMaster{ PickUpTypeId =0,PickUpTypeName="select"},
                 new PickTypeMaster{ PickUpTypeId =1,PickUpTypeName="CIT"},
                 new PickTypeMaster{ PickUpTypeId =2,PickUpTypeName="BSS"},
                 new PickTypeMaster{ PickUpTypeId =3,PickUpTypeName="ATM"},
                 new PickTypeMaster{ PickUpTypeId =3,PickUpTypeName="Airlift"}
             };
-            taskVM.Picktypemasterlst = PickTypeMasterlist;
+                taskVM.Picktypemasterlst = PickTypeMasterlist;
 
-            List<RepeatsTaskMaster> Repeatstaskmasterlist = new List<RepeatsTaskMaster>{
+                List<RepeatsTaskMaster> Repeatstaskmasterlist = new List<RepeatsTaskMaster>{
                 new RepeatsTaskMaster{ RepeatId =0,RepeatName="select"},
                 new RepeatsTaskMaster{ RepeatId =1,RepeatName="Daily"},
                 new RepeatsTaskMaster{ RepeatId =2,RepeatName="Weekly"},
                 new RepeatsTaskMaster{ RepeatId =3,RepeatName="Monthly"},
             };
-            taskVM.repeatsaskmasterslist = Repeatstaskmasterlist;
+                taskVM.repeatsaskmasterslist = Repeatstaskmasterlist;
 
-            List<RepeatsInDaysMaster> repeatsInDaysmaster = new List<RepeatsInDaysMaster>{
+                List<RepeatsInDaysMaster> repeatsInDaysmaster = new List<RepeatsInDaysMaster>{
                 new RepeatsInDaysMaster{ RepeatDaysName ="0",RepeatInDay="select"},
                 new RepeatsInDaysMaster{ RepeatDaysName ="Sunday",RepeatInDay="Sunday"},
                 new RepeatsInDaysMaster{ RepeatDaysName ="Monday",RepeatInDay="Monday"},
@@ -65,22 +66,26 @@ namespace CIT_Web.Controllers
                 new RepeatsInDaysMaster{ RepeatDaysName ="Friday",RepeatInDay="Friday"},
                 new RepeatsInDaysMaster{ RepeatDaysName ="Saturday",RepeatInDay="Saturday"},
             };
-            taskVM.repeatsInDaysMasterslist = repeatsInDaysmaster;
+                taskVM.repeatsInDaysMasterslist = repeatsInDaysmaster;
 
-            var Customer_response = await _taskService.GetAllAsync<APIResponse>();
-            if (Customer_response != null && Customer_response.IsSuccess)
-            {
-                taskVM.customerslist = JsonConvert.DeserializeObject<List<CustomerDTO>>(Convert.ToString(Customer_response.Result));
-                taskVM.customerslist.Insert(0, new CustomerDTO { CustomerId = 0, CustomerName = "select" });
+                var Customer_response = await _taskService.GetAllAsync<APIResponse>();
+                if (Customer_response != null && Customer_response.IsSuccess)
+                {
+                    taskVM.customerslist = JsonConvert.DeserializeObject<List<CustomerDTO>>(Convert.ToString(Customer_response.Result));
+                    taskVM.customerslist.Insert(0, new CustomerDTO { CustomerId = 0, CustomerName = "select" });
+                }
+
+                var IsVaultLocation_response = await _taskService.GetAllVaultLocationAsync<APIResponse>();
+                if (IsVaultLocation_response != null && IsVaultLocation_response.IsSuccess)
+                {
+                    taskVM.vaultLovationMasters = JsonConvert.DeserializeObject<List<VaultLovationMaster>>(Convert.ToString(IsVaultLocation_response.Result));
+                    taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "select" });
+                }       
             }
-
-            var IsVaultLocation_response = await _taskService.GetAllVaultLocationAsync<APIResponse>();
-            if (IsVaultLocation_response != null && IsVaultLocation_response.IsSuccess)
+            catch (Exception ex)
             {
-                taskVM.vaultLovationMasters = JsonConvert.DeserializeObject<List<VaultLovationMaster>>(Convert.ToString(IsVaultLocation_response.Result));
-                taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "select" });
+                throw;
             }
-
             return View(taskVM);
         }
         public async Task<JsonResult> GetBranchNameById(int CustomerId)

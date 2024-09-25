@@ -2,7 +2,6 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
 <script src="~/js/bootstrap-multiselect.min.js"></script>
 <script src="~/js/jquery.min.js"></script>
@@ -388,7 +387,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var typeGroup in Model.GroupBy(t => t.OrderType))
+               @*  @foreach (var typeGroup in Model.GroupBy(t => t.OrderType))
                 {
                     <!-- Render the group header for TypeName -->
                     <tr class="order-header">
@@ -424,7 +423,7 @@
                             </tr>
                         }
                     }
-                }
+                } *@
             </tbody>
         </table>
     </div>
