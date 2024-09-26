@@ -17,7 +17,7 @@
 
         $("#btnAddTaskInRows").click(function () {
             debugger
-           // var Valid = true;
+            // var Valid = true;
             var Valid = Validation()
             if (Valid == true) {
                 $('#add-save-btn').prop('disabled', true);
@@ -121,7 +121,7 @@
             IsValid = false;
         }
 
-        if ((VaultId == "0" || VaultId == null) && isVault==true) {
+        if ((VaultId == "0" || VaultId == null) && isVault == true) {
             $("#VaultID").css("border", "1px solid red");
             IsValid = false;
         }
@@ -143,7 +143,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header" style="padding: 10px;">
-                    <h5 class="modal-title" id="myModalLabel">New Task</h5>
+                    <h5 class="modal-title" id="myModalLabel">New Order</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div id="modal-content" class="modal-body">
@@ -154,7 +154,7 @@
                     <div class="row align-items-center g-0">
                         <!-- OrderType Dropdown -->
                         <div class="col-md-4 col-sm-12">
-                            
+
                             <div class="input-group">
                                 <div class="input-group-text"><i class="bi bi-file-text-fill"></i></div>
                                 <select asp-for="OrderTypeID" class="form-select small-input" id="orderType"
@@ -239,7 +239,7 @@
                                         <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
                                     </div>
                                     @* <select asp-for="VaultID" class="form-select small-input"
-                                            asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
+                                    asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
                                     </select> *@
                                 </div>
                             </div>
@@ -273,7 +273,26 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Assign To Section -->
+                            <div class="row  g-0 mt-3 mb-3 ms-3 pe-2">
+                                <label class="mb-1">Assign To</label>
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <i class="bi bi-signpost-split"></i>
+                                        </div>
+                                        <select class="form-select small-input">
+                                            <option value="" disabled selected>Select Route</option>
+                                            <option value="1">Route 1</option>
+                                            <option value="2">Route 2</option>
+                                            <option value="3">Route 3</option>
+                                            <option value="4">Route 4</option>
+                                            <option value="5">Route 5</option>
+                                        </select>
+                                    </div>
+                                </div>
 
+                            </div>
                             <div class="mt-0">
 
                                 <!-- Repeat This Task Toggle -->
@@ -332,10 +351,14 @@
                     <div class="modal-footer d-flex justify-content-between" style="font-size:12px !important; padding:0px !important">
                         <button type="button" style="font-size:12px !important;" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
                         <div>
-                            <input type="button" style="font-size:12px !important;" class="btn btn-color" value="Save & Add more location to this Task" id="btnsave" style="background:#132553 bi bi-file-earmark-pdf !important;">
+
+
+                            <input type="button" style="font-size:12px !important; color: #032b56; border-color: #032b56; bi bi-file-earmark-pdf !important;"
+                                   class="btn btn-outline" value="Save & Add Another" id="btnsave">
+
                             <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
                             @* <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button> *@
-                            <input type="button"  style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
+                            <input type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
                             @* <i class="bi bi-file-earmark-lock-fill"></i> Save and close *@
                         </div>
 
@@ -395,48 +418,48 @@
                 </tr>
             </thead>
             <tbody>
-              @if (Model.taskDTOlsts != null && Model.taskDTOlsts.Any())
-              {
-                @foreach (var typeGroup in Model.taskDTOlsts.GroupBy(t => t.OrderType ))
+                @if (Model.taskDTOlsts != null && Model.taskDTOlsts.Any())
                 {
-                    <!-- Render the group header for TypeName -->
-                    <tr class="order-header">
-                        <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                            <div>@typeGroup.Key</div>
-                        </td>
-                    </tr>
-
-                    <!-- Group by OrderNumber inside each TypeName group -->
-                    @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
+                    @foreach (var typeGroup in Model.taskDTOlsts.GroupBy(t => t.OrderType))
                     {
-                        <!-- Render the group header for OrderNumber -->
-                        <tr class="order-subheader">
-                            <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
+                        <!-- Render the group header for TypeName -->
+                        <tr class="order-header">
+                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                <div>@typeGroup.Key</div>
+                            </td>
                         </tr>
 
-                        <!-- Render each task in the OrderNumber group -->
-                        @foreach (var tasklist in orderGroup)
+                        <!-- Group by OrderNumber inside each TypeName group -->
+                        @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
                         {
-                            <tr class="table-border">
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>@tasklist.PickupCustomerName</td>
-                                <td>@tasklist.PickupLocation</td>
-                                
-                                <td>@tasklist.DeliveryCustomerName</td>
-                                <td>@tasklist.DeliveryLocation</td>
-                                <td>@tasklist.PickupType</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="order-date">@tasklist.OrderDate.ToString("yyyy-MM-dd")</td>
-                                <td><span class="badge bg-secondary">Unassigned</span></td>
-                                <td class="d-none">@tasklist.TaskId</td>
-                                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                            <!-- Render the group header for OrderNumber -->
+                            <tr class="order-subheader">
+                                <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
                             </tr>
+
+                            <!-- Render each task in the OrderNumber group -->
+                            @foreach (var tasklist in orderGroup)
+                            {
+                                <tr class="table-border">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>@tasklist.PickupCustomerName</td>
+                                    <td>@tasklist.PickupLocation</td>
+
+                                    <td>@tasklist.DeliveryCustomerName</td>
+                                    <td>@tasklist.DeliveryLocation</td>
+                                    <td>@tasklist.PickupType</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="order-date">@tasklist.OrderDate.ToString("yyyy-MM-dd")</td>
+                                    <td><span class="badge bg-secondary">Unassigned</span></td>
+                                    <td class="d-none">@tasklist.TaskId</td>
+                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                </tr>
+                            }
                         }
                     }
                 }
-              }
                 else
                 {
                     <tr><td colspan="12">No tasks available.</td></tr>
@@ -481,7 +504,7 @@
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
-                <form method="post" asp-action="Index" asp-controller="Assignment"  target="_blank">
+                <form method="post" asp-action="Index" asp-controller="Assignment" target="_blank">
                     @* target="_blank" *@
                     <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
                 </form>
@@ -545,13 +568,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                        <td>${PickupCustomer}</td>
-                        <td>${DeliveryCustomer}</td>
-                        <td>${DeliveryLocation}</td>
-                        <td>${time}</td>
-                        <td>${type}</td>
-                        <td class="d-none">${taskId}</td>
-                    `;
+                                    <td>${PickupCustomer}</td>
+                                    <td>${DeliveryCustomer}</td>
+                                    <td>${DeliveryLocation}</td>
+                                    <td>${time}</td>
+                                    <td>${type}</td>
+                                    <td class="d-none">${taskId}</td>
+                                `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -590,7 +613,7 @@
         }
         console.log("taskGroupDtos", taskGroupDtos)
 
-       
+
         // Send the data to the API
         fetch(`${API_BASE_URL}/api/TaskGroup/AddTaskGroup`, {
             method: 'POST',
@@ -623,7 +646,7 @@
         // Get the selected date from the input (yyyy-MM-dd format)
         const selectedDate = this.value;
 
-        
+
         // Call the API to fetch data filtered by date
         fetch(`${API_BASE_URL}/api/taskList?date=${selectedDate}`)
             .then(response => response.json())
@@ -651,11 +674,11 @@
                 for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                     // Render the OrderType header
                     const orderTypeHeader = `
-                        <tr class="order-header">
-                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                <div>${orderType}</div>
-                            </td>
-                        </tr>`;
+                                    <tr class="order-header">
+                                        <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                            <div>${orderType}</div>
+                                        </td>
+                                    </tr>`;
                     tableBody.innerHTML += orderTypeHeader;
 
                     // Group tasks by OrderNumber within each OrderType group
@@ -671,29 +694,29 @@
                     for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
                         // Render the OrderNumber header
                         const orderNumberHeader = `
-                            <tr class="order-subheader">
-                                <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
-                            </tr>`;
+                                        <tr class="order-subheader">
+                                            <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
+                                        </tr>`;
                         tableBody.innerHTML += orderNumberHeader;
 
                         // Render each task within the OrderNumber group
                         orderTasks.forEach(task => {
                             const row = `
-                                <tr class="table-border">
-                                    <td><input type="checkbox" class="row-checkbox"></td>
-                                    <td>${task.pickupCustomerName || 'N/A'}</td>
-                                    <td>${task.pickupLocation || 'N/A'}</td>
-                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                    <td>${task.deliveryLocation || 'N/A'}</td>
-                                    <td>${task.pickupType || 'N/A'}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                    <td class="d-none">${task.taskId}</td>
-                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                </tr>`;
+                                            <tr class="table-border">
+                                                <td><input type="checkbox" class="row-checkbox"></td>
+                                                <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                <td>${task.pickupLocation || 'N/A'}</td>
+                                                <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                <td>${task.deliveryLocation || 'N/A'}</td>
+                                                <td>${task.pickupType || 'N/A'}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                <td class="d-none">${task.taskId}</td>
+                                                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                            </tr>`;
                             tableBody.innerHTML += row;
                         });
                     }
