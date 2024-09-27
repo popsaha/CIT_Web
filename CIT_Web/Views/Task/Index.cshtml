@@ -200,13 +200,13 @@
                         </div>
                     </div>
 
-                    <div class="row align-items-center mt-3 ">
+                    <div class="row align-items-center mt-3 g-0">
                         <h6>Sender / Pickup Location</h6>
 
                         <div class="row g-0 mx-auto">
                             <div class="col-md-6 col-sm-12">
                                 <div class="input-group">
-                                    <div class="input-group-text ms-3">
+                                    <div class="input-group-text ">
                                         <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Requester" -->
                                     </div>
                                     <select asp-for="CustomerId" class="form-select small-input"
@@ -214,7 +214,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-12 pe-3">
+                            <div class="col-md-6 col-sm-12 ">
                                 <div class="input-group ">
                                     <div class="input-group-text ">
                                         <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
@@ -225,7 +225,7 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mt-3">
+                        <div class="row align-items-center g-0 mt-3">
                             <h6>Recipient / Destination Location</h6>
                             <div class="col-3">
                                 <div class="form-check  ms-1">
@@ -249,7 +249,7 @@
                                     <label class="form-check-label" for="isVaultFinal">isVault - final destination</label>
                                 </div>
                             </div>
-                            <div class="row g-0 mt-3 mb-3 ms-3 pe-2">
+                            <div class="row g-0 mt-3 mb-3 ">
                                 <!-- Recipient's Name Dropdown -->
                                 <div class="col-md-6 col-sm-12">
                                     <div class="input-group">
@@ -274,7 +274,7 @@
                                 </div>
                             </div>
                             <!-- Assign To Section -->
-                            <div class="row  g-0 mt-3 mb-3 ms-3 pe-2">
+                            <div class="row  g-0 mt-3 mb-3">
                                 <label class="mb-1">Assign To</label>
                                 <div class="col-md-6 col-sm-12">
                                     <div class="input-group">
@@ -293,7 +293,7 @@
                                 </div>
 
                             </div>
-                            <div class="mt-0">
+                            <div class="mt-0 mb-2">
 
                                 <!-- Repeat This Task Toggle -->
                                 <div class="form-check form-switch mb-2 fw-bold">
@@ -348,17 +348,17 @@
                     </div>
 
 
-                    <div class="modal-footer d-flex justify-content-between" style="font-size:12px !important; padding:0px !important">
-                        <button type="button" style="font-size:12px !important;" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
+                    <div class="modal-footer d-flex justify-content-between " style="font-size:12px !important; padding:0px !important">
+                        <button type="button" style="font-size:12px !important;" class="btn btn-secondary mt-3" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
                         <div>
 
 
                             <input type="button" style="font-size:12px !important; color: #032b56; border-color: #032b56; bi bi-file-earmark-pdf !important;"
-                                   class="btn btn-outline" value="Save & Add Another" id="btnsave">
+                                   class="btn btn-outline mt-3" value="Save & Add Another" id="btnsave">
 
                             <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
                             @* <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button> *@
-                            <input type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
+                            <input type="button" style="font-size:12px !important;" class="btn btn-color mt-3" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
                             @* <i class="bi bi-file-earmark-lock-fill"></i> Save and close *@
                         </div>
 
@@ -382,9 +382,9 @@
             <a class="me-3" href="#"><i class="bi bi-arrow-down-circle-fill"></i></a>
             <a class="me-3" href="#"><i class="bi bi-gear-fill"></i></a>
             <button class="btn btn-color group-button" data-bs-toggle="Groupmodal" data-bs-target="#groupModal" id="groupPopup">Task Grouping</button>
-            <div class="dropdown-new-task  me-2 ms-3" style="width:91px !important">
+            <div class="dropdown-new-task  me-2 ms-3" style="width:100px  !important">
                 <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk" data-bs-target="#myNewTaskModal">
-                    <i class="bi bi-plus"></i> New Task
+                    <i class="bi bi-plus"></i> New Order
                 </button>
             </div>
         </div>
@@ -728,3 +728,7 @@
 
     });
 </script>
+
+
+
+

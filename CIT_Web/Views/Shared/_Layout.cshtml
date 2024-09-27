@@ -459,11 +459,34 @@
    
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
-        const multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            maxItemCount: 5,
-            searchResultLimit: 5,
-            renderChoiceLimit: 5
+        document.addEventListener('DOMContentLoaded', function () {
+            var repeatsMode = document.getElementById('repeatsMode');
+            var repeatsOnSelect = document.getElementById('choices-multiple-remove-button');
+
+            // Initialize Choices.js on the "Repeats On" dropdown
+            const multipleCancelButton = new Choices(repeatsOnSelect, {
+                removeItemButton: true,
+                maxItemCount: 5,
+                searchResultLimit: 5,
+                renderChoiceLimit: 5
+            });
+
+            // Function to toggle disable based on selected value
+            function toggleRepeatsOn() {
+                var selectedValue = repeatsMode.options[repeatsMode.selectedIndex].text.toLowerCase();
+
+                if (selectedValue === 'daily') {
+                    multipleCancelButton.disable();  // Disable the Choices instance
+                } else {
+                    multipleCancelButton.enable();   // Enable the Choices instance
+                }
+            }
+
+            // Initialize the dropdown based on the current selection
+            toggleRepeatsOn();
+
+            // Add change event listener to toggle disable/enable
+            repeatsMode.addEventListener('change', toggleRepeatsOn);
         });
 
         const choices1 = new Choices('#requesterName', { searchEnabled: true });
