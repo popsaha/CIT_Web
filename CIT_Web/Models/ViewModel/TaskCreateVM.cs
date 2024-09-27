@@ -1,7 +1,11 @@
-﻿namespace CIT_Web.Models.ViewModel
+﻿using CIT_Web.Models.Dto.CrewCommander;
+using CIT_Web.Models.Dto.Vehicle;
+
+namespace CIT_Web.Models.ViewModel
 {
     public class TaskCreateVM
     {
+        
         public string OrderId { get; set; }
         public int OrderTypeID { get; set; }
         public int PriorityId { get; set; }
@@ -26,6 +30,10 @@
         public List<RepeatsInDaysMaster> repeatsInDaysMasterslist { get; set; }
         public List<VaultLovationMaster> vaultLovationMasters { get; set; }
         public List<TaskDTOlst> taskDTOlsts { get; set; }
+
+        public List<VehicleDTO> vehicledtolst { get; set; }
+        public List<CrewCommanderDTO> crews { get; set; }
+
     }
     public class CustomerDTO
     {
@@ -85,5 +93,6 @@
         public DateTime OrderDate { get; set; }
     }
 
+   
 
 }

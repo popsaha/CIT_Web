@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using CIT_Web.Models;
+using CIT_Web.Models.Dto.CrewCommander;
 using CIT_Web.Models.Dto.Task;
 using CIT_Web.Models.Dto.TaskList;
+using CIT_Web.Models.Dto.Vehicle;
 using CIT_Web.Models.ViewModel;
 using CIT_Web.Services;
 using CIT_Web.Services.IServices;
@@ -17,10 +19,14 @@ namespace CIT_Web.Controllers
         private readonly ItaskService _taskService;
         private readonly ITaskListService _taskListService;
         private readonly IMapper _mapper;
-        public TaskController(ItaskService taskService, ITaskListService taskListService, IMapper mapper)
+        private readonly IVehicleService _vehicleService;
+        private readonly ICrewCommanderService _crewCommanderService;
+        public TaskController(ItaskService taskService, ITaskListService taskListService,ICrewCommanderService crewCommanderService,IVehicleService vehicleService, IMapper mapper)
         {
             _taskService = taskService;
             _taskListService = taskListService;
+            _crewCommanderService = crewCommanderService;
+            _vehicleService = vehicleService;
             _mapper = mapper;
         }
         public async Task<IActionResult> Index()
@@ -86,12 +92,30 @@ namespace CIT_Web.Controllers
                 taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "select" });
             }
 
-         
-
             var response = await _taskListService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
             {
                 taskVM.taskDTOlsts = JsonConvert.DeserializeObject<List<TaskDTOlst>>(Convert.ToString(response.Result));
+            }
+
+            var vehicleResponse = await _vehicleService.GetAllVehicleAsync<APIResponse>();
+            if (vehicleResponse != null && vehicleResponse.IsSuccess)
+            {
+                taskVM.vehicledtolst = JsonConvert.DeserializeObject<List<VehicleDTO>>(Convert.ToString(vehicleResponse.Result)) ?? new List<VehicleDTO>();
+            }
+            else
+            {
+                taskVM.vehicledtolst = new List<VehicleDTO>(); // Initialize empty list if the API fails
+            }
+
+            var crewResponse = await _crewCommanderService.GetAllCrewCommanderList<APIResponse>();
+            if (crewResponse != null && crewResponse.IsSuccess)
+            {
+                taskVM.crews = JsonConvert.DeserializeObject<List<CrewCommanderDTO>>(Convert.ToString(crewResponse.Result)) ?? new List<CrewCommanderDTO>();
+            }
+            else
+            {
+                taskVM.crews = new List<CrewCommanderDTO>(); // Initialize empty list if the API fails
             }
 
             return View(taskVM);
