@@ -648,93 +648,85 @@
 
 @* ******************************Filter data based on Date*********************************** *@
 
-
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get today's date in yyyy-MM-dd format
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('filter-date').value = today;
+
+        // Call the API to fetch data for today's date
+        fetchTasksByDate(today);
+    });
+
     document.getElementById('filter-date').addEventListener('change', function () {
-        // Get the selected date from the input (yyyy-MM-dd format)
         const selectedDate = this.value;
+        fetchTasksByDate(selectedDate);
+    });
 
-
-        // Call the API to fetch data filtered by date
-        fetch(`${API_BASE_URL}/api/taskList?date=${selectedDate}`)
+    function fetchTasksByDate(date) {
+        fetch(`${API_BASE_URL}/api/taskList?date=${date}`)
             .then(response => response.json())
             .then(data => {
-                // Clear the current table content
                 const tableBody = document.querySelector('#task-table tbody');
-                tableBody.innerHTML = '';
+                tableBody.innerHTML = ''; // Clear the table content
 
-                // Check if data is available
                 if (data.result && data.result.length === 0) {
                     tableBody.innerHTML = '<tr><td colspan="12">No tasks available for the selected date.</td></tr>';
                     return;
                 }
 
-                // Group tasks by OrderType
                 const tasksByOrderType = data.result.reduce((grouped, task) => {
-                    if (!grouped[task.orderType]) {
-                        grouped[task.orderType] = [];
-                    }
+                    if (!grouped[task.orderType]) grouped[task.orderType] = [];
                     grouped[task.orderType].push(task);
                     return grouped;
                 }, {});
 
-                // Iterate over each OrderType group
                 for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
-                    // Render the OrderType header
                     const orderTypeHeader = `
-                                    <tr class="order-header">
-                                        <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                            <div>${orderType}</div>
-                                        </td>
-                                    </tr>`;
+                            <tr class="order-header">
+                                <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                    <div>${orderType}</div>
+                                </td>
+                            </tr>`;
                     tableBody.innerHTML += orderTypeHeader;
 
-                    // Group tasks by OrderNumber within each OrderType group
                     const tasksByOrderNumber = tasks.reduce((grouped, task) => {
-                        if (!grouped[task.orderNumber]) {
-                            grouped[task.orderNumber] = [];
-                        }
+                        if (!grouped[task.orderNumber]) grouped[task.orderNumber] = [];
                         grouped[task.orderNumber].push(task);
                         return grouped;
                     }, {});
 
-                    // Iterate over each OrderNumber group
                     for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
-                        // Render the OrderNumber header
                         const orderNumberHeader = `
-                                        <tr class="order-subheader">
-                                            <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
-                                        </tr>`;
+                                <tr class="order-subheader">
+                                    <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
+                                </tr>`;
                         tableBody.innerHTML += orderNumberHeader;
 
-                        // Render each task within the OrderNumber group
                         orderTasks.forEach(task => {
                             const row = `
-                                            <tr class="table-border">
-                                                <td><input type="checkbox" class="row-checkbox"></td>
-                                                <td>${task.pickupCustomerName || 'N/A'}</td>
-                                                <td>${task.pickupLocation || 'N/A'}</td>
-                                                <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                                <td>${task.deliveryLocation || 'N/A'}</td>
-                                                <td>${task.pickupType || 'N/A'}</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                                <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                                <td class="d-none">${task.taskId}</td>
-                                                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                            </tr>`;
+                                    <tr class="table-border">
+                                        <td><input type="checkbox" class="row-checkbox"></td>
+                                        <td>${task.pickupCustomerName || 'N/A'}</td>
+                                        <td>${task.pickupLocation || 'N/A'}</td>
+                                        <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                        <td>${task.deliveryLocation || 'N/A'}</td>
+                                        <td>${task.pickupType || 'N/A'}</td>
+                                        <td></td><td></td><td></td>
+                                        <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                        <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                        <td class="d-none">${task.taskId}</td>
+                                        <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                    </tr>`;
                             tableBody.innerHTML += row;
                         });
                     }
                 }
             })
             .catch(error => {
-                console.error('Error fetching filtered data:', error);
+                console.error('Error fetching data:', error);
             });
-
-    });
+    }
 </script>
 
 
