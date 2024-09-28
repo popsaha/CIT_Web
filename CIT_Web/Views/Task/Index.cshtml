@@ -142,7 +142,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header" style="padding: 10px;">
-                    <h5 class="modal-title" id="myModalLabel">New Task</h5>
+                    <h5 class="modal-title" id="myModalLabel">New Order</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div id="modal-content" class="modal-body">
@@ -153,6 +153,7 @@
                     <div class="row align-items-center g-0">
                         <!-- OrderType Dropdown -->
                         <div class="col-md-4 col-sm-12">
+
                             <div class="input-group">
                                 <div class="input-group-text"><i class="bi bi-file-text-fill"></i></div>
                                 <select asp-for="OrderTypeID" class="form-select small-input" id="orderType"
@@ -197,14 +198,23 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row align-items-center mt-3 ">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 mt-2 mb-2">
+                            <div class="form-check  ms-1 mt-lg-0 mt-2" id="fullDay">
+                                <input class="form-check-input" type="checkbox" value="" id="fullDayCheck">
+                                <label class="form-check-label" for="fullDayCheck">
+                                    Full day occupancy
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mt-3 g-0">
                         <h6>Sender / Pickup Location</h6>
 
                         <div class="row g-0 mx-auto">
                             <div class="col-md-6 col-sm-12">
                                 <div class="input-group">
-                                    <div class="input-group-text ms-3">
+                                    <div class="input-group-text ">
                                         <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Requester" -->
                                     </div>
                                     <select asp-for="CustomerId" class="form-select small-input"
@@ -212,7 +222,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-12 pe-3">
+                            <div class="col-md-6 col-sm-12 ">
                                 <div class="input-group ">
                                     <div class="input-group-text ">
                                         <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
@@ -223,7 +233,7 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mt-3">
+                        <div class="row align-items-center g-0 mt-3">
                             <h6>Recipient / Destination Location</h6>
                             <div class="col-3">
                                 <div class="form-check  ms-1">
@@ -247,7 +257,7 @@
                                     <label class="form-check-label" for="isVaultFinal">isVault - final destination</label>
                                 </div>
                             </div>
-                            <div class="row g-0 mt-3 mb-3 ms-3 pe-2">
+                            <div class="row g-0 mt-3 mb-3 ">
                                 <!-- Recipient's Name Dropdown -->
                                 <div class="col-md-6 col-sm-12">
                                     <div class="input-group">
@@ -301,10 +311,35 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Assign To Section -->
+                            <div class="row align-items-center  g-0  mb-2">
+                                <h6 class="mb-2">Assign To</h6>
 
-                            <!--Added by Sunil on 27/09/2024 close-->
-
-                            <div class="mt-0">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <i class="bi bi-signpost-split"></i>
+                                        </div>
+                                        <select class="form-select small-input">
+                                            <option value="" disabled selected>Select Route</option>
+                                            <option value="1">Route 1</option>
+                                            <option value="2">Route 2</option>
+                                            <option value="3">Route 3</option>
+                                            <option value="4">Route 4</option>
+                                            <option value="5">Route 5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12 ">
+                                    <div class="form-check ms-lg-5 ms-1 mt-lg-0 mt-2" id="newVehicle">
+                                        <input class="form-check-input" type="checkbox" value="" id="newVehicleCheck">
+                                        <label class="form-check-label" for="newVehicleCheck">
+                                            New Vehicle Required
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-0 mb-2">
 
                                 <!-- Repeat This Task Toggle -->
                                 <div class="form-check form-switch mb-2 fw-bold">
@@ -359,13 +394,17 @@
                     </div>
 
 
-                    <div class="modal-footer d-flex justify-content-between" style="font-size:12px !important; padding:0px !important">
-                        <button type="button" style="font-size:12px !important;" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
+                    <div class="modal-footer d-flex justify-content-between " style="font-size:12px !important; padding:0px !important">
+                        <button type="button" style="font-size:12px !important;" class="btn btn-secondary mt-3" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
                         <div>
-                            <input type="button" style="font-size:12px !important;" class="btn btn-color" value="Save & Add more location to this Task" id="btnsave" style="background:#132553 bi bi-file-earmark-pdf !important;">
+
+
+                            <input type="button" style="font-size:12px !important; color: #032b56; border-color: #032b56; bi bi-file-earmark-pdf !important;"
+                                   class="btn btn-outline mt-3" value="Save & Add Another" id="btnsave">
+
                             <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
                             @* <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button> *@
-                            <input type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
+                            <input type="button" style="font-size:12px !important;" class="btn btn-color mt-3" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
                             @* <i class="bi bi-file-earmark-lock-fill"></i> Save and close *@
                         </div>
 
@@ -383,19 +422,25 @@
 <div class="tab-container-task-header mt-3 ms-3" style="width: 100%;">
     <div class="group-data-action-container d-flex justify-content-between">
         <div class="d-flex align-items-center">
-            <a class="ms-2 me-3" href="#"><i class="bi bi-person-check-fill"></i></a>
+
+            <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#vehicleAssignModal"><i class="bi bi-person-check-fill"></i></button>
+
+
             <a class="me-3" href="#"><i class="bi bi-pencil-square"></i></a>
             <a class="me-3" href="#"><i class="bi bi-trash-fill"></i></a>
             <a class="me-3" href="#"><i class="bi bi-arrow-down-circle-fill"></i></a>
             <a class="me-3" href="#"><i class="bi bi-gear-fill"></i></a>
             <button class="btn btn-color group-button" data-bs-toggle="Groupmodal" data-bs-target="#groupModal" id="groupPopup">Task Grouping</button>
-            <div class="dropdown-new-task  me-2 ms-3" style="width:91px !important">
+            <div class="dropdown-new-task  me-2 ms-3" style="width:100px  !important">
                 <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk" data-bs-target="#myNewTaskModal">
-                    <i class="bi bi-plus"></i> New Task
+                    <i class="bi bi-plus"></i> New Order
                 </button>
             </div>
         </div>
         <div class="d-flex" style="margin-right: 21px;">
+            <div>
+                <input type="date" id="filter-date" style="padding: 5px; margin-right: 10px;" />
+            </div>
             <input type="text" placeholder="Search..." style="padding: 5px" />
         </div>
     </div>
@@ -403,7 +448,7 @@
 
 <div class="tab-container mt-3 ms-3" style="width: 100%;">
     <div class="table-wrapper" style=" max-height:90vh; margin-right: 21px;">
-        <table class="table mt-3">
+        <table class="table mt-3" id="task-table">
             <thead class="sticky-header table-hover">
                 <tr>
                     <th></th>
@@ -421,47 +466,55 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            @*  <tbody>
-            @foreach (var typeGroup in Model.taskDTOlsts.GroupBy(t => t.OrderType))
-            {
-            <!-- Render the group header for TypeName -->
-            <tr class="order-header">
-            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-            <div>@typeGroup.Key</div>
-            </td>
-            </tr>
+            <tbody>
+                @if (Model.taskDTOlsts != null && Model.taskDTOlsts.Any())
+                {
+                    @foreach (var typeGroup in Model.taskDTOlsts.GroupBy(t => t.OrderType))
+                    {
+                        <!-- Render the group header for TypeName -->
+                        <tr class="order-header">
+                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                <div>@typeGroup.Key</div>
+                            </td>
+                        </tr>
 
-            <!-- Group by OrderNumber inside each TypeName group -->
-            @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
-            {
-            <!-- Render the group header for OrderNumber -->
-            <tr class="order-subheader">
-            <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
-            </tr>
+                        <!-- Group by OrderNumber inside each TypeName group -->
+                        @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
+                        {
+                            <!-- Render the group header for OrderNumber -->
+                            <tr class="order-subheader">
+                                <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
+                            </tr>
 
-            <!-- Render each task in the OrderNumber group -->
-            @foreach (var tasklist in orderGroup)
-            {
-            <tr class="table-border">
-            <td><input type="checkbox" class="row-checkbox"></td>
-            <td>@tasklist.PickupCustomerName</td>
-            <td>@tasklist.PickupLocation</td>
+                            <!-- Render each task in the OrderNumber group -->
+                            @foreach (var tasklist in orderGroup)
+                            {
+                                <tr class="table-border">
+                                    <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>@tasklist.PickupCustomerName</td>
+                                    <td>@tasklist.PickupLocation</td>
 
-            <td>@tasklist.DeliveryCustomerName</td>
-            <td>@tasklist.DeliveryLocation</td>
-            <td>@tasklist.PickupType</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>@tasklist.OrderDate</td>
-            <td><span class="badge bg-secondary">Unassigned</span></td>
-            <td class="d-none">@tasklist.TaskId</td>
-            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-            </tr>
-            }
-            }
-            }
-            </tbody> *@
+                                    <td>@tasklist.DeliveryCustomerName</td>
+                                    <td>@tasklist.DeliveryLocation</td>
+                                    <td>@tasklist.PickupType</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="order-date">@tasklist.OrderDate.ToString("yyyy-MM-dd")</td>
+                                    <td><span class="badge bg-secondary">Unassigned</span></td>
+                                    <td class="d-none">@tasklist.TaskId</td>
+                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="12">No tasks available.</td></tr>
+                }
+
+            </tbody>
         </table>
     </div>
 </div>
@@ -508,6 +561,137 @@
         </div>
     </div>
 </div>
+
+@* ******************************************************************************************** *@
+
+
+@* ************************************Vehicle Assignment Model ********************************* *@
+
+<div class="modal fade custom-modal-size" id="vehicleAssignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true" >
+    <div class="modal-dialog ">
+        <!-- Custom size class applied -->
+        <div class="modal-content" style="width:430px">
+            @*  <div class="modal-header">
+
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> *@
+            <div class="modal-body" >
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs " id="assignTabs" role="tablist">
+                    <li class="nav-item " role="presentation">
+                        <button class="nav-link active" id="leadVehicle-tab" data-bs-toggle="tab" data-bs-target="#leadVehicleDriver-tab" type="button" role="tab" aria-controls="lead" aria-selected="false">
+                            <i class="bi bi-car-front-fill "></i>
+                            <span class="ms-1 ">
+                                Lead Vehicle
+                            </span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="chaseVehicle-tab" data-bs-toggle="tab" data-bs-target="#chaseVehicleDriver-tab" type="button" role="tab" aria-controls="Chase" aria-selected="false">
+                            <i class="bi bi-truck "></i> <span class="ms-1 ">Chase vehicle </span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="crew-tab" data-bs-toggle="tab" data-bs-target="#crewCommandor-tab" type="button" role="tab" aria-controls="crewCommandor" aria-selected="false">  <i class="bi bi-person-badge-fill "></i> <span class="ms-1 ">Crew Commander </span> </button>
+                    </li>
+                  
+                </ul>
+
+                <!-- Tab content -->
+                <div class="tab-content mt-3" style="height: 200px;">
+                    <!-- Lead Vehicle Tab -->
+                    <div class="tab-pane fade show active" id="leadVehicleDriver-tab" role="tabpanel" aria-labelledby="leadVehicle-tab">
+                        <h5>Select a Lead Vehicle driver to assign tasks:</h5>
+                        <div class="p-3">
+                            @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
+                            {
+                                @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Lead"))
+                                {
+                                    <div class="form-check d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input class="form-check-input lead-vehicle-checkbox" type="checkbox" name="leadVehicleDriver" id="leadVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
+                                            <i class="bi bi-car-front-fill" style="font-size: 25px;"></i>
+                                            <label class="form-check-label" for="leadVehicleDriver_@vehicle.VehicleID">
+                                                @vehicle.RegistrationNo
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No vehicles available</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Chase Vehicle Tab -->
+                    <div class="tab-pane fade" id="chaseVehicleDriver-tab" role="tabpanel" aria-labelledby="chaseVehicle-tab">
+                        <h5>Select a Chase Vehicle driver to assign tasks:</h5>
+                        <div class="p-3">
+                            @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
+                            {
+                                @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Chase"))
+                                {
+                                    <div class="form-check d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input class="form-check-input chase-vehicle-checkbox" type="checkbox" name="chaseVehicleDriver" id="chaseVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
+                                            <i class="bi bi-truck" style="font-size: 25px;"></i>
+                                            <label class="form-check-label" for="chaseVehicleDriver_@vehicle.VehicleID">
+                                                @vehicle.RegistrationNo
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No vehicles available</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Crew Commander Tab -->
+                    <div class="tab-pane fade assignment-container" id="crewCommandor-tab" role="tabpanel" aria-labelledby="crew-tab">
+                        <h5>Select a  Crew Commander to assign tasks:</h5>
+                        <div class="p-3">
+                            @if (Model.crews != null && Model.crews.Any())
+                            {
+                                @foreach (var crewCommander in Model.crews)
+                                {
+                                    <div class="form-check d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.CrewCommanderId" value="@crewCommander.CrewCommanderId">
+                                            <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
+                                            <label class="form-check-label" for="crewCommander_@crewCommander.CrewCommanderId">
+                                                @crewCommander.Name
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No crew commanders available</p>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-color" id="">Assign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+@* *********************************************************************************************** *@
 
 
 
@@ -564,13 +748,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                    <td>${PickupCustomer}</td>
-                                    <td>${DeliveryCustomer}</td>
-                                    <td>${DeliveryLocation}</td>
-                                    <td>${time}</td>
-                                    <td>${type}</td>
-                                    <td class="d-none">${taskId}</td>
-                                `;
+                                            <td>${PickupCustomer}</td>
+                                            <td>${DeliveryCustomer}</td>
+                                            <td>${DeliveryLocation}</td>
+                                            <td>${time}</td>
+                                            <td>${type}</td>
+                                            <td class="d-none">${taskId}</td>
+                                        `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -634,4 +818,138 @@
     });
 </script>
 
-@* *********************************************************************************************** *@
+@* ******************************Filter data based on Date*********************************** *@
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let selectedPickupType = null;
+
+        // Get today's date in yyyy-MM-dd format
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('filter-date').value = today;
+
+        // Call the API to fetch data for today's date
+        fetchTasksByDate(today);
+
+        document.getElementById('filter-date').addEventListener('change', function () {
+            const selectedDate = this.value;
+            fetchTasksByDate(selectedDate);
+        });
+
+        function fetchTasksByDate(date) {
+            fetch(`${API_BASE_URL}/api/taskList?date=${date}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#task-table tbody');
+                    tableBody.innerHTML = ''; // Clear the table content
+
+                    if (data.result && data.result.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="12">No tasks available for the selected date.</td></tr>';
+                        return;
+                    }
+
+                    const tasksByOrderType = data.result.reduce((grouped, task) => {
+                        if (!grouped[task.orderType]) grouped[task.orderType] = [];
+                        grouped[task.orderType].push(task);
+                        return grouped;
+                    }, {});
+
+                    for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
+                        const orderTypeHeader = `
+                            <tr class="order-header">
+                                <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                    <div>${orderType}</div>
+                                </td>
+                            </tr>`;
+                        tableBody.innerHTML += orderTypeHeader;
+
+                        const tasksByOrderNumber = tasks.reduce((grouped, task) => {
+                            if (!grouped[task.orderNumber]) grouped[task.orderNumber] = [];
+                            grouped[task.orderNumber].push(task);
+                            return grouped;
+                        }, {});
+
+                        for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
+                            const orderNumberHeader = `
+                                <tr class="order-subheader">
+                                    <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
+                                </tr>`;
+                            tableBody.innerHTML += orderNumberHeader;
+
+                            orderTasks.forEach(task => {
+                                const row = `
+                                    <tr class="table-border">
+                                        <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                        <td>${task.pickupCustomerName || 'N/A'}</td>
+                                        <td>${task.pickupLocation || 'N/A'}</td>
+                                        <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                        <td>${task.deliveryLocation || 'N/A'}</td>
+                                        <td>${task.pickupType || 'N/A'}</td>
+                                        <td></td><td></td><td></td>
+                                        <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                        <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                        <td class="d-none">${task.taskId}</td>
+                                        <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                    </tr>`;
+                                tableBody.innerHTML += row;
+                            });
+                        }
+                    }
+
+                    // Add event listeners for checkbox selection
+                    const checkboxes = document.querySelectorAll('.row-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', function () {
+                            const currentPickupType = this.dataset.pickupType;
+
+                            // If no pickup type is selected yet, set it to the first selected checkbox's type
+                            if (selectedPickupType === null && this.checked) {
+                                selectedPickupType = currentPickupType;
+                            }
+
+                            // Allow selection only if the types match or it's a deselection
+                            if (this.checked && currentPickupType !== selectedPickupType) {
+                                alert(`You can only select tasks with the same Pickup Type: ${selectedPickupType}`);
+                                this.checked = false;
+                            } else if (!this.checked) {
+                                // If all checkboxes are unchecked, reset the selection
+                                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                                if (!anyChecked) selectedPickupType = null;
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+    });
+
+</script>
+
+
+@* *****************************************Vehicle Assignment in Task List ******************* *@
+
+@* ********************************************************************************************** *@
+
+@* **************************Full day occupancy check then desable the New wehicle required *** *@
+
+<script>
+    // Get the checkboxes by their ID
+    const fullDayCheckbox = document.getElementById('fullDayCheck');
+    const newVehicleCheckbox = document.getElementById('newVehicleCheck');
+
+    // Add an event listener to monitor changes to the Full Day checkbox
+    fullDayCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+            // Disable the New Vehicle checkbox when Full Day is checked
+            newVehicleCheckbox.disabled = true;
+            newVehicleCheckbox.checked = false; // Uncheck it as well
+        } else {
+            // Enable the New Vehicle checkbox when Full Day is unchecked
+            newVehicleCheckbox.disabled = false;
+        }
+    });
+</script>
+@* ******************************************************************************************* *@
+
