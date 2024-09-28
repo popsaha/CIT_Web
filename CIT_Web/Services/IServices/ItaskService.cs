@@ -10,5 +10,6 @@ namespace CIT_Web.Services.IServices
         Task<T> GetAllVaultLocationAsync<T>();
         Task<T> GetAsync<T>(int CustomerId);
         Task<T> CreateAsync<T>(TaskCreateDTO dto);
+        Task<T> GetOrderRoutesAsync<T>();
     }
 }

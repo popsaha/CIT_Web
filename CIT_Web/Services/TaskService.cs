@@ -63,5 +63,14 @@ namespace CIT_Web.Services
                 Url = citUrl + "/api/Task/GetVaultLocation",
             });
         }
+
+        public Task<T> GetOrderRoutesAsync<T>()
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = citUrl + "/api/Task/GetOrderRoutes",
+            });
+        }
     }
 }

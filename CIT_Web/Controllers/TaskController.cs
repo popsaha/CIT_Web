@@ -86,7 +86,13 @@ namespace CIT_Web.Controllers
                 taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "select" });
             }
 
-         
+            var Orderrouteslst_response = await _taskService.GetOrderRoutesAsync<APIResponse>();
+            if (Orderrouteslst_response != null && Orderrouteslst_response.IsSuccess)
+            {
+                taskVM.Orderrouteslst = JsonConvert.DeserializeObject<List<OrderRoutes>>(Convert.ToString(Orderrouteslst_response.Result));
+                taskVM.Orderrouteslst.Insert(0, new OrderRoutes { OrderRouteId = 0, RouteName = "select" });
+            }
+
 
             var response = await _taskListService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
@@ -143,6 +149,8 @@ namespace CIT_Web.Controllers
                 taskCreateDTO.VaultID = taskcreateModel.VaultID;
                 taskCreateDTO.isVault = taskcreateModel.isVault;
                 taskCreateDTO.isVaultFinal = taskcreateModel.isVaultFinal;
+                taskCreateDTO.OrderRouteId = taskcreateModel.OrderRouteId;
+                taskCreateDTO.NewVehicleRequired = taskcreateModel.NewVehicleRequired;
 
                 var TaskcreateDTO = _mapper.Map<TaskCreateDTO>(taskCreateDTO);
 

@@ -16,7 +16,7 @@
 
         $("#btnAddTaskInRows").click(function () {
             debugger
-           // var Valid = true;
+            // var Valid = true;
             var Valid = Validation()
             if (Valid == true) {
                 $('#add-save-btn').prop('disabled', true);
@@ -120,7 +120,7 @@
             IsValid = false;
         }
 
-        if ((VaultId == "0" || VaultId == null) && isVault==true) {
+        if ((VaultId == "0" || VaultId == null) && isVault == true) {
             $("#VaultID").css("border", "1px solid red");
             IsValid = false;
         }
@@ -237,7 +237,7 @@
                                         <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
                                     </div>
                                     @* <select asp-for="VaultID" class="form-select small-input"
-                                            asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
+                                    asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
                                     </select> *@
                                 </div>
                             </div>
@@ -261,6 +261,7 @@
                                 </div>
 
                                 <!-- Delivery Location Dropdown -->
+
                                 <div class="col-md-6 col-sm-12">
                                     <div class="input-group">
                                         <div class="input-group-text">
@@ -271,6 +272,37 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!--Added by Sunil on 27/09/2024 open -->                        
+                            <div class="row g-0 mt-3 mb-3 ms-3 pe-2">
+                                <!-- Assigned to -->
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Recipient" -->
+                                        </div>
+                                        <select asp-for="OrderRouteId" class="form-select small-input"
+                                                asp-items="@(new SelectList(Model.Orderrouteslst,"OrderRouteId","RouteName"))">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- New Vehicle Required -->
+                                @*  <div class="col-md-6 col-sm-12">
+                                    <div class="input-group">
+                                        <input asp-for="NewVehicleRequired" type="checkbox" class="form-check-input">
+                                        <label class="form-check-label" for="New Vehicle Required">New Vehicle Required</label>
+                                    </div>
+                                </div> *@
+                                <div class="col-4">
+                                    <div class="form-check  ms-1" id="isNewVehicleRequired">
+                                        <input asp-for="NewVehicleRequired" type="checkbox" class="form-check-input" name="NewVehicleRequired">
+                                        <label class="form-check-label" for="NewVehicleRequired">New Vehicle Required</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Added by Sunil on 27/09/2024 close-->
 
                             <div class="mt-0">
 
@@ -333,7 +365,7 @@
                             <input type="button" style="font-size:12px !important;" class="btn btn-color" value="Save & Add more location to this Task" id="btnsave" style="background:#132553 bi bi-file-earmark-pdf !important;">
                             <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
                             @* <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button> *@
-                            <input type="button"  style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
+                            <input type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
                             @* <i class="bi bi-file-earmark-lock-fill"></i> Save and close *@
                         </div>
 
@@ -389,47 +421,47 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach (var typeGroup in Model.taskDTOlsts.GroupBy(t => t.OrderType))
-                {
-                    <!-- Render the group header for TypeName -->
-                    <tr class="order-header">
-                        <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                            <div>@typeGroup.Key</div>
-                        </td>
-                    </tr>
+            @*  <tbody>
+            @foreach (var typeGroup in Model.taskDTOlsts.GroupBy(t => t.OrderType))
+            {
+            <!-- Render the group header for TypeName -->
+            <tr class="order-header">
+            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+            <div>@typeGroup.Key</div>
+            </td>
+            </tr>
 
-                    <!-- Group by OrderNumber inside each TypeName group -->
-                    @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
-                    {
-                        <!-- Render the group header for OrderNumber -->
-                        <tr class="order-subheader">
-                            <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
-                        </tr>
+            <!-- Group by OrderNumber inside each TypeName group -->
+            @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
+            {
+            <!-- Render the group header for OrderNumber -->
+            <tr class="order-subheader">
+            <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
+            </tr>
 
-                        <!-- Render each task in the OrderNumber group -->
-                        @foreach (var tasklist in orderGroup)
-                        {
-                            <tr class="table-border">
-                                <td><input type="checkbox" class="row-checkbox"></td>
-                                <td>@tasklist.PickupCustomerName</td>
-                                <td>@tasklist.PickupLocation</td>
-                                
-                                <td>@tasklist.DeliveryCustomerName</td>
-                                <td>@tasklist.DeliveryLocation</td>
-                                <td>@tasklist.PickupType</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>@tasklist.OrderDate</td>
-                                <td><span class="badge bg-secondary">Unassigned</span></td>
-                                <td class="d-none">@tasklist.TaskId</td>
-                                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                            </tr>
-                        }
-                    }
-                } *@
-            </tbody>
+            <!-- Render each task in the OrderNumber group -->
+            @foreach (var tasklist in orderGroup)
+            {
+            <tr class="table-border">
+            <td><input type="checkbox" class="row-checkbox"></td>
+            <td>@tasklist.PickupCustomerName</td>
+            <td>@tasklist.PickupLocation</td>
+
+            <td>@tasklist.DeliveryCustomerName</td>
+            <td>@tasklist.DeliveryLocation</td>
+            <td>@tasklist.PickupType</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>@tasklist.OrderDate</td>
+            <td><span class="badge bg-secondary">Unassigned</span></td>
+            <td class="d-none">@tasklist.TaskId</td>
+            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+            </tr>
+            }
+            }
+            }
+            </tbody> *@
         </table>
     </div>
 </div>
@@ -468,7 +500,7 @@
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
-                <form method="post" asp-action="Index" asp-controller="Assignment"  target="_blank">
+                <form method="post" asp-action="Index" asp-controller="Assignment" target="_blank">
                     @* target="_blank" *@
                     <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
                 </form>
@@ -532,13 +564,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                        <td>${PickupCustomer}</td>
-                        <td>${DeliveryCustomer}</td>
-                        <td>${DeliveryLocation}</td>
-                        <td>${time}</td>
-                        <td>${type}</td>
-                        <td class="d-none">${taskId}</td>
-                    `;
+                                    <td>${PickupCustomer}</td>
+                                    <td>${DeliveryCustomer}</td>
+                                    <td>${DeliveryLocation}</td>
+                                    <td>${time}</td>
+                                    <td>${type}</td>
+                                    <td class="d-none">${taskId}</td>
+                                `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -577,7 +609,7 @@
         }
         console.log("taskGroupDtos", taskGroupDtos)
 
-       
+
         // Send the data to the API
         fetch(`${API_BASE_URL}/api/TaskGroup/AddTaskGroup`, {
             method: 'POST',

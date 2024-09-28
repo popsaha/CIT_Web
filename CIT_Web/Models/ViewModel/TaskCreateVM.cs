@@ -17,6 +17,8 @@
         public int VaultID { get; set; }
         public bool isVault { get; set; }
         public bool isVaultFinal { get; set; }
+        public int OrderRouteId { get; set; }
+        public bool NewVehicleRequired { get; set; }
         public List<OrderType> OrderTypelist { get; set; }
         public List<PriorityMaster> PriorityMasterlist { get; set; }
         public List<PickTypeMaster> Picktypemasterlst { get; set; }
@@ -26,6 +28,8 @@
         public List<RepeatsInDaysMaster> repeatsInDaysMasterslist { get; set; }
         public List<VaultLovationMaster> vaultLovationMasters { get; set; }
         public List<TaskDTOlst> taskDTOlsts { get; set; }
+
+        public List<OrderRoutes> Orderrouteslst { get; set; }
     }
     public class CustomerDTO
     {
@@ -84,6 +88,10 @@
         public string DeliveryLocation { get; set; }
         public DateTime OrderDate { get; set; }
     }
-
+    public class OrderRoutes
+    {
+        public int OrderRouteId { get; set; }
+        public string RouteName { get; set; }
+    }
 
 }
