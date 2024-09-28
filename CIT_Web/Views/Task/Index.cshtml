@@ -902,21 +902,18 @@
 @* **************************Full day occupancy check then desable the New wehicle required *** *@
 
 <script>
-    // Get the checkboxes by their ID   
-    const fullDayCheckbox = document.getElementById('fullDayCheck');
-    const newVehicleCheckbox = document.getElementById('NewVehicleRequired');
+    document.getElementById('fullDayCheck').addEventListener('change', function () {
+        var newVehicleCheckbox = document.getElementById('NewVehicleRequired');
 
-    // Add an event listener to monitor changes to the Full Day checkbox
-    fullDayCheckbox.addEventListener('change', function () {
         if (this.checked) {
-            // Disable the New Vehicle checkbox when Full Day is checked
-            newVehicleCheckbox.disabled = true;
-            newVehicleCheckbox.checked = false; // Uncheck it as well
+            newVehicleCheckbox.checked = true; // Automatically check the "New Vehicle Required" checkbox
+            newVehicleCheckbox.disabled = true; // Disable "New Vehicle Required" checkbox
         } else {
-            // Enable the New Vehicle checkbox when Full Day is unchecked
-            newVehicleCheckbox.disabled = false;
+            newVehicleCheckbox.disabled = false; // Enable "New Vehicle Required" checkbox
+            newVehicleCheckbox.checked = false;  // Uncheck "New Vehicle Required" checkbox
         }
     });
+
 </script>
 @* ******************************************************************************************* *@
 
