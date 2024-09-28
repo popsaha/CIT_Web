@@ -283,34 +283,6 @@
                                 </div>
                             </div>
 
-                            <!--Added by Sunil on 27/09/2024 open -->                        
-                            <div class="row g-0 mt-3 mb-3 ms-3 pe-2">
-                                <!-- Assigned to -->
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="input-group">
-                                        <div class="input-group-text">
-                                            <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Recipient" -->
-                                        </div>
-                                        <select asp-for="OrderRouteId" class="form-select small-input"
-                                                asp-items="@(new SelectList(Model.Orderrouteslst,"OrderRouteId","RouteName"))">
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- New Vehicle Required -->
-                                @*  <div class="col-md-6 col-sm-12">
-                                    <div class="input-group">
-                                        <input asp-for="NewVehicleRequired" type="checkbox" class="form-check-input">
-                                        <label class="form-check-label" for="New Vehicle Required">New Vehicle Required</label>
-                                    </div>
-                                </div> *@
-                                <div class="col-4">
-                                    <div class="form-check  ms-1" id="isNewVehicleRequired">
-                                        <input asp-for="NewVehicleRequired" type="checkbox" class="form-check-input" name="NewVehicleRequired">
-                                        <label class="form-check-label" for="NewVehicleRequired">New Vehicle Required</label>
-                                    </div>
-                                </div>
-                            </div>
                             <!-- Assign To Section -->
                             <div class="row align-items-center  g-0  mb-2">
                                 <h6 class="mb-2">Assign To</h6>
@@ -320,19 +292,14 @@
                                         <div class="input-group-text">
                                             <i class="bi bi-signpost-split"></i>
                                         </div>
-                                        <select class="form-select small-input">
-                                            <option value="" disabled selected>Select Route</option>
-                                            <option value="1">Route 1</option>
-                                            <option value="2">Route 2</option>
-                                            <option value="3">Route 3</option>
-                                            <option value="4">Route 4</option>
-                                            <option value="5">Route 5</option>
+                                        <select asp-for="OrderRouteId" class="form-select small-input"
+                                                asp-items="@(new SelectList(Model.Orderrouteslst,"OrderRouteId","RouteName"))">                                           
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-sm-12 ">
                                     <div class="form-check ms-lg-5 ms-1 mt-lg-0 mt-2" id="newVehicle">
-                                        <input class="form-check-input" type="checkbox" value="" id="newVehicleCheck">
+                                        <input asp-for="NewVehicleRequired" class="form-check-input" type="checkbox" value="" id="NewVehicleRequired">
                                         <label class="form-check-label" for="newVehicleCheck">
                                             New Vehicle Required
                                         </label>
@@ -935,9 +902,9 @@
 @* **************************Full day occupancy check then desable the New wehicle required *** *@
 
 <script>
-    // Get the checkboxes by their ID
+    // Get the checkboxes by their ID   
     const fullDayCheckbox = document.getElementById('fullDayCheck');
-    const newVehicleCheckbox = document.getElementById('newVehicleCheck');
+    const newVehicleCheckbox = document.getElementById('NewVehicleRequired');
 
     // Add an event listener to monitor changes to the Full Day checkbox
     fullDayCheckbox.addEventListener('change', function () {
