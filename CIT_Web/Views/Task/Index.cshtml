@@ -176,7 +176,7 @@
                         <div class="col-md-4 col-sm-12">
                             <div class="input-group">
                                 <div class="input-group-text"><i class="bi bi-credit-card-2-front-fill"></i></div>
-                                <input asp-for="OrderId" class="form-control small-input" placeholder="Enter Order Id" />
+                                <input asp-for="OrderId" class="form-control small-input" placeholder="Enter Order Number" />
                                 @* <input type="number" placeholder="Enter Order Id" class="form-control small-input" id="OrderId" name="OrderId" min="1" max="100"> *@
                             </div>
                         </div>
@@ -914,44 +914,25 @@
         var newVehicleCheckbox = document.getElementById('NewVehicleRequired');
 
         if (this.checked) {
-            newVehicleCheckbox.checked = true; // Automatically check the "New Vehicle Required" checkbox
-            incrementVehicleCount(); // Increment No Of Vehicle when Full day occupancy is checked
+            newVehicleCheckbox.disabled = true; // Disable the "New Vehicle Required" checkbox
         } else {
-            newVehicleCheckbox.checked = false; // Uncheck the New Vehicle Required checkbox
-            resetVehicleCount(); // Reset No Of Vehicle when Full day occupancy is unchecked
+            newVehicleCheckbox.disabled = false; // Enable the "New Vehicle Required" checkbox
         }
     });
 
     document.getElementById('NewVehicleRequired').addEventListener('change', function () {
-        var fullDayCheckbox = document.getElementById('fullDayCheck');
+        var vehicleInput = document.querySelector('input[placeholder="Enter No of Vehicle"]');
+        var currentValue = parseInt(vehicleInput.value) || 1; // Default to 1 if empty or invalid value
 
-        if (fullDayCheckbox.checked && !this.checked) {
-            this.checked = true; // Prevent unchecking while Full day occupancy is checked
-        } else if (this.checked) {
-            incrementVehicleCount(); // Increment No Of Vehicle when New Vehicle Required is checked
+        if (this.checked) {
+            vehicleInput.value = currentValue + 1; // Increment value by 1 when checked
         } else {
-            decrementVehicleCount(); // Decrement No Of Vehicle when unchecked
+            if (currentValue > 1) {
+                vehicleInput.value = currentValue - 1; // Decrement value by 1, but don't go below 1
+            }
         }
     });
 
-    function incrementVehicleCount() {
-        var vehicleInput = document.querySelector('input[placeholder="Enter No of Vehicle"]');
-        var currentValue = parseInt(vehicleInput.value) || 1; // Default to 1 if empty
-        vehicleInput.value = currentValue + 1; // Increment by 1
-    }
-
-    function decrementVehicleCount() {
-        var vehicleInput = document.querySelector('input[placeholder="Enter No of Vehicle"]');
-        var currentValue = parseInt(vehicleInput.value) || 1;
-        if (currentValue > 1) { // Prevent value from going below 1
-            vehicleInput.value = currentValue - 1; // Decrement by 1
-        }
-    }
-
-    function resetVehicleCount() {
-        var vehicleInput = document.querySelector('input[placeholder="Enter No of Vehicle"]');
-        vehicleInput.value = 1; // Reset vehicle count to 1, not empty
-    }
 
 </script>
 @* ******************************************************************************************* *@
