@@ -189,5 +189,24 @@ namespace CIT_Web.Controllers
             }
             return RedirectToAction("Index","Task");
         }
+
+        public async Task<JsonResult> GetAllOrderTask(string OrderNumber)
+        {
+            TaskCreateVM taskCreateVM = new TaskCreateVM();
+            TaskCreateDTO taskCreateDTO = new TaskCreateDTO();
+            try
+            {             
+                var response = await _taskService.GetOrderTaskAsync<APIResponse>(OrderNumber);
+                if (response != null && response.IsSuccess)
+                {
+                    taskCreateDTO = JsonConvert.DeserializeObject<TaskCreateDTO>(Convert.ToString(response.Result));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(taskCreateDTO);
+        }
     }
 }

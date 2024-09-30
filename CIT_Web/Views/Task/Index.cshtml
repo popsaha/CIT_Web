@@ -7,6 +7,10 @@
 <script src="~/js/bootstrap-multiselect.min.js"></script>
 <script src="~/js/jquery.min.js"></script>
 
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+
 <script type="text/javascript">
     $('document').ready(function () {
 
@@ -66,6 +70,30 @@
             debugger
             var Days = $(this).val();
             $("#RepeatDaysName").val(Days);
+        })
+
+        $("#OrderId").change(function () {
+            var OrderNumber = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/Task/GetAllOrderTask",
+                data: { "OrderNumber": OrderNumber },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    console.log(data);
+                    $("#orderType").val(data.orderTypeID);
+                    $("#PickUpType").val(data.pickUpTypeId);
+                    $("#priority").val(data.priorityId);
+                    $("#OrderCreateDate").val(data.orderCreateDate);              
+                    // console.log(data);
+                    // var Branchlst = '<option value="">Select</option>';
+                    // for (var i = 0; i < data.length; i++) {
+                    //     Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
+                    // }
+                    // $("#BranchID").html(Branchlst);
+                }
+            })
         })
     });
 
@@ -293,7 +321,7 @@
                                             <i class="bi bi-signpost-split"></i>
                                         </div>
                                         <select asp-for="OrderRouteId" class="form-select small-input"
-                                                asp-items="@(new SelectList(Model.Orderrouteslst,"OrderRouteId","RouteName"))">                                           
+                                                asp-items="@(new SelectList(Model.Orderrouteslst,"OrderRouteId","RouteName"))">
                                         </select>
                                     </div>
                                 </div>
@@ -534,7 +562,7 @@
 
 @* ************************************Vehicle Assignment Model ********************************* *@
 
-<div class="modal fade custom-modal-size" id="vehicleAssignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true" >
+<div class="modal fade custom-modal-size" id="vehicleAssignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
     <div class="modal-dialog ">
         <!-- Custom size class applied -->
         <div class="modal-content" style="width:430px">
@@ -542,7 +570,7 @@
 
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div> *@
-            <div class="modal-body" >
+            <div class="modal-body">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs " id="assignTabs" role="tablist">
                     <li class="nav-item " role="presentation">
@@ -561,7 +589,7 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="crew-tab" data-bs-toggle="tab" data-bs-target="#crewCommandor-tab" type="button" role="tab" aria-controls="crewCommandor" aria-selected="false">  <i class="bi bi-person-badge-fill "></i> <span class="ms-1 ">Crew Commander </span> </button>
                     </li>
-                  
+
                 </ul>
 
                 <!-- Tab content -->
@@ -715,13 +743,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                            <td>${PickupCustomer}</td>
-                                            <td>${DeliveryCustomer}</td>
-                                            <td>${DeliveryLocation}</td>
-                                            <td>${time}</td>
-                                            <td>${type}</td>
-                                            <td class="d-none">${taskId}</td>
-                                        `;
+                                                        <td>${PickupCustomer}</td>
+                                                        <td>${DeliveryCustomer}</td>
+                                                        <td>${DeliveryLocation}</td>
+                                                        <td>${time}</td>
+                                                        <td>${type}</td>
+                                                        <td class="d-none">${taskId}</td>
+                                                    `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -823,11 +851,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                            <tr class="order-header">
-                                <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                    <div>${orderType}</div>
-                                </td>
-                            </tr>`;
+                                        <tr class="order-header">
+                                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                                <div>${orderType}</div>
+                                            </td>
+                                        </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         const tasksByOrderNumber = tasks.reduce((grouped, task) => {
@@ -838,26 +866,26 @@
 
                         for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
                             const orderNumberHeader = `
-                                <tr class="order-subheader">
-                                    <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
-                                </tr>`;
+                                            <tr class="order-subheader">
+                                                <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
+                                            </tr>`;
                             tableBody.innerHTML += orderNumberHeader;
 
                             orderTasks.forEach(task => {
                                 const row = `
-                                    <tr class="table-border">
-                                        <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                        <td>${task.pickupCustomerName || 'N/A'}</td>
-                                        <td>${task.pickupLocation || 'N/A'}</td>
-                                        <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                        <td>${task.deliveryLocation || 'N/A'}</td>
-                                        <td>${task.pickupType || 'N/A'}</td>
-                                        <td></td><td></td><td></td>
-                                        <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                        <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                        <td class="d-none">${task.taskId}</td>
-                                        <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                    </tr>`;
+                                                <tr class="table-border">
+                                                    <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                    <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                    <td>${task.pickupLocation || 'N/A'}</td>
+                                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                    <td>${task.deliveryLocation || 'N/A'}</td>
+                                                    <td>${task.pickupType || 'N/A'}</td>
+                                                    <td></td><td></td><td></td>
+                                                    <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                    <td class="d-none">${task.taskId}</td>
+                                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                                </tr>`;
                                 tableBody.innerHTML += row;
                             });
                         }
@@ -902,7 +930,7 @@
 @* **************************Full day occupancy check then desable the New wehicle required *** *@
 
 <script>
-    // Get the checkboxes by their ID   
+    // Get the checkboxes by their ID
     const fullDayCheckbox = document.getElementById('fullDayCheck');
     const newVehicleCheckbox = document.getElementById('NewVehicleRequired');
 
