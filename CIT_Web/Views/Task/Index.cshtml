@@ -204,7 +204,7 @@
                         <div class="col-md-4 col-sm-12">
                             <div class="input-group">
                                 <div class="input-group-text"><i class="bi bi-credit-card-2-front-fill"></i></div>
-                                <input asp-for="OrderId" class="form-control small-input" placeholder="Enter Order Id" />
+                                <input asp-for="OrderId" class="form-control small-input" placeholder="Enter Order Number" />
                                 @* <input type="number" placeholder="Enter Order Id" class="form-control small-input" id="OrderId" name="OrderId" min="1" max="100"> *@
                             </div>
                         </div>
@@ -315,17 +315,24 @@
                             <div class="row align-items-center  g-0  mb-2">
                                 <h6 class="mb-2">Assign To</h6>
 
-                                <div class="col-md-6 col-sm-12">
+                                <div class="col-md-4 col-sm-12">
                                     <div class="input-group">
                                         <div class="input-group-text">
-                                            <i class="bi bi-signpost-split"></i>
+                                            Route
                                         </div>
                                         <select asp-for="OrderRouteId" class="form-select small-input"
                                                 asp-items="@(new SelectList(Model.Orderrouteslst,"OrderRouteId","RouteName"))">
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-sm-12 ">
+                                <div class="col-md-4 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-text">No Of Vehicle</div>
+                                        <input class="form-control small-input" value="1" placeholder="Enter No of Vehicle" />
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 ">
                                     <div class="form-check ms-lg-5 ms-1 mt-lg-0 mt-2" id="newVehicle">
                                         <input asp-for="NewVehicleRequired" class="form-check-input" type="checkbox" value="" id="NewVehicleRequired">
                                         <label class="form-check-label" for="newVehicleCheck">
@@ -333,6 +340,7 @@
                                         </label>
                                     </div>
                                 </div>
+                              
                             </div>
                             <div class="mt-0 mb-2">
 
@@ -743,13 +751,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                                        <td>${PickupCustomer}</td>
-                                                        <td>${DeliveryCustomer}</td>
-                                                        <td>${DeliveryLocation}</td>
-                                                        <td>${time}</td>
-                                                        <td>${type}</td>
-                                                        <td class="d-none">${taskId}</td>
-                                                    `;
+                                                <td>${PickupCustomer}</td>
+                                                <td>${DeliveryCustomer}</td>
+                                                <td>${DeliveryLocation}</td>
+                                                <td>${time}</td>
+                                                <td>${type}</td>
+                                                <td class="d-none">${taskId}</td>
+                                            `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -851,11 +859,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                                        <tr class="order-header">
-                                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                                <div>${orderType}</div>
-                                            </td>
-                                        </tr>`;
+                                <tr class="order-header">
+                                    <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                        <div>${orderType}</div>
+                                    </td>
+                                </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         const tasksByOrderNumber = tasks.reduce((grouped, task) => {
@@ -866,26 +874,26 @@
 
                         for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
                             const orderNumberHeader = `
-                                            <tr class="order-subheader">
-                                                <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
-                                            </tr>`;
+                                    <tr class="order-subheader">
+                                        <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
+                                    </tr>`;
                             tableBody.innerHTML += orderNumberHeader;
 
                             orderTasks.forEach(task => {
                                 const row = `
-                                                <tr class="table-border">
-                                                    <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                                    <td>${task.pickupCustomerName || 'N/A'}</td>
-                                                    <td>${task.pickupLocation || 'N/A'}</td>
-                                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                                    <td>${task.deliveryLocation || 'N/A'}</td>
-                                                    <td>${task.pickupType || 'N/A'}</td>
-                                                    <td></td><td></td><td></td>
-                                                    <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                                    <td class="d-none">${task.taskId}</td>
-                                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                                </tr>`;
+                                        <tr class="table-border">
+                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                            <td>${task.pickupCustomerName || 'N/A'}</td>
+                                            <td>${task.pickupLocation || 'N/A'}</td>
+                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                            <td>${task.deliveryLocation || 'N/A'}</td>
+                                            <td>${task.pickupType || 'N/A'}</td>
+                                            <td></td><td></td><td></td>
+                                            <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                            <td class="d-none">${task.taskId}</td>
+                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                        </tr>`;
                                 tableBody.innerHTML += row;
                             });
                         }
@@ -930,21 +938,30 @@
 @* **************************Full day occupancy check then desable the New wehicle required *** *@
 
 <script>
-    // Get the checkboxes by their ID
-    const fullDayCheckbox = document.getElementById('fullDayCheck');
-    const newVehicleCheckbox = document.getElementById('NewVehicleRequired');
+    document.getElementById('fullDayCheck').addEventListener('change', function () {
+        var newVehicleCheckbox = document.getElementById('NewVehicleRequired');
 
-    // Add an event listener to monitor changes to the Full Day checkbox
-    fullDayCheckbox.addEventListener('change', function () {
         if (this.checked) {
-            // Disable the New Vehicle checkbox when Full Day is checked
-            newVehicleCheckbox.disabled = true;
-            newVehicleCheckbox.checked = false; // Uncheck it as well
+            newVehicleCheckbox.disabled = true; // Disable the "New Vehicle Required" checkbox
         } else {
-            // Enable the New Vehicle checkbox when Full Day is unchecked
-            newVehicleCheckbox.disabled = false;
+            newVehicleCheckbox.disabled = false; // Enable the "New Vehicle Required" checkbox
         }
     });
+
+    document.getElementById('NewVehicleRequired').addEventListener('change', function () {
+        var vehicleInput = document.querySelector('input[placeholder="Enter No of Vehicle"]');
+        var currentValue = parseInt(vehicleInput.value) || 1; // Default to 1 if empty or invalid value
+
+        if (this.checked) {
+            vehicleInput.value = currentValue + 1; // Increment value by 1 when checked
+        } else {
+            if (currentValue > 1) {
+                vehicleInput.value = currentValue - 1; // Decrement value by 1, but don't go below 1
+            }
+        }
+    });
+
+
 </script>
 @* ******************************************************************************************* *@
 
