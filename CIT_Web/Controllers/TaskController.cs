@@ -38,7 +38,7 @@ namespace CIT_Web.Controllers
             if (OrderType_response != null && OrderType_response.IsSuccess)
             {
                 taskVM.OrderTypelist = JsonConvert.DeserializeObject<List<OrderType>>(Convert.ToString(OrderType_response.Result));
-                taskVM.OrderTypelist.Insert(0, new OrderType { OrderTypeID = 0, TypeName = "Select" });
+                taskVM.OrderTypelist.Insert(0, new OrderType { OrderTypeID = 0, TypeName = "Select Order Type" });
             }
 
                 List<PriorityMaster> Prioritymasterlist = new List<PriorityMaster>{
@@ -50,7 +50,7 @@ namespace CIT_Web.Controllers
                 taskVM.PriorityMasterlist = Prioritymasterlist;
 
                 List<PickTypeMaster> PickTypeMasterlist = new List<PickTypeMaster>{
-                new PickTypeMaster{ PickUpTypeId =0,PickUpTypeName="select"},
+                new PickTypeMaster{ PickUpTypeId =0,PickUpTypeName="Select Pickup Type"},
                 new PickTypeMaster{ PickUpTypeId =1,PickUpTypeName="CIT"},
                 new PickTypeMaster{ PickUpTypeId =2,PickUpTypeName="BSS"},
                 new PickTypeMaster{ PickUpTypeId =3,PickUpTypeName="ATM"},
@@ -82,21 +82,21 @@ namespace CIT_Web.Controllers
                 if (Customer_response != null && Customer_response.IsSuccess)
                 {
                     taskVM.customerslist = JsonConvert.DeserializeObject<List<CustomerDTO>>(Convert.ToString(Customer_response.Result));
-                    taskVM.customerslist.Insert(0, new CustomerDTO { CustomerId = 0, CustomerName = "select" });
+                    taskVM.customerslist.Insert(0, new CustomerDTO { CustomerId = 0, CustomerName = "Select Sender" });
                 }
 
             var IsVaultLocation_response = await _taskService.GetAllVaultLocationAsync<APIResponse>();
             if (IsVaultLocation_response != null && IsVaultLocation_response.IsSuccess)
             {
                 taskVM.vaultLovationMasters = JsonConvert.DeserializeObject<List<VaultLovationMaster>>(Convert.ToString(IsVaultLocation_response.Result));
-                taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "select" });
+                taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "Select Sender's Location" });
             }
 
             var Orderrouteslst_response = await _taskService.GetOrderRoutesAsync<APIResponse>();
             if (Orderrouteslst_response != null && Orderrouteslst_response.IsSuccess)
             {
                 taskVM.Orderrouteslst = JsonConvert.DeserializeObject<List<OrderRoutes>>(Convert.ToString(Orderrouteslst_response.Result));
-                taskVM.Orderrouteslst.Insert(0, new OrderRoutes { OrderRouteId = 0, RouteName = "select" });
+                taskVM.Orderrouteslst.Insert(0, new OrderRoutes { OrderRouteId = 0, RouteName = "Select Recipient" });
             }
 
 
@@ -177,6 +177,7 @@ namespace CIT_Web.Controllers
                 taskCreateDTO.isVaultFinal = taskcreateModel.isVaultFinal;
                 taskCreateDTO.OrderRouteId = taskcreateModel.OrderRouteId;
                 taskCreateDTO.NewVehicleRequired = taskcreateModel.NewVehicleRequired;
+                taskCreateDTO.fullDayCheck = taskcreateModel.fullDayCheck;
 
                 var TaskcreateDTO = _mapper.Map<TaskCreateDTO>(taskCreateDTO);
 

@@ -23,6 +23,8 @@ namespace CIT_Web.Models.ViewModel
         public bool isVaultFinal { get; set; }
         public int OrderRouteId { get; set; }
         public bool NewVehicleRequired { get; set; }
+        public bool fullDayCheck { get; set; }
+        public string OrderNumber { get; set; }
         public List<OrderType> OrderTypelist { get; set; }
         public List<PriorityMaster> PriorityMasterlist { get; set; }
         public List<PickTypeMaster> Picktypemasterlst { get; set; }

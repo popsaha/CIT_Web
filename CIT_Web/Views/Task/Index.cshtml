@@ -4,15 +4,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="~/css/datepicker.min.css" rel="stylesheet" />
 <script src="~/js/bootstrap-multiselect.min.js"></script>
 <script src="~/js/jquery.min.js"></script>
 
-<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+@* <script src="~/js/datepicker.common.min.js"></script>
+<script src="~/js/datepicker.min.js"></script> *@
+
+<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
 <script type="text/javascript">
     $('document').ready(function () {
+
 
         $("#btnAddTsk").click(function () {
             $('#myModal').show();
@@ -20,8 +25,8 @@
 
         $("#btnAddTaskInRows").click(function () {
             debugger
-            // var Valid = true;
-            var Valid = Validation()
+            var Valid = true;
+            //var Valid = Validation()
             if (Valid == true) {
                 $('#add-save-btn').prop('disabled', true);
                 $("#btnAddmoreTask").click();
@@ -85,16 +90,24 @@
                     $("#orderType").val(data.orderTypeID);
                     $("#PickUpType").val(data.pickUpTypeId);
                     $("#priority").val(data.priorityId);
-                    $("#OrderCreateDate").val(data.orderCreateDate);              
-                    // console.log(data);
-                    // var Branchlst = '<option value="">Select</option>';
-                    // for (var i = 0; i < data.length; i++) {
-                    //     Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
-                    // }
-                    // $("#BranchID").html(Branchlst);
+                    $("#OrderCreateDate").val(data.orderCreateDate);
+                    if (data.fullDayCheck == true) {
+                        $("#fullDayCheck").prop('checked', true);
+                        $("#NewVehicleRequired").attr('disabled', true);
+                    }
+                    else {
+                        $("#fullDayCheck").prop('checked', false);
+                        $("#NewVehicleRequired").attr('disabled', false);
+                    }
+                    $("#OrderRouteId").val(data.orderRouteId);
+                    if (data.orderTypeID) {
+                        $("#btnAddTaskInRows").attr('disabled', true);
+                    }
+
                 }
             })
         })
+
     });
 
     function Validation() {
@@ -199,12 +212,11 @@
                                 </select>
                             </div>
                         </div>
-
                         <!-- Order ID Input -->
                         <div class="col-md-4 col-sm-12">
                             <div class="input-group">
                                 <div class="input-group-text"><i class="bi bi-credit-card-2-front-fill"></i></div>
-                                <input asp-for="OrderId" class="form-control small-input" placeholder="Enter Order Number" />
+                                <input asp-for="OrderNumber" class="form-control small-input" placeholder="Enter Order Number" />
                                 @* <input type="number" placeholder="Enter Order Id" class="form-control small-input" id="OrderId" name="OrderId" min="1" max="100"> *@
                             </div>
                         </div>
@@ -229,7 +241,7 @@
                     <div class="row">
                         <div class="col-md-6 col-sm-12 mt-2 mb-2">
                             <div class="form-check  ms-1 mt-lg-0 mt-2" id="fullDay">
-                                <input class="form-check-input" type="checkbox" value="" id="fullDayCheck">
+                                <input asp-for="fullDayCheck" class="form-check-input" type="checkbox">
                                 <label class="form-check-label" for="fullDayCheck">
                                     Full day occupancy
                                 </label>
@@ -340,7 +352,7 @@
                                         </label>
                                     </div>
                                 </div>
-                              
+
                             </div>
                             <div class="mt-0 mb-2">
 
@@ -751,13 +763,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                                <td>${PickupCustomer}</td>
-                                                <td>${DeliveryCustomer}</td>
-                                                <td>${DeliveryLocation}</td>
-                                                <td>${time}</td>
-                                                <td>${type}</td>
-                                                <td class="d-none">${taskId}</td>
-                                            `;
+                                                                    <td>${PickupCustomer}</td>
+                                                                    <td>${DeliveryCustomer}</td>
+                                                                    <td>${DeliveryLocation}</td>
+                                                                    <td>${time}</td>
+                                                                    <td>${type}</td>
+                                                                    <td class="d-none">${taskId}</td>
+                                                                `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -859,11 +871,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                                <tr class="order-header">
-                                    <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                        <div>${orderType}</div>
-                                    </td>
-                                </tr>`;
+                                                    <tr class="order-header">
+                                                        <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                                            <div>${orderType}</div>
+                                                        </td>
+                                                    </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         const tasksByOrderNumber = tasks.reduce((grouped, task) => {
@@ -874,26 +886,26 @@
 
                         for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
                             const orderNumberHeader = `
-                                    <tr class="order-subheader">
-                                        <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
-                                    </tr>`;
+                                                        <tr class="order-subheader">
+                                                            <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
+                                                        </tr>`;
                             tableBody.innerHTML += orderNumberHeader;
 
                             orderTasks.forEach(task => {
                                 const row = `
-                                        <tr class="table-border">
-                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                            <td>${task.pickupCustomerName || 'N/A'}</td>
-                                            <td>${task.pickupLocation || 'N/A'}</td>
-                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                            <td>${task.deliveryLocation || 'N/A'}</td>
-                                            <td>${task.pickupType || 'N/A'}</td>
-                                            <td></td><td></td><td></td>
-                                            <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                            <td class="d-none">${task.taskId}</td>
-                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                        </tr>`;
+                                                            <tr class="table-border">
+                                                                <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                                <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                                <td>${task.pickupLocation || 'N/A'}</td>
+                                                                <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                                <td>${task.deliveryLocation || 'N/A'}</td>
+                                                                <td>${task.pickupType || 'N/A'}</td>
+                                                                <td></td><td></td><td></td>
+                                                                <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                                <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                                <td class="d-none">${task.taskId}</td>
+                                                                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                                            </tr>`;
                                 tableBody.innerHTML += row;
                             });
                         }

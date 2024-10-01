@@ -19,5 +19,6 @@
         public bool isVaultFinal { get; set; }
         public int OrderRouteId { get; set; }
         public bool NewVehicleRequired { get; set; }
+        public bool fullDayCheck { get; set; }
     }
 }
