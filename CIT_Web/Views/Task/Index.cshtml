@@ -7,6 +7,10 @@
 <script src="~/js/bootstrap-multiselect.min.js"></script>
 <script src="~/js/jquery.min.js"></script>
 
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+
 
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -73,6 +77,30 @@
             debugger
             var Days = $(this).val();
             $("#RepeatDaysName").val(Days);
+        })
+
+        $("#OrderId").change(function () {
+            var OrderNumber = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/Task/GetAllOrderTask",
+                data: { "OrderNumber": OrderNumber },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    console.log(data);
+                    $("#orderType").val(data.orderTypeID);
+                    $("#PickUpType").val(data.pickUpTypeId);
+                    $("#priority").val(data.priorityId);
+                    $("#OrderCreateDate").val(data.orderCreateDate);              
+                    // console.log(data);
+                    // var Branchlst = '<option value="">Select</option>';
+                    // for (var i = 0; i < data.length; i++) {
+                    //     Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
+                    // }
+                    // $("#BranchID").html(Branchlst);
+                }
+            })
         })
     });
 
