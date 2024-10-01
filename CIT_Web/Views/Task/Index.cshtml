@@ -15,6 +15,13 @@
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
+
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script type="text/javascript">
     $('document').ready(function () {
 
@@ -233,10 +240,19 @@
                         </div>
 
                         <div class="col-md-6 col-sm-12">
-                            <div class="input-group">
-                                <input asp-for="OrderCreateDate" type="date" class="form-control small-input">
-                            </div>
+                         @*    <div class="input-group">
+                                <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control small-input" placeholder="Choose date">
+                            </div> *@
+                       
+                               
+                                <div class="input-group">
+                                    <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control" placeholder="Choose date">
+                                    <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                                </div>
+                           
+
                         </div>
+
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-sm-12 mt-2 mb-2">
@@ -354,7 +370,7 @@
                                 </div>
 
                             </div>
-                            <div class="mt-0 mb-2">
+                            <div id="repeatTaskSection" class="mt-0 mb-2" style="display:none;">
 
                                 <!-- Repeat This Task Toggle -->
                                 <div class="form-check form-switch mb-2 fw-bold">
@@ -975,5 +991,43 @@
 
 
 </script>
+
 @* ******************************************************************************************* *@
+@* **************If OrderType will be Standing then show the repeat this task show ***** *******@
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var orderTypeDropdown = document.getElementById('orderType');
+        var repeatTaskSection = document.getElementById('repeatTaskSection');
+        var fullDayOccupancy = document.getElementById('fullDay');
+
+        // Function to toggle visibility based on the selected OrderType
+        function toggleRepeatTaskSection() {
+            var selectedOrderType = orderTypeDropdown.options[orderTypeDropdown.selectedIndex].text;
+            if (selectedOrderType === 'Standing') {
+                repeatTaskSection.style.display = 'block';
+                fullDayOccupancy.style.display = 'block';
+            } else {
+                repeatTaskSection.style.display = 'none';
+                fullDayOccupancy.style.display = 'none';
+            }
+        }
+
+        // Trigger the function when the page loads (in case a value is preselected)
+        toggleRepeatTaskSection();
+
+        // Attach the event listener to the dropdown
+        orderTypeDropdown.addEventListener('change', toggleRepeatTaskSection);
+    });
+</script>
+
+@* ******************************************************************************************* *@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#orderCreateDate", {
+            dateFormat: "Y-m-d",  // Customize the date format
+            allowInput: true      // Optional: Allow manual input
+        });
+    });
+</script>
 
