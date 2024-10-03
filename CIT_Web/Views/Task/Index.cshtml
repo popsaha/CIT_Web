@@ -373,7 +373,7 @@
 
 
                             <div class="input-group">
-                                <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control" placeholder="Choose date">
+                                <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control" placeholder="Select order date">
                                 <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
                             </div>
 
@@ -520,7 +520,9 @@
                                     <div class="col-md-6 col-sm-12">
                                         <div class="input-group w-100">
                                             <div class="input-group-text">Ends on</div>
-                                            <input asp-for="EndOnDate" type="text" class="form-control small-input">
+                                            <input asp-for="EndOnDate" type="text" class="form-control small-input" placeholder="Select end date">
+                                            <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+
                                         </div>
                                     </div>
                                     <!-- Repeats On Multi-select Dropdown -->
@@ -1160,7 +1162,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#orderCreateDate", {
-            dateFormat: "Y-m-d",  // Customize the date format
+            dateFormat: "d-m-y",  // Customize the date format
             allowInput: true      // Optional: Allow manual input
         });
 
