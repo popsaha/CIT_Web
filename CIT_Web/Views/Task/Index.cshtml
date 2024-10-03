@@ -132,7 +132,7 @@
     });
 
     function Validation() {
-
+        debugger
         var IsValid = true;
         var OrderTypeID = $("#orderType").val();
         var PriorityId = $("#priority").val();
@@ -190,7 +190,7 @@
             $("#orderCreateDate").css("border", "1px solid #C3C1C1");
         }
 
-        if (OrderTypeID == "1" && (CustomerId == "0" || CustomerId == undefined)) {
+        if (OrderTypeID == "1" && (CustomerId == "0" || CustomerId == "" || CustomerId == undefined)) {
             $("#CustomerId").css("border", "1px solid red");
             IsValid = false;
         }
@@ -212,7 +212,7 @@
         //     IsValid = false;
         // }
 
-        if (OrderTypeID == "1" && (CustomerRecipiantId == "0" || CustomerRecipiantId == undefined)) {
+        if (OrderTypeID == "1" && (CustomerRecipiantId == "0" || CustomerRecipiantId == "" || CustomerRecipiantId == undefined)) {
             $("#CustomerRecipiantId").css("border", "1px solid red");
             IsValid = false;
         }
