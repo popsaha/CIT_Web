@@ -8,14 +8,6 @@
 <script src="~/js/bootstrap-multiselect.min.js"></script>
 <script src="~/js/jquery.min.js"></script>
 
-@* <script src="~/js/datepicker.common.min.js"></script>
-<script src="~/js/datepicker.min.js"></script> *@
-
-<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-
-
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -32,8 +24,8 @@
 
         $("#btnAddTaskInRows").click(function () {
             debugger
-            var Valid = true;
-            //var Valid = Validation()
+            //var Valid = true;
+            var Valid = Validation()
             if (Valid == true) {
                 $('#add-save-btn').prop('disabled', true);
                 $("#btnAddmoreTask").click();
@@ -84,7 +76,7 @@
             $("#RepeatDaysName").val(Days);
         })
 
-        $("#OrderId").change(function () {
+        $("#OrderNumber").change(function () {
             var OrderNumber = $(this).val();
             $.ajax({
                 type: "GET",
@@ -93,38 +85,60 @@
                 dataType: "json",
                 success: function (data) {
                     debugger
-                    console.log(data);
                     $("#orderType").val(data.orderTypeID);
                     $("#PickUpType").val(data.pickUpTypeId);
                     $("#priority").val(data.priorityId);
-                    $("#OrderCreateDate").val(data.orderCreateDate);
-                    if (data.fullDayCheck == true) {
-                        $("#fullDayCheck").prop('checked', true);
-                        $("#NewVehicleRequired").attr('disabled', true);
+                    $("#orderCreateDate").val(data.orderCreateDate);
+                    if (data.orderTypeID == 2) {
+                        if (data.fullDayCheck == true) {
+                            $("#fullDayCheck").prop('checked', true);
+                            $("#NewVehicleRequired").attr('disabled', true);
+                        }
+                        $("#fullDay").show();
+                        $("#repeatTaskSection").show();
+                        $("#repeatsSection").show();
+                        $("#repeatTask").prop("checked", true);
+                        $("#repeatsMode").val(data.repeatId);
+                        $("#EndOnDate").val(data.endOnDate);
+                        $("#choices-multiple-remove-button").val(data.repeatDaysName);
                     }
                     else {
-                        $("#fullDayCheck").prop('checked', false);
-                        $("#NewVehicleRequired").attr('disabled', false);
+                        if (data.fullDayCheck == true) {
+                            $("#fullDayCheck").prop('checked', false);
+                            $("#NewVehicleRequired").attr('disabled', false);
+                        }
+                        $("#fullDay").hide();
+                        $("#repeatTaskSection").hide();
+                        $("#repeatsSection").hide();
+                        $("#repeatTask").prop("checked", false);
                     }
                     $("#OrderRouteId").val(data.orderRouteId);
-                    if (data.orderTypeID) {
+                    if (data.orderTypeID == 1) {
                         $("#btnAddTaskInRows").attr('disabled', true);
                     }
-
+                    else {
+                        $("#btnAddTaskInRows").attr('disabled', false);
+                    }
                 }
             })
         })
 
+        $("#btnpopupclose").click(function () {
+            Reset();
+        });
+        $("#btnClose").click(function () {
+            Reset();
+        });
     });
 
     function Validation() {
-        debugger
+
         var IsValid = true;
         var OrderTypeID = $("#orderType").val();
         var PriorityId = $("#priority").val();
         var OrderId = $("#OrderId").val();
         var PickUpTypeId = $("#PickUpType").val();
-        var Createorderdate = $("#OrderCreateDate").val();
+        var Createorderdate = $("#orderCreateDate").val();
         var CustomerId = $("#CustomerId").val();
         var BranchID = $("#BranchID").val();
         var VaultId = $("#VaultID").val();
@@ -132,56 +146,143 @@
         var CustomerRecipiantId = $("#CustomerRecipiantId").val();
         var CustomerRecipiantLocationId = $("#CustomerRecipiantLocationId").val();
 
+        var OrderRouteId = $("#OrderRouteId").val();
+
         var MyRadio_repeatTask = $('input[name=repeatTask]:checked').val();
+
+        var repeatsMode = $("#repeatsMode").val();
+        var EndOnDate = $("#EndOnDate").val();
 
         var isVault = $('#isVault').prop('checked');
         var isVaultFinal = $('#isVaultFinal').prop('checked');
+
+        var repeatdaysname = $("#RepeatDaysName").val();
 
         if (OrderTypeID == "0" || OrderTypeID == undefined) {
             $("#orderType").css("border", "1px solid red");
             IsValid = false;
         }
+        else {
+            $("#orderType").css("border", "1px solid #C3C1C1");
+        }
+
         if (PriorityId == "0" || PriorityId == undefined) {
             $("#priority").css("border", "1px solid red");
             IsValid = false;
         }
-        // if (OrderId == "" || OrderId == undefined) {
-        //     $("#OrderId").css("border", "1px solid red");
-        //     IsValid = false;
-        // }
+        else {
+            $("#priority").css("border", "1px solid #C3C1C1");
+        }
 
         if (PickUpTypeId == "0" || PickUpTypeId == undefined) {
             $("#PickUpType").css("border", "1px solid red");
             IsValid = false;
         }
-        if (Createorderdate == "" || Createorderdate == undefined) {
-            $("#OrderCreateDate").css("border", "1px solid red");
-            IsValid = false;
+        else {
+            $("#PickUpType").css("border", "1px solid #C3C1C1");
         }
 
-        if (CustomerId == "0" || CustomerId == undefined) {
+        if (Createorderdate == "" || Createorderdate == undefined) {
+            $("#orderCreateDate").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#orderCreateDate").css("border", "1px solid #C3C1C1");
+        }
+
+        if (OrderTypeID == "1" && (CustomerId == "0" || CustomerId == undefined)) {
             $("#CustomerId").css("border", "1px solid red");
             IsValid = false;
         }
-        if (BranchID == "0" || BranchID == null) {
+
+        else{
+            $("#CustomerId").css("border", "1px solid #C3C1C1");
+        }
+
+        if (OrderTypeID == "1" && (BranchID == "0" || BranchID == null)) {
             $("#BranchID").css("border", "1px solid red");
             IsValid = false;
         }
-
-        if ((VaultId == "0" || VaultId == null) && isVault == true) {
-            $("#VaultID").css("border", "1px solid red");
-            IsValid = false;
+        else{
+            $("#BranchID").css("border", "1px solid #C3C1C1");
         }
 
-        if ((CustomerRecipiantId == "0" || CustomerRecipiantId == undefined) && isVaultFinal != true) {
+        // if ((VaultId == "0" || VaultId == null) && isVault == true) {
+        //     $("#VaultID").css("border", "1px solid red");
+        //     IsValid = false;
+        // }
+
+        if (OrderTypeID == "1" && (CustomerRecipiantId == "0" || CustomerRecipiantId == undefined)) {
             $("#CustomerRecipiantId").css("border", "1px solid red");
             IsValid = false;
         }
-        if ((CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == null) && isVaultFinal != true) {
+        else{
+            $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
+        }
+
+        if (OrderTypeID == "1" && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == null)) {
             $("#CustomerRecipiantLocationId").css("border", "1px solid red");
             IsValid = false;
         }
+        else{
+            $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+        }
+
+        if (OrderRouteId == "0" || OrderRouteId == null) {
+            $("#OrderRouteId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else{
+            $("#OrderRouteId").css("border", "1px solid #C3C1C1");
+        }
+
+        if (OrderTypeID == "2" && (MyRadio_repeatTask == undefined)) {
+            $("#CustomerRecipiantLocationId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && repeatsMode == 0) {
+            $("#repeatsMode").css("border", "1px solid red");
+            IsValid = false;
+        }
+        if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && (EndOnDate == 0 || EndOnDate == undefined)) {
+            $("#EndOnDate").css("border", "1px solid red");
+            IsValid = false;
+        }
+        // if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && repeatsMode == 2 && (repeatdaysname == "" || repeatdaysname == undefined)) {
+        //     $("#choices-multiple-remove-button").css("border", "1px solid red");
+        //     IsValid = false;
+        // }
         return IsValid;
+    }
+
+    function ResetRepeat() {
+        debugger
+        $("#fullDayCheck").prop('checked', false);
+        $("#repeatsMode").val(0);
+        $("#EndOnDate").val('');
+    }
+    function Reset() {
+        debugger
+        $("#OrderNumber").val("");
+        $("#orderType").val(0);
+        $("#priority").val(0);
+        $("#OrderId").val("");
+        $("#PickUpType").val(0);
+        $("#orderCreateDate").val("");
+        $("#CustomerId").val(0);
+        $("#BranchID").val(0);
+        //$("#VaultID").val();
+        $("#CustomerRecipiantId").val(0);
+        $("#CustomerRecipiantLocationId").val(0);
+        $("#OrderRouteId").val(0);
+        $("#repeatsMode").val(0);
+        $("#EndOnDate").val("");
+        $("#RepeatDaysName").val("");
+        $("#fullDayCheck").prop('checked', false);
+        $("#fullDay").hide();
+        $("#repeatTaskSection").hide();
+        $("#repeatsSection").hide();
+        $("#repeatTask").prop("checked", false);
     }
 </script>
 <form enctype="multipart/form-data" asp-controller="Task" ,asp-action="Index" method="post">
@@ -191,7 +292,7 @@
             <div class="modal-content">
                 <div class="modal-header" style="padding: 10px;">
                     <h5 class="modal-title" id="myModalLabel">New Order</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" id="btnpopupclose" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div id="modal-content" class="modal-body">
                     <div id="orderMessage" style="display: none;">
@@ -240,16 +341,16 @@
                         </div>
 
                         <div class="col-md-6 col-sm-12">
-                         @*    <div class="input-group">
-                                <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control small-input" placeholder="Choose date">
+                            @*    <div class="input-group">
+                            <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control small-input" placeholder="Choose date">
                             </div> *@
-                       
-                               
-                                <div class="input-group">
-                                    <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control" placeholder="Choose date">
-                                    <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-                                </div>
-                           
+
+
+                            <div class="input-group">
+                                <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control" placeholder="Choose date">
+                                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                            </div>
+
 
                         </div>
 
@@ -393,7 +494,7 @@
                                     <div class="col-md-6 col-sm-12">
                                         <div class="input-group w-100">
                                             <div class="input-group-text">Ends on</div>
-                                            <input asp-for="EndOnDate" type="date" class="form-control small-input" id="endsOn">
+                                            <input asp-for="EndOnDate" type="text" class="form-control small-input">
                                         </div>
                                     </div>
                                     <!-- Repeats On Multi-select Dropdown -->
@@ -426,16 +527,15 @@
 
 
                     <div class="modal-footer d-flex justify-content-between " style="font-size:12px !important; padding:0px !important">
-                        <button type="button" style="font-size:12px !important;" class="btn btn-secondary mt-3" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
+                        <button type="button" id="btnClose" style="font-size:12px !important;" class="btn btn-secondary mt-3" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
                         <div>
-
 
                             <input type="button" style="font-size:12px !important; color: #032b56; border-color: #032b56; bi bi-file-earmark-pdf !important;"
                                    class="btn btn-outline mt-3" value="Save & Add Another" id="btnsave">
 
                             <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
                             @* <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button> *@
-                            <input type="button" style="font-size:12px !important;" class="btn btn-color mt-3" data-bs-dismiss="modal" value="Save and Close" id="btnAddTaskInRows" />
+                            <input type="button" style="font-size:12px !important;" class="btn btn-color mt-3" value="Save and Close" id="btnAddTaskInRows" />
                             @* <i class="bi bi-file-earmark-lock-fill"></i> Save and close *@
                         </div>
 
@@ -779,13 +879,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                                                    <td>${PickupCustomer}</td>
-                                                                    <td>${DeliveryCustomer}</td>
-                                                                    <td>${DeliveryLocation}</td>
-                                                                    <td>${time}</td>
-                                                                    <td>${type}</td>
-                                                                    <td class="d-none">${taskId}</td>
-                                                                `;
+                                                                                                                                                                        <td>${PickupCustomer}</td>
+                                                                                                                                                                        <td>${DeliveryCustomer}</td>
+                                                                                                                                                                        <td>${DeliveryLocation}</td>
+                                                                                                                                                                        <td>${time}</td>
+                                                                                                                                                                        <td>${type}</td>
+                                                                                                                                                                        <td class="d-none">${taskId}</td>
+                                                                                                                                                                    `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -887,11 +987,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                                                    <tr class="order-header">
-                                                        <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                                            <div>${orderType}</div>
-                                                        </td>
-                                                    </tr>`;
+                                                                                                                                                        <tr class="order-header">
+                                                                                                                                                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                                                                                                                                                <div>${orderType}</div>
+                                                                                                                                                            </td>
+                                                                                                                                                        </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         const tasksByOrderNumber = tasks.reduce((grouped, task) => {
@@ -902,26 +1002,26 @@
 
                         for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
                             const orderNumberHeader = `
-                                                        <tr class="order-subheader">
-                                                            <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
-                                                        </tr>`;
+                                                                                                                                                            <tr class="order-subheader">
+                                                                                                                                                                <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
+                                                                                                                                                            </tr>`;
                             tableBody.innerHTML += orderNumberHeader;
 
                             orderTasks.forEach(task => {
                                 const row = `
-                                                            <tr class="table-border">
-                                                                <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                                                <td>${task.pickupCustomerName || 'N/A'}</td>
-                                                                <td>${task.pickupLocation || 'N/A'}</td>
-                                                                <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                                                <td>${task.deliveryLocation || 'N/A'}</td>
-                                                                <td>${task.pickupType || 'N/A'}</td>
-                                                                <td></td><td></td><td></td>
-                                                                <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                                                <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                                                <td class="d-none">${task.taskId}</td>
-                                                                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                                            </tr>`;
+                                                                                                                                                                <tr class="table-border">
+                                                                                                                                                                    <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                                                                                                                                    <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                                                                                                                                    <td>${task.pickupLocation || 'N/A'}</td>
+                                                                                                                                                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                                                                                                                                    <td>${task.deliveryLocation || 'N/A'}</td>
+                                                                                                                                                                    <td>${task.pickupType || 'N/A'}</td>
+                                                                                                                                                                    <td></td><td></td><td></td>
+                                                                                                                                                                    <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                                                                                                                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                                                                                                                                    <td class="d-none">${task.taskId}</td>
+                                                                                                                                                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                                                                                                                                                </tr>`;
                                 tableBody.innerHTML += row;
                             });
                         }
@@ -1001,16 +1101,22 @@
         var repeatTaskSection = document.getElementById('repeatTaskSection');
         var fullDayOccupancy = document.getElementById('fullDay');
 
+        var repeatTaskCheckbox = document.getElementById('repeatTask');
+        var repeatsSection = document.getElementById('repeatsSection');
+
         // Function to toggle visibility based on the selected OrderType
         function toggleRepeatTaskSection() {
             var selectedOrderType = orderTypeDropdown.options[orderTypeDropdown.selectedIndex].text;
             if (selectedOrderType === 'Standing') {
                 repeatTaskSection.style.display = 'block';
                 fullDayOccupancy.style.display = 'block';
+                repeatTaskCheckbox.checked = true;
+                repeatsSection.style.display = 'block';
             } else {
                 repeatTaskSection.style.display = 'none';
                 fullDayOccupancy.style.display = 'none';
             }
+            //Reset();
         }
 
         // Trigger the function when the page loads (in case a value is preselected)
@@ -1026,6 +1132,11 @@
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#orderCreateDate", {
             dateFormat: "Y-m-d",  // Customize the date format
+            allowInput: true      // Optional: Allow manual input
+        });
+
+        flatpickr("#EndOnDate", {
+            dateFormat: "d-m-y",  // Customize the date format
             allowInput: true      // Optional: Allow manual input
         });
     });
