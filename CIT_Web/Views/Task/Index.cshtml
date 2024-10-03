@@ -661,8 +661,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="ms-4 mt-4" style="font-size:14px !important">
-                <span>Group Name : </span>
-                <input type="text" id="groupNameInput" placeholder="Enter Group..." style="padding:0px 3px" />
+                <span>Route Name : </span>
+                <input type="text" id="routeNameInput" placeholder="Enter Route..." style="padding:0px 3px" />
             </div>
             <div class="modal-body" id="modal-content" style="overflow-x:auto">
                 <table class="table table-bordered" style="font-size:12px !important">
@@ -900,38 +900,41 @@
 <script src="~/js/config.js"></script>
 <script>
     document.getElementById('saveGroupButton').addEventListener('click', function () {
-        const groupName = document.getElementById('groupNameInput').value.trim();
+        const routeName = document.getElementById('routeNameInput').value.trim(); // Getting the route name
 
-        if (!groupName) {
-            alert("Please enter a group name.");
+        if (!routeName) {
+            alert("Please enter a route name.");
             return;
         }
-        const taskGroupDtos = [];
 
-        // Collect selected rows data
+        const orderIds = [];
+
+        // Collect selected rows data (assuming the order ID is in the 6th column of the table)
         document.querySelectorAll('#selectedOrdersTableBody tr').forEach(function (row) {
-            const taskId = row.cells[5].textContent.trim();
-
-            // Create the DTO for each selected task
-            taskGroupDtos.push({
-                TaskId: parseInt(taskId),
-                GroupName: groupName
-            });
+            const orderId = row.cells[5].textContent.trim(); // Extracting the order ID
+            orderIds.push(parseInt(orderId)); // Adding it to the orderIds array
         });
-        if (taskGroupDtos.length === 0) {
-            alert("No tasks selected.");
+
+        if (orderIds.length === 0) {
+            alert("No orders selected.");
             return;
         }
-        console.log("taskGroupDtos", taskGroupDtos)
 
+        // Prepare the data in the required format
+        const requestData = {
+            orderIds: orderIds, // Array of order IDs
+            routeName: routeName // Route name
+        };
+
+        console.log("requestData", requestData); // For debugging
 
         // Send the data to the API
-        fetch(`${API_BASE_URL}/api/TaskGroup/AddTaskGroup`, {
+        fetch(`${API_BASE_URL}/api/Order/updateRoute`, { // Update with the actual API endpoint
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(taskGroupDtos)
+            body: JSON.stringify(requestData) // Send the data in JSON format
         })
             .then(response => response.json())
             .then(data => {
@@ -940,14 +943,14 @@
                     // Optionally, close the modal
                     $('#Groupmodal').modal('hide');
                 }
-
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("An error occurred while saving the group.");
+                alert("An error occurred while saving the route.");
             });
     });
 </script>
+
 
 @* ******************************Filter data based on Date*********************************** *@
 
@@ -1111,7 +1114,7 @@
                 repeatTaskSection.style.display = 'block';
                 fullDayOccupancy.style.display = 'block';
                 repeatTaskCheckbox.checked = true;
-                repeatsSection.style.display = 'block';
+                repeatsSection.style.display = 'flex';
             } else {
                 repeatTaskSection.style.display = 'none';
                 fullDayOccupancy.style.display = 'none';
