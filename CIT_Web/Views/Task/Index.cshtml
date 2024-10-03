@@ -296,9 +296,14 @@
                 </div>
                 <div id="modal-content" class="modal-body">
                     <div id="orderMessage" style="display: none;">
-                        <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i> Multiple pickup and delivery task  can be liked by the same Order ID</p>
+                        <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i> Multiple pickup and delivery task  can be linked by the same Order ID</p>
                     </div>
-
+                    <div id="standingMessage" style="display: none;">
+                        <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i>  In Standing Order One Order Number can  bind with Multiple Task</p>
+                    </div>
+                    <div id="scheduledMessage" style="display: none;">
+                        <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i>  In Scheduled Order One Order Number can Not  bind with Multiple Task</p>
+                    </div>
                     <div class="row align-items-center g-0">
                         <!-- OrderType Dropdown -->
                         <div class="col-md-4 col-sm-12">
@@ -1108,6 +1113,7 @@
 
         var repeatTaskCheckbox = document.getElementById('repeatTask');
         var repeatsSection = document.getElementById('repeatsSection');
+ 
 
         // Function to toggle visibility based on the selected OrderType
         function toggleRepeatTaskSection() {
@@ -1117,6 +1123,7 @@
                 fullDayOccupancy.style.display = 'block';
                 repeatTaskCheckbox.checked = true;
                 repeatsSection.style.display = 'flex';
+            
             } else {
                 repeatTaskSection.style.display = 'none';
                 fullDayOccupancy.style.display = 'none';
@@ -1133,6 +1140,8 @@
 </script>
 
 @* ******************************************************************************************* *@
+
+@* *********************************** Date Format js ******************************************* *@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#orderCreateDate", {
@@ -1147,3 +1156,50 @@
     });
 </script>
 
+@* ********************************************************************************************* *@
+
+
+@* *********************************** Warning Message Js in Order Module ***************************** *@
+<script>
+    
+    document.getElementById('OrderNumber').addEventListener('input', function () {
+        var OrderNumber = document.getElementById('OrderNumber').value;
+        var orderMessage = document.getElementById('orderMessage');
+
+        // Check if the input is not empty
+        if (OrderNumber.trim() !== '') {
+            orderMessage.style.display = 'block';  // Show the message when there's input
+        } else {
+            orderMessage.style.display = 'none';  // Hide the message when input is empty
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        var standingMessage = document.getElementById('standingMessage');
+        var scheduledMessage = document.getElementById('scheduledMessage');
+        var orderTypeDropdown = document.getElementById('orderType'); // Get the dropdown element itself, not its value
+
+        function messageSection() {
+            var selectedOrderType = orderTypeDropdown.options[orderTypeDropdown.selectedIndex]?.text || '';
+
+            if (selectedOrderType === 'Standing') {
+                standingMessage.style.display = 'block';
+                scheduledMessage.style.display = 'none'; // Ensure the other message is hidden
+            } else if (selectedOrderType === 'Scheduled') {
+                scheduledMessage.style.display = 'block';
+                standingMessage.style.display = 'none'; // Ensure the standing message is hidden
+            } else {
+                standingMessage.style.display = 'none';
+                scheduledMessage.style.display = 'none';
+            }
+        }
+
+        messageSection(); // Initial check when the page loads
+
+        // Attach the event listener to the dropdown
+        orderTypeDropdown.addEventListener('change', messageSection);
+    });
+
+
+</script>
+
+@* ********************************************************************************************************** *@
