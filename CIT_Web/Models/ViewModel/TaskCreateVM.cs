@@ -11,7 +11,7 @@ namespace CIT_Web.Models.ViewModel
         public int PriorityId { get; set; }
         public int PickUpTypeId { get; set; }
         public string OrderCreateDate { get; set; }
-        public string EndOnDate { get; set; }
+        public string? EndOnDate { get; set; }
         public int CustomerId { get; set; }
         public int BranchID { get; set; }
         public int CustomerRecipiantId { get; set; }
