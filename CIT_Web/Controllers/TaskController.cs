@@ -22,16 +22,16 @@ namespace CIT_Web.Controllers
         private readonly IMapper _mapper;
         private readonly IVehicleService _vehicleService;
         private readonly ICrewCommanderService _crewCommanderService;
-        private readonly IOrderService _orderService;
+        //private readonly IOrderService _orderService;
         
-        public TaskController(ItaskService taskService, IOrderService orderService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IMapper mapper)
+        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IMapper mapper)
         {
             _taskService = taskService;
             _taskListService = taskListService;
             _crewCommanderService = crewCommanderService;
             _vehicleService = vehicleService;
             _mapper = mapper;
-            _orderService = orderService;
+            //_orderService = orderService;
 
         }
         public async Task<IActionResult> Index()
@@ -132,15 +132,15 @@ namespace CIT_Web.Controllers
             }
 
 
-            var orderList = await _orderService.GetAllAsync<APIResponse>();
-            if (orderList != null && orderList.IsSuccess)
-            {
-                taskVM.orderLists = JsonConvert.DeserializeObject<List<OrderListDTO>>(Convert.ToString(crewResponse.Result)) ?? new List<OrderListDTO>();
-            }
-            else
-            {
-                taskVM.orderLists = new List<OrderListDTO>(); // Initialize empty list if the API fails
-            }
+            //var orderList = await _orderService.GetAllAsync<APIResponse>();
+            //if (orderList != null && orderList.IsSuccess)
+            //{
+            //    taskVM.orderLists = JsonConvert.DeserializeObject<List<OrderListDTO>>(Convert.ToString(crewResponse.Result)) ?? new List<OrderListDTO>();
+            //}
+            //else
+            //{
+            //    taskVM.orderLists = new List<OrderListDTO>(); // Initialize empty list if the API fails
+            //}
 
             return View(taskVM);
         }

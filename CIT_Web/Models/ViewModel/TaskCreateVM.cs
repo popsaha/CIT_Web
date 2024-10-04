@@ -41,7 +41,7 @@ namespace CIT_Web.Models.ViewModel
         public List<VehicleDTO> vehicledtolst { get; set; }
         public List<CrewCommanderDTO> crews { get; set; }
 
-        public List<OrderListDTO> orderLists { get; set; }
+        //public List<OrderListDTO> orderLists { get; set; }
 
     }
     public class CustomerDTO
