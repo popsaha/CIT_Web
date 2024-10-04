@@ -616,67 +616,71 @@
             <thead class="sticky-header table-hover">
                 <tr>
                     <th></th>
+                    <th>Order Number</th>
                     <th>Pickup Customer</th>
                     <th>Pickup Location</th>
                     <th>Delivery Customer</th>
                     <th>Delivery Location</th>
                     <th>Type</th>
+                    <th class="d-none">OrderID</th>
                     <th>Crew Commander</th>
                     <th>Lead Vehicle</th>
                     <th>Chase Vehicle</th>
                     <th>Time</th>
-                    <th>Status</th>
-                    <th class="d-none">TaskId</th>
+                    <th>Status</th>                  
+                    
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.taskDTOlsts != null && Model.taskDTOlsts.Any())
+               @*  @if (Model.orderlist != null && Model.orderlist.Any())
                 {
-                    @foreach (var typeGroup in Model.taskDTOlsts.GroupBy(t => t.OrderType))
+                    @foreach (var typeGroup in Model.orderlist.GroupBy(t => t.OrderType))
                     {
-                        <!-- Render the group header for TypeName -->
+                       
                         <tr class="order-header">
                             <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
                                 <div>@typeGroup.Key</div>
                             </td>
                         </tr>
 
-                        <!-- Group by OrderNumber inside each TypeName group -->
+                       
                         @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
                         {
-                            <!-- Render the group header for OrderNumber -->
+                        
                             <tr class="order-subheader">
                                 <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
                             </tr>
 
-                            <!-- Render each task in the OrderNumber group -->
+                        
                             @foreach (var tasklist in orderGroup)
                             {
                                 <tr class="table-border">
                                     <td><input type="checkbox" class="row-checkbox"></td>
+                                    <td>@tasklist.OrderNumber</td>
                                     <td>@tasklist.PickupCustomerName</td>
                                     <td>@tasklist.PickupLocation</td>
-
                                     <td>@tasklist.DeliveryCustomerName</td>
                                     <td>@tasklist.DeliveryLocation</td>
                                     <td>@tasklist.PickupType</td>
+                                    <td class="d-none">@tasklist.OrderID</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td class="order-date">@tasklist.OrderDate.ToString("yyyy-MM-dd")</td>
+                                    <td class="order-date">@tasklist.OrderDate</td>
                                     <td><span class="badge bg-secondary">Unassigned</span></td>
-                                    <td class="d-none">@tasklist.TaskId</td>
-                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                           
+                                   
+                                     <td><a href="#"><i class="bi bi-pencil-square"></i></a></td> 
                                 </tr>
                             }
                         }
                     }
-                }
-                else
+                } *@
+              @*   else
                 {
                     <tr><td colspan="12">No tasks available.</td></tr>
-                }
+                } *@
 
             </tbody>
         </table>
@@ -704,10 +708,9 @@
                             <th>Pickup Customer</th>
                             <th>Delivery Customer</th>
                             <th>Delivery Location</th>
-
                             <th>Time</th>
                             <th>Type</th>
-                            <th class="d-none">TaskID</th>
+                            <th class="d-none">OrderID</th>
                         </tr>
                     </thead>
                     <tbody id="selectedOrdersTableBody">
@@ -905,9 +908,11 @@
             const PickupCustomer = row.cells[1].textContent.trim();
             const DeliveryCustomer = row.cells[2].textContent.trim();
             const DeliveryLocation = row.cells[4].textContent.trim();
-            const time = row.cells[9].textContent.trim();
+            const time = row.cells[11].textContent.trim(); // Updated to the correct index for "OrderDate"
+
+
             const type = row.cells[5].textContent.trim();  // PickupType (ATM or CIT)
-            const taskId = row.cells[11].textContent.trim();
+            const orderID = row.cells[6].textContent.trim();
 
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
@@ -915,9 +920,9 @@
                                                                                                                                                                                         <td>${PickupCustomer}</td>
                                                                                                                                                                                         <td>${DeliveryCustomer}</td>
                                                                                                                                                                                         <td>${DeliveryLocation}</td>
-                                                                                                                                                                                        <td>${time}</td>
+                                                                                                                                                                                            <td class="order-date">${time}</td>
                                                                                                                                                                                         <td>${type}</td>
-                                                                                                                                                                                        <td class="d-none">${taskId}</td>
+                                                                                                                                                                                        <td class="d-none">${orderID}</td>
                                                                                                                                                                                     `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
@@ -929,7 +934,7 @@
 @* ************************************************************************************************ *@
 
 
-@* ****************************JavaScript to get the Taskid and GroupName ************************ *@
+@* ****************************JavaScript to get the OrderId and    RouteName ************************ *@
 <script src="~/js/config.js"></script>
 <script>
     document.getElementById('saveGroupButton').addEventListener('click', function () {
@@ -941,12 +946,15 @@
         }
 
         const orderIds = [];
-
-        // Collect selected rows data (assuming the order ID is in the 6th column of the table)
         document.querySelectorAll('#selectedOrdersTableBody tr').forEach(function (row) {
-            const orderId = row.cells[5].textContent.trim(); // Extracting the order ID
-            orderIds.push(parseInt(orderId)); // Adding it to the orderIds array
+            const orderId = row.cells[5].textContent.trim(); // Changed to the correct column index
+            const parsedId = parseInt(orderId);
+
+            if (!isNaN(parsedId)) {
+                orderIds.push(parsedId); // Only push valid integers
+            }
         });
+
 
         if (orderIds.length === 0) {
             alert("No orders selected.");
@@ -955,25 +963,32 @@
 
         // Prepare the data in the required format
         const requestData = {
-            orderIds: orderIds, // Array of order IDs
-            routeName: routeName // Route name
+            OrderIds: orderIds, // Array of order IDs
+            RouteName: routeName // Route name
         };
 
         console.log("requestData", requestData); // For debugging
 
         // Send the data to the API
-        fetch(`${API_BASE_URL}/api/Order/updateRoute`, { // Update with the actual API endpoint
+        fetch(`${API_BASE_URL}/api/Order/updateRoute`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(requestData) // Send the data in JSON format
+            body: JSON.stringify(requestData)
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    // Handle non-200 responses
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log("API Response:", data); // Log the entire response for debugging
+
                 if (data.message) {
                     alert(data.message);
-                    // Optionally, close the modal
                     $('#Groupmodal').modal('hide');
                 }
             })
@@ -981,6 +996,7 @@
                 console.error('Error:', error);
                 alert("An error occurred while saving the route.");
             });
+
     });
 </script>
 
@@ -1004,7 +1020,7 @@
         });
 
         function fetchTasksByDate(date) {
-            fetch(`${API_BASE_URL}/api/taskList?date=${date}`)
+            fetch(`${API_BASE_URL}/api/Order/getOrdersList?date=${date}`)
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#task-table tbody');
@@ -1022,43 +1038,46 @@
                     }, {});
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
+                        // Add the Order Type header row
                         const orderTypeHeader = `
-                                                                                                                                                                        <tr class="order-header">
-                                                                                                                                                                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                                                                                                                                                                <div>${orderType}</div>
-                                                                                                                                                                            </td>
-                                                                                                                                                                        </tr>`;
+                                <tr class="order-header">
+                                    <td colspan="13" class="subheader-cell" style="background:#d9d9db !important;">
+                                        <div>${orderType}</div>
+                                    </td>
+                                </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
+                        // Group tasks by order number
                         const tasksByOrderNumber = tasks.reduce((grouped, task) => {
                             if (!grouped[task.orderNumber]) grouped[task.orderNumber] = [];
                             grouped[task.orderNumber].push(task);
                             return grouped;
                         }, {});
 
+                        // Iterate over tasks and render task rows
                         for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
-                            const orderNumberHeader = `
-                                                                                                                                                                            <tr class="order-subheader">
-                                                                                                                                                                                <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
-                                                                                                                                                                            </tr>`;
-                            tableBody.innerHTML += orderNumberHeader;
+                            const rowSpan = orderTasks.length; // Get the number of tasks for this order number
+                            let isFirstTaskForOrder = true; // Flag to ensure the order number is shown only once
 
-                            orderTasks.forEach(task => {
+                            orderTasks.forEach((task, index) => {
                                 const row = `
-                                                                                                                                                                                <tr class="table-border">
-                                                                                                                                                                                    <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                                                                                                                                                                    <td>${task.pickupCustomerName || 'N/A'}</td>
-                                                                                                                                                                                    <td>${task.pickupLocation || 'N/A'}</td>
-                                                                                                                                                                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                                                                                                                                                                    <td>${task.deliveryLocation || 'N/A'}</td>
-                                                                                                                                                                                    <td>${task.pickupType || 'N/A'}</td>
-                                                                                                                                                                                    <td></td><td></td><td></td>
-                                                                                                                                                                                    <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                                                                                                                                                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                                                                                                                                                                    <td class="d-none">${task.taskId}</td>
-                                                                                                                                                                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                                                                                                                                                                </tr>`;
+                                        <tr class="table-border">
+                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                            ${isFirstTaskForOrder ? `<td rowspan="${rowSpan}">${orderNumber}</td>` : ''} <!-- Merge OrderNumber cells -->
+                                            <td>${task.pickupCustomerName || 'N/A'}</td>
+                                            <td>${task.pickupLocation || 'N/A'}</td>
+                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                            <td>${task.deliveryLocation || 'N/A'}</td>
+                                            <td>${task.pickupType || 'N/A'}</td>
+                                            <td class="d-none">${task.orderID}</td>
+                                            <td></td><td></td><td></td>
+                                            <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                        </tr>`;
                                 tableBody.innerHTML += row;
+
+                                isFirstTaskForOrder = false; // After the first task, do not show the order number again
                             });
                         }
                     }
@@ -1091,8 +1110,11 @@
                 });
         }
     });
-
 </script>
+
+
+
+
 
 
 @* *****************************************Vehicle Assignment in Task List ******************* *@

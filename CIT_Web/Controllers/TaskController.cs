@@ -21,6 +21,7 @@ namespace CIT_Web.Controllers
         private readonly IMapper _mapper;
         private readonly IVehicleService _vehicleService;
         private readonly ICrewCommanderService _crewCommanderService;
+        
         public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IMapper mapper)
         {
             _taskService = taskService;
@@ -28,6 +29,7 @@ namespace CIT_Web.Controllers
             _crewCommanderService = crewCommanderService;
             _vehicleService = vehicleService;
             _mapper = mapper;
+
         }
         public async Task<IActionResult> Index()
         {
