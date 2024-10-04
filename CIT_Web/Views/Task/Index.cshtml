@@ -216,7 +216,7 @@
         else {
             $("#BranchID").css("border", "1px solid #C3C1C1");
         }
-       //Add this code 03102024 close
+        //Add this code 03102024 close
 
         if (OrderTypeID == "1" && (CustomerRecipiantId == "0" || CustomerRecipiantId == "" || CustomerRecipiantId == undefined)) {
             $("#CustomerRecipiantId").css("border", "1px solid red");
@@ -602,8 +602,12 @@
             </div>
         </div>
         <div class="d-flex" style="margin-right: 21px;">
-            <div>
+            @* <div>
                 <input type="date" id="filter-date" style="padding: 5px; margin-right: 10px;" />
+            </div> *@
+            <div class="input-group w-100">
+                <input type="text" id="filter-date" class="form-control small-input" placeholder="Select end date">
+                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
             </div>
             <input type="text" placeholder="Search..." style="padding: 5px" />
         </div>
@@ -627,59 +631,59 @@
                     <th>Lead Vehicle</th>
                     <th>Chase Vehicle</th>
                     <th>Time</th>
-                    <th>Status</th>                  
-                    
+                    <th>Status</th>
+
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-               @*  @if (Model.orderlist != null && Model.orderlist.Any())
+                @*  @if (Model.orderlist != null && Model.orderlist.Any())
                 {
-                    @foreach (var typeGroup in Model.orderlist.GroupBy(t => t.OrderType))
-                    {
-                       
-                        <tr class="order-header">
-                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                <div>@typeGroup.Key</div>
-                            </td>
-                        </tr>
+                @foreach (var typeGroup in Model.orderlist.GroupBy(t => t.OrderType))
+                {
 
-                       
-                        @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
-                        {
-                        
-                            <tr class="order-subheader">
-                                <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
-                            </tr>
+                <tr class="order-header">
+                <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                <div>@typeGroup.Key</div>
+                </td>
+                </tr>
 
-                        
-                            @foreach (var tasklist in orderGroup)
-                            {
-                                <tr class="table-border">
-                                    <td><input type="checkbox" class="row-checkbox"></td>
-                                    <td>@tasklist.OrderNumber</td>
-                                    <td>@tasklist.PickupCustomerName</td>
-                                    <td>@tasklist.PickupLocation</td>
-                                    <td>@tasklist.DeliveryCustomerName</td>
-                                    <td>@tasklist.DeliveryLocation</td>
-                                    <td>@tasklist.PickupType</td>
-                                    <td class="d-none">@tasklist.OrderID</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="order-date">@tasklist.OrderDate</td>
-                                    <td><span class="badge bg-secondary">Unassigned</span></td>
-                           
-                                   
-                                     <td><a href="#"><i class="bi bi-pencil-square"></i></a></td> 
-                                </tr>
-                            }
-                        }
-                    }
+
+                @foreach (var orderGroup in typeGroup.GroupBy(t => t.OrderNumber))
+                {
+
+                <tr class="order-subheader">
+                <td colspan="12" class="standing-order-no fw">@orderGroup.Key</td>
+                </tr>
+
+
+                @foreach (var tasklist in orderGroup)
+                {
+                <tr class="table-border">
+                <td><input type="checkbox" class="row-checkbox"></td>
+                <td>@tasklist.OrderNumber</td>
+                <td>@tasklist.PickupCustomerName</td>
+                <td>@tasklist.PickupLocation</td>
+                <td>@tasklist.DeliveryCustomerName</td>
+                <td>@tasklist.DeliveryLocation</td>
+                <td>@tasklist.PickupType</td>
+                <td class="d-none">@tasklist.OrderID</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="order-date">@tasklist.OrderDate</td>
+                <td><span class="badge bg-secondary">Unassigned</span></td>
+
+
+                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                </tr>
+                }
+                }
+                }
                 } *@
-              @*   else
+                @*   else
                 {
-                    <tr><td colspan="12">No tasks available.</td></tr>
+                <tr><td colspan="12">No tasks available.</td></tr>
                 } *@
 
             </tbody>
@@ -917,13 +921,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                                                                                                                                                                        <td>${PickupCustomer}</td>
-                                                                                                                                                                                        <td>${DeliveryCustomer}</td>
-                                                                                                                                                                                        <td>${DeliveryLocation}</td>
-                                                                                                                                                                                            <td class="order-date">${time}</td>
-                                                                                                                                                                                        <td>${type}</td>
-                                                                                                                                                                                        <td class="d-none">${orderID}</td>
-                                                                                                                                                                                    `;
+                                                                                                                                                                                            <td>${PickupCustomer}</td>
+                                                                                                                                                                                            <td>${DeliveryCustomer}</td>
+                                                                                                                                                                                            <td>${DeliveryLocation}</td>
+                                                                                                                                                                                                <td class="order-date">${time}</td>
+                                                                                                                                                                                            <td>${type}</td>
+                                                                                                                                                                                            <td class="d-none">${orderID}</td>
+                                                                                                                                                                                        `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -1007,12 +1011,20 @@
     document.addEventListener('DOMContentLoaded', function () {
         let selectedPickupType = null;
 
-        // Get today's date in yyyy-MM-dd format
-        const today = new Date().toISOString().split('T')[0];
+        // Initialize flatpickr for the input with id 'filter-date'
+        flatpickr("#filter-date", {
+            dateFormat: "d-m-Y",  // Customize the date format to 'DD-MM-YYYY'
+            allowInput: true,     // Allow manual input into the field
+            defaultDate: new Date(), // Set the default date to today
+        });
+
+        // OR: Manually set the value to today's date in the specified format
+        const today = flatpickr.formatDate(new Date(), "d-m-Y");
         document.getElementById('filter-date').value = today;
 
-        // Call the API to fetch data for today's date
-        fetchTasksByDate(today);
+        // Convert 'today' to 'YYYY-MM-DD' format for the API
+        const todayISO = new Date().toISOString().split('T')[0];
+        fetchTasksByDate(todayISO);
 
         document.getElementById('filter-date').addEventListener('change', function () {
             const selectedDate = this.value;
@@ -1040,11 +1052,11 @@
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         // Add the Order Type header row
                         const orderTypeHeader = `
-                                <tr class="order-header">
-                                    <td colspan="13" class="subheader-cell" style="background:#d9d9db !important;">
-                                        <div>${orderType}</div>
-                                    </td>
-                                </tr>`;
+                                    <tr class="order-header">
+                                        <td colspan="13" class="subheader-cell" style="background:#d9d9db !important;">
+                                            <div>${orderType}</div>
+                                        </td>
+                                    </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         // Group tasks by order number
@@ -1061,20 +1073,20 @@
 
                             orderTasks.forEach((task, index) => {
                                 const row = `
-                                        <tr class="table-border">
-                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                            ${isFirstTaskForOrder ? `<td rowspan="${rowSpan}">${orderNumber}</td>` : ''} <!-- Merge OrderNumber cells -->
-                                            <td>${task.pickupCustomerName || 'N/A'}</td>
-                                            <td>${task.pickupLocation || 'N/A'}</td>
-                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                            <td>${task.deliveryLocation || 'N/A'}</td>
-                                            <td>${task.pickupType || 'N/A'}</td>
-                                            <td class="d-none">${task.orderID}</td>
-                                            <td></td><td></td><td></td>
-                                            <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                        </tr>`;
+                                            <tr class="table-border">
+                                                <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                ${isFirstTaskForOrder ? `<td rowspan="${rowSpan}">${orderNumber}</td>` : ''} <!-- Merge OrderNumber cells -->
+                                                <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                <td>${task.pickupLocation || 'N/A'}</td>
+                                                <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                <td>${task.deliveryLocation || 'N/A'}</td>
+                                                <td>${task.pickupType || 'N/A'}</td>
+                                                <td class="d-none">${task.orderID}</td>
+                                                <td></td><td></td><td></td>
+                                                <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                            </tr>`;
                                 tableBody.innerHTML += row;
 
                                 isFirstTaskForOrder = false; // After the first task, do not show the order number again
@@ -1161,7 +1173,7 @@
 
         var repeatTaskCheckbox = document.getElementById('repeatTask');
         var repeatsSection = document.getElementById('repeatsSection');
- 
+
 
         // Function to toggle visibility based on the selected OrderType
         function toggleRepeatTaskSection() {
@@ -1171,7 +1183,7 @@
                 fullDayOccupancy.style.display = 'block';
                 repeatTaskCheckbox.checked = true;
                 repeatsSection.style.display = 'flex';
-            
+
             } else {
                 repeatTaskSection.style.display = 'none';
                 fullDayOccupancy.style.display = 'none';
@@ -1201,6 +1213,7 @@
             dateFormat: "d-m-y",  // Customize the date format
             allowInput: true      // Optional: Allow manual input
         });
+      
     });
 </script>
 
@@ -1209,7 +1222,7 @@
 
 @* *********************************** Warning Message Js in Order Module ***************************** *@
 <script>
-    
+
     document.getElementById('OrderNumber').addEventListener('input', function () {
         var OrderNumber = document.getElementById('OrderNumber').value;
         var orderMessage = document.getElementById('orderMessage');
