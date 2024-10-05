@@ -115,7 +115,10 @@
                     if (data.orderTypeID == 1) {
                         $("#btnAddTaskInRows").attr('disabled', true);
                     }
-                    else {
+                    if (data.orderTypeID == 2 && data.fullDayCheck == false) {
+                        $("#btnAddTaskInRows").attr('disabled', true);
+                    }
+                    if (data.orderTypeID == 2 && data.fullDayCheck == true) {
                         $("#btnAddTaskInRows").attr('disabled', false);
                     }
                 }
@@ -209,12 +212,12 @@
 
         //Add this code 03102024 open
 
-        if (OrderTypeID == "2" && (fullDayCheck == 1) && (CustomerId == "0" || CustomerId == "" || CustomerId == undefined)) {
+        if (OrderTypeID == "2" && (fullDayCheck == 0) && (CustomerId == "0" || CustomerId == "" || CustomerId == undefined)) {
             $("#CustomerId").css("border", "1px solid red");
             IsValid = false;
         }
 
-        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 1) && (BranchID == "0" || BranchID == "" || BranchID == null)) {
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 0) && (BranchID == "0" || BranchID == "" || BranchID == null)) {
             $("#BranchID").css("border", "1px solid red");
             IsValid = false;
         }
@@ -231,7 +234,7 @@
         //     $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
         // }
 
-        if (OrderTypeID == "1" && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == null)) {
+        if (OrderTypeID == "1" && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == "" || CustomerRecipiantLocationId == null)) {
             $("#CustomerRecipiantLocationId").css("border", "1px solid red");
             IsValid = false;
         }
@@ -241,7 +244,7 @@
 
         //Add this code 03102024 open
 
-        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 1) && CustomerRecipiantId == "0") {
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 0) && CustomerRecipiantId == "0") {
             $("#CustomerRecipiantId").css("border", "1px solid red");
             IsValid = false;
         }
@@ -249,7 +252,7 @@
         //     $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
         // }
 
-        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 1 || CustomerRecipiantId != "0") && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == "" || CustomerRecipiantLocationId == null)) {
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 0 || CustomerRecipiantId != "0") && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == "" || CustomerRecipiantLocationId == null)) {
             $("#CustomerRecipiantLocationId").css("border", "1px solid red");
             IsValid = false;
         }
@@ -628,14 +631,12 @@
                     <th>Lead Vehicle</th>
                     <th>Chase Vehicle</th>
                     <th>Date</th>
-                    <th>Status</th>                  
-                    
+                    <th>Status</th>
+
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-             
-
             </tbody>
         </table>
     </div>
@@ -881,13 +882,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                <td>${PickupCustomer}</td>
-                <td>${DeliveryCustomer}</td>
-                <td>${DeliveryLocation}</td>
-                <td>${time}</td>
-                <td>${type}</td>
-                <td class="d-none">${orderID}</td>
-            `;
+                    <td>${PickupCustomer}</td>
+                    <td>${DeliveryCustomer}</td>
+                    <td>${DeliveryLocation}</td>
+                    <td>${time}</td>
+                    <td>${type}</td>
+                    <td class="d-none">${orderID}</td>
+                `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -1019,11 +1020,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                            <tr class="order-header">
-                                <td colspan="13" class="subheader-cell" style="background:#d9d9db !important;">
-                                    <div>${orderType}</div>
-                                </td>
-                            </tr>`;
+                                <tr class="order-header">
+                                    <td colspan="13" class="subheader-cell" style="background:#d9d9db !important;">
+                                        <div>${orderType}</div>
+                                    </td>
+                                </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         // Group tasks by orderNumber within the current orderType
@@ -1043,22 +1044,22 @@
                                     : ''; // Empty cell for subsequent rows in the group
 
                                 const row = `
-                                    <tr class="table-border">
-                                        <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                        ${orderNumberCell}
-                                        <td>${task.pickupCustomerName || 'N/A'}</td>
-                                        <td>${task.pickupLocation || 'N/A'}</td>
-                                        <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                        <td>${task.deliveryLocation || 'N/A'}</td>
-                                        <td>${task.pickupType || 'N/A'}</td>
-                                        <td class="d-none">${task.orderID || 'N/A'}</td>
-                                        <td>${task.crewCommander || ''}</td>
-                                        <td>${task.leadVehicle || ''}</td>
-                                        <td>${task.chaseVehicle || ''}</td>
-                                        <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                        <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                        <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                    </tr>`;
+                                        <tr class="table-border">
+                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                            ${orderNumberCell}
+                                            <td>${task.pickupCustomerName || 'N/A'}</td>
+                                            <td>${task.pickupLocation || 'N/A'}</td>
+                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                            <td>${task.deliveryLocation || 'N/A'}</td>
+                                            <td>${task.pickupType || 'N/A'}</td>
+                                            <td class="d-none">${task.orderID || 'N/A'}</td>
+                                            <td>${task.crewCommander || ''}</td>
+                                            <td>${task.leadVehicle || ''}</td>
+                                            <td>${task.chaseVehicle || ''}</td>
+                                            <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                        </tr>`;
                                 tableBody.innerHTML += row;
                                 firstRow = false; // Ensure only the first row has the order number cell
                             });
@@ -1143,7 +1144,7 @@
 
         var repeatTaskCheckbox = document.getElementById('repeatTask');
         var repeatsSection = document.getElementById('repeatsSection');
- 
+
 
         // Function to toggle visibility based on the selected OrderType
         function toggleRepeatTaskSection() {
@@ -1194,7 +1195,7 @@
 
 @* *********************************** Warning Message Js in Order Module ***************************** *@
 <script>
-    
+
     document.getElementById('OrderNumber').addEventListener('input', function () {
         var OrderNumber = document.getElementById('OrderNumber').value;
         var orderMessage = document.getElementById('orderMessage');
