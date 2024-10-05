@@ -602,9 +602,11 @@
             </div>
         </div>
         <div class="d-flex" style="margin-right: 21px;">
-            <div>
-                <input type="date" id="filter-date" style="padding: 5px; margin-right: 10px;" />
+            <div class="input-group w-100">
+                <input type="text" id="filter-date" class="form-control small-input" placeholder="Select end date">
+                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
             </div>
+
             <input type="text" placeholder="Search..." style="padding: 5px" />
         </div>
     </div>
@@ -845,6 +847,7 @@
     });
 
     // Logic for grouping and showing the selected tasks in the modal
+    // Logic for grouping and showing the selected tasks in the modal
     document.querySelector('.group-button').addEventListener('click', function () {
         $("[id*=groupPopup]").click(function () {
             $('#Groupmodal').modal('show');
@@ -857,27 +860,39 @@
         document.querySelectorAll('.row-checkbox:checked').forEach(function (checkbox) {
             const row = checkbox.closest('tr');
 
+            // Check if this is the first row of a grouped OrderNumber (i.e., row with rowspan for OrderNumber)
+            const isGroupedRow = row.querySelector('[rowspan]') !== null;
+
+            // Adjust cell indices depending on whether the row is grouped or not
+            const pickupCustomerCellIndex = isGroupedRow ? 2 : 1;
+            const deliveryCustomerCellIndex = isGroupedRow ? 3 : 2;
+            const deliveryLocationCellIndex = isGroupedRow ? 5 : 4;
+            const timeCellIndex = isGroupedRow ? 11 : 10;
+            const typeCellIndex = isGroupedRow ? 6 : 5;
+            const orderIDCellIndex = isGroupedRow ? 7 : 6;
+
             // Collect the task details
-            const PickupCustomer = row.cells[2].textContent.trim();
-            const DeliveryCustomer = row.cells[3].textContent.trim();
-            const DeliveryLocation = row.cells[5].textContent.trim();
-            const time = row.cells[11].textContent.trim();
-            const type = row.cells[6].textContent.trim();  // PickupType (ATM or CIT)
-            const orderID = row.cells[7].textContent.trim();
+            const PickupCustomer = row.cells[pickupCustomerCellIndex].textContent.trim();
+            const DeliveryCustomer = row.cells[deliveryCustomerCellIndex].textContent.trim();
+            const DeliveryLocation = row.cells[deliveryLocationCellIndex].textContent.trim();
+            const time = row.cells[timeCellIndex].textContent.trim();
+            const type = row.cells[typeCellIndex].textContent.trim();  // PickupType (ATM or CIT)
+            const orderID = row.cells[orderIDCellIndex].textContent.trim();
 
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                                                                                                                                                                        <td>${PickupCustomer}</td>
-                                                                                                                                                                                        <td>${DeliveryCustomer}</td>
-                                                                                                                                                                                        <td>${DeliveryLocation}</td>
-                                                                                                                                                                                        <td>${time}</td>
-                                                                                                                                                                                        <td>${type}</td>
-                                                                                                                                                                                        <td class="d-none">${orderID}</td>
-                                                                                                                                                                                    `;
+                <td>${PickupCustomer}</td>
+                <td>${DeliveryCustomer}</td>
+                <td>${DeliveryLocation}</td>
+                <td>${time}</td>
+                <td>${type}</td>
+                <td class="d-none">${orderID}</td>
+            `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
+
 </script>
 
 
@@ -959,16 +974,29 @@
     document.addEventListener('DOMContentLoaded', function () {
         let selectedPickupType = null;
 
-        // Get today's date in yyyy-MM-dd format
-        const today = new Date().toISOString().split('T')[0];
+        // Initialize flatpickr for the input with id 'filter-date'
+        flatpickr("#filter-date", {
+            dateFormat: "d-m-Y",  // Customize the date format to 'DD-MM-YYYY'
+            allowInput: true,     // Allow manual input into the field
+            defaultDate: new Date(), // Set the default date to today
+        });
+
+        // OR: Manually set the value to today's date in the specified format
+        const today = flatpickr.formatDate(new Date(), "d-m-Y");
         document.getElementById('filter-date').value = today;
 
-        // Call the API to fetch data for today's date
-        fetchTasksByDate(today);
+        // Convert 'today' to 'YYYY-MM-DD' format for the API
+        const todayISO = new Date().toISOString().split('T')[0];
+        fetchTasksByDate(todayISO);
 
         document.getElementById('filter-date').addEventListener('change', function () {
             const selectedDate = this.value;
-            fetchTasksByDate(selectedDate);
+
+            // Convert the selected date (DD-MM-YYYY) to (YYYY-MM-DD) for API
+            const [day, month, year] = selectedDate.split('-');
+            const formattedDateForAPI = `${year}-${month}-${day}`; // Format to 'YYYY-MM-DD'
+
+            fetchTasksByDate(formattedDateForAPI);
         });
 
         function fetchTasksByDate(date) {
@@ -983,32 +1011,48 @@
                         return;
                     }
 
-                    const tasksByOrderNumber = data.result.reduce((grouped, task) => {
-                        if (!grouped[task.orderNumber]) grouped[task.orderNumber] = [];
-                        grouped[task.orderNumber].push(task);
+                    // Group tasks by orderType
+                    const tasksByOrderType = data.result.reduce((grouped, task) => {
+                        if (!grouped[task.orderType]) grouped[task.orderType] = [];
+                        grouped[task.orderType].push(task);
                         return grouped;
                     }, {});
 
-                    for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
-                        // Create a row for the first task under the order and add rowspan for the order number
-                        const rowspan = orderTasks.length;
-                        let firstRow = true;
+                    for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
+                        const orderTypeHeader = `
+                            <tr class="order-header">
+                                <td colspan="13" class="subheader-cell" style="background:#d9d9db !important;">
+                                    <div>${orderType}</div>
+                                </td>
+                            </tr>`;
+                        tableBody.innerHTML += orderTypeHeader;
 
-                        orderTasks.forEach((task, index) => {
-                            const orderNumberCell = firstRow
-                                ? `<td rowspan="${rowspan}">${orderNumber}</td>`
-                                : ''; // Empty cell for subsequent rows in the group
+                        // Group tasks by orderNumber within the current orderType
+                        const tasksByOrderNumber = tasks.reduce((grouped, task) => {
+                            if (!grouped[task.orderNumber]) grouped[task.orderNumber] = [];
+                            grouped[task.orderNumber].push(task);
+                            return grouped;
+                        }, {});
 
-                            const row = `
+                        for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
+                            const rowspan = orderTasks.length;
+                            let firstRow = true;
+
+                            orderTasks.forEach((task, index) => {
+                                const orderNumberCell = firstRow
+                                    ? `<td rowspan="${rowspan}">${orderNumber}</td>`
+                                    : ''; // Empty cell for subsequent rows in the group
+
+                                const row = `
                                     <tr class="table-border">
-                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                        <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
                                         ${orderNumberCell}
                                         <td>${task.pickupCustomerName || 'N/A'}</td>
                                         <td>${task.pickupLocation || 'N/A'}</td>
                                         <td>${task.deliveryCustomerName || 'N/A'}</td>
                                         <td>${task.deliveryLocation || 'N/A'}</td>
                                         <td>${task.pickupType || 'N/A'}</td>
-                                         <td class="d-none">${task.orderID || 'N/A'}</td>
+                                        <td class="d-none">${task.orderID || 'N/A'}</td>
                                         <td>${task.crewCommander || ''}</td>
                                         <td>${task.leadVehicle || ''}</td>
                                         <td>${task.chaseVehicle || ''}</td>
@@ -1016,9 +1060,10 @@
                                         <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
                                         <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
                                     </tr>`;
-                            tableBody.innerHTML += row;
-                            firstRow = false; // Ensure only the first row has the order number cell
-                        });
+                                tableBody.innerHTML += row;
+                                firstRow = false; // Ensure only the first row has the order number cell
+                            });
+                        }
                     }
 
                     // Add event listeners for checkbox selection
@@ -1027,17 +1072,14 @@
                         checkbox.addEventListener('change', function () {
                             const currentPickupType = this.dataset.pickupType;
 
-                            // If no pickup type is selected yet, set it to the first selected checkbox's type
                             if (selectedPickupType === null && this.checked) {
                                 selectedPickupType = currentPickupType;
                             }
 
-                            // Allow selection only if the types match or it's a deselection
                             if (this.checked && currentPickupType !== selectedPickupType) {
                                 alert(`You can only select tasks with the same Pickup Type: ${selectedPickupType}`);
                                 this.checked = false;
                             } else if (!this.checked) {
-                                // If all checkboxes are unchecked, reset the selection
                                 const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
                                 if (!anyChecked) selectedPickupType = null;
                             }
@@ -1049,6 +1091,7 @@
                 });
         }
     });
+
 </script>
 
 
