@@ -47,6 +47,9 @@ builder.Services.AddScoped<IVehicleAssignmentService, VehicleAssignmentService>(
 builder.Services.AddHttpClient<ItaskService, TaskService>();
 builder.Services.AddScoped<ItaskService, TaskService>();
 
+//builder.Services.AddHttpClient<IOrderService, OrderService>();
+//builder.Services.AddScoped<IOrderService, OrderService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 

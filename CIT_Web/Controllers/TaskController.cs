@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.CrewCommander;
+using CIT_Web.Models.Dto.Order;
 using CIT_Web.Models.Dto.Task;
 using CIT_Web.Models.Dto.TaskList;
 using CIT_Web.Models.Dto.Vehicle;
@@ -21,6 +22,8 @@ namespace CIT_Web.Controllers
         private readonly IMapper _mapper;
         private readonly IVehicleService _vehicleService;
         private readonly ICrewCommanderService _crewCommanderService;
+        //private readonly IOrderService _orderService;
+        
         public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IMapper mapper)
         {
             _taskService = taskService;
@@ -28,6 +31,8 @@ namespace CIT_Web.Controllers
             _crewCommanderService = crewCommanderService;
             _vehicleService = vehicleService;
             _mapper = mapper;
+            //_orderService = orderService;
+
         }
         public async Task<IActionResult> Index()
         {
@@ -125,6 +130,18 @@ namespace CIT_Web.Controllers
             {
                 taskVM.crews = new List<CrewCommanderDTO>(); // Initialize empty list if the API fails
             }
+
+
+            //var orderList = await _orderService.GetAllAsync<APIResponse>();
+            //if (orderList != null && orderList.IsSuccess)
+            //{
+            //    taskVM.orderLists = JsonConvert.DeserializeObject<List<OrderListDTO>>(Convert.ToString(crewResponse.Result)) ?? new List<OrderListDTO>();
+            //}
+            //else
+            //{
+            //    taskVM.orderLists = new List<OrderListDTO>(); // Initialize empty list if the API fails
+            //}
+
             return View(taskVM);
         }
         public async Task<JsonResult> GetBranchNameById(int CustomerId)
@@ -143,6 +160,7 @@ namespace CIT_Web.Controllers
             {
                 throw;
             }
+
             return Json(taskVM.taskbranchlist);
         }
         public IActionResult GroupData()
