@@ -90,14 +90,21 @@
                 success: function (data) {
                     debugger
                     $("#orderType").val(data.orderTypeID);
+
+                    document.querySelector("#orderType").style.pointerEvents = "none";
+                    document.querySelector("#PickUpType").style.pointerEvents = "none";
+                    document.querySelector("#priority").style.pointerEvents = "none";
+                    document.querySelector("#orderCreateDate").style.pointerEvents = "none";
+                    document.querySelector("#repeatsMode").style.pointerEvents = "none";
+                    document.querySelector("#OrderRouteId").style.pointerEvents = "none";
                     $("#PickUpType").val(data.pickUpTypeId);
                     $("#priority").val(data.priorityId);
                     $("#orderCreateDate").val(data.orderCreateDate);
                     if (data.orderTypeID == 2) {
-                        if (data.fullDayCheck == true) {
-                            $("#fullDayCheck").prop('checked', true);
-                            $("#NewVehicleRequired").attr('disabled', true);
-                        }
+                        // if (data.fullDayCheck == true) {
+                        //     $("#fullDayCheck").prop('checked', true);
+                        //     $("#NewVehicleRequired").attr('disabled', true);
+                        // }
                         $("#fullDay").show();
                         $("#repeatTaskSection").show();
                         $("#repeatsSection").show();
@@ -107,10 +114,10 @@
                         $("#choices-multiple-remove-button").val(data.repeatDaysName);
                     }
                     else {
-                        if (data.fullDayCheck == true) {
-                            $("#fullDayCheck").prop('checked', false);
-                            $("#NewVehicleRequired").attr('disabled', false);
-                        }
+                        // if (data.fullDayCheck == true) {
+                        //     $("#fullDayCheck").prop('checked', false);
+                        //     $("#NewVehicleRequired").attr('disabled', false);
+                        // }
                         $("#fullDay").hide();
                         $("#repeatTaskSection").hide();
                         $("#repeatsSection").hide();
@@ -119,9 +126,13 @@
                     $("#OrderRouteId").val(data.orderRouteId);
                     if (data.orderTypeID == 1) {
                         $("#btnAddTaskInRows").attr('disabled', true);
+                        document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                        document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
                     }
                     if (data.orderTypeID == 2 && data.fullDayCheck == false) {
                         $("#btnAddTaskInRows").attr('disabled', true);
+                        document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                        document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
                     }
                     if (data.orderTypeID == 2 && data.fullDayCheck == true) {
                         $("#btnAddTaskInRows").attr('disabled', false);
@@ -310,6 +321,14 @@
     }
     function Reset() {
         debugger
+        document.querySelector("#orderType").style.pointerEvents = "auto";
+        document.querySelector("#PickUpType").style.pointerEvents = "auto";
+        document.querySelector("#priority").style.pointerEvents = "auto";
+        document.querySelector("#orderCreateDate").style.pointerEvents = "auto";
+        document.querySelector("#repeatsMode").style.pointerEvents = "auto";
+        document.querySelector("#EndOnDate").style.pointerEvents = "auto";
+        document.querySelector("#RepeatDaysName").style.pointerEvents = "auto";
+        document.querySelector("#OrderRouteId").style.pointerEvents = "auto";    
         $("#OrderNumber").val("");
         $("#orderType").val(0);
         $("#priority").val(0);
@@ -330,6 +349,7 @@
         $("#repeatTaskSection").hide();
         $("#repeatsSection").hide();
         $("#repeatTask").prop("checked", false);
+        $("#btnAddTaskInRows").attr('disabled', false);
     }
 </script>
 <form enctype="multipart/form-data" asp-controller="Task" ,asp-action="Index" method="post">
