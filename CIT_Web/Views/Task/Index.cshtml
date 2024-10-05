@@ -11,6 +11,11 @@
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -501,7 +506,7 @@
                                         </select>
                                     </div>
                                 </div>
-                           
+
 
                             </div>
                             <div id="repeatTaskSection" class="mt-0 mb-2" style="display:none;">
@@ -616,7 +621,7 @@
 
 <div class="tab-container mt-3 ms-3" style="width: 100%;">
     <div class="table-wrapper" style=" max-height:90vh; margin-right: 21px;">
-        <table class="table datatable mt-3" id="task-table">
+        <table class="table  mt-3" id="task-table"  style="width:100%">
             <thead class="sticky-header table-hover">
                 <tr>
                     <th></th>
@@ -626,6 +631,7 @@
                     <th>Delivery Customer</th>
                     <th>Delivery Location</th>
                     <th>Type</th>
+                    <th>Route</th>
                     <th class="d-none">OrderID</th>
                     <th>Crew Commander</th>
                     <th>Lead Vehicle</th>
@@ -867,9 +873,9 @@
             const pickupCustomerCellIndex = isGroupedRow ? 2 : 1;
             const deliveryCustomerCellIndex = isGroupedRow ? 3 : 2;
             const deliveryLocationCellIndex = isGroupedRow ? 5 : 4;
-            const timeCellIndex = isGroupedRow ? 11 : 10;
+            const timeCellIndex = isGroupedRow ? 12 : 11;
             const typeCellIndex = isGroupedRow ? 6 : 5;
-            const orderIDCellIndex = isGroupedRow ? 7 : 6;
+            const orderIDCellIndex = isGroupedRow ? 8 : 7;
 
             // Collect the task details
             const PickupCustomer = row.cells[pickupCustomerCellIndex].textContent.trim();
@@ -882,13 +888,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                    <td>${PickupCustomer}</td>
-                    <td>${DeliveryCustomer}</td>
-                    <td>${DeliveryLocation}</td>
-                    <td>${time}</td>
-                    <td>${type}</td>
-                    <td class="d-none">${orderID}</td>
-                `;
+                            <td>${PickupCustomer}</td>
+                            <td>${DeliveryCustomer}</td>
+                            <td>${DeliveryLocation}</td>
+                            <td>${time}</td>
+                            <td>${type}</td>
+                            <td class="d-none">${orderID}</td>
+                        `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -1020,11 +1026,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                                <tr class="order-header">
-                                    <td colspan="13" class="subheader-cell" style="background:#d9d9db !important;">
-                                        <div>${orderType}</div>
-                                    </td>
-                                </tr>`;
+                                        <tr class="order-header">
+                                            <td colspan="14" class="subheader-cell" style="background:#d9d9db !important;">
+                                                <div>${orderType}</div>
+                                            </td>
+                                        </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         // Group tasks by orderNumber within the current orderType
@@ -1044,22 +1050,23 @@
                                     : ''; // Empty cell for subsequent rows in the group
 
                                 const row = `
-                                        <tr class="table-border">
-                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                            ${orderNumberCell}
-                                            <td>${task.pickupCustomerName || 'N/A'}</td>
-                                            <td>${task.pickupLocation || 'N/A'}</td>
-                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                            <td>${task.deliveryLocation || 'N/A'}</td>
-                                            <td>${task.pickupType || 'N/A'}</td>
-                                            <td class="d-none">${task.orderID || 'N/A'}</td>
-                                            <td>${task.crewCommander || ''}</td>
-                                            <td>${task.leadVehicle || ''}</td>
-                                            <td>${task.chaseVehicle || ''}</td>
-                                            <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                        </tr>`;
+                                                <tr class="table-border">
+                                                    <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                    ${orderNumberCell}
+                                                    <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                    <td>${task.pickupLocation || 'N/A'}</td>
+                                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                    <td>${task.deliveryLocation || 'N/A'}</td>
+                                                    <td>${task.pickupType || 'N/A'}</td>
+                                                     <td>${task.routeName || 'N/A'}</td>
+                                                    <td class="d-none">${task.orderID || 'N/A'}</td>
+                                                    <td>${task.crewCommander || ''}</td>
+                                                    <td>${task.leadVehicle || ''}</td>
+                                                    <td>${task.chaseVehicle || ''}</td>
+                                                    <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                                </tr>`;
                                 tableBody.innerHTML += row;
                                 firstRow = false; // Ensure only the first row has the order number cell
                             });
@@ -1179,12 +1186,12 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#orderCreateDate", {
-            dateFormat: "d-m-y",  // Customize the date format
+            dateFormat: "d-m-Y",  // Customize the date format
             allowInput: true      // Optional: Allow manual input
         });
 
         flatpickr("#EndOnDate", {
-            dateFormat: "d-m-y",  // Customize the date format
+            dateFormat: "d-m-Y",  // Customize the date format
             allowInput: true      // Optional: Allow manual input
         });
     });
@@ -1237,3 +1244,8 @@
 </script>
 
 @* ********************************************************************************************************** *@
+
+
+                
+
+
