@@ -96,7 +96,7 @@ namespace CIT_Web.Controllers
             if (Orderrouteslst_response != null && Orderrouteslst_response.IsSuccess)
             {
                 taskVM.Orderrouteslst = JsonConvert.DeserializeObject<List<OrderRoutes>>(Convert.ToString(Orderrouteslst_response.Result));
-                taskVM.Orderrouteslst.Insert(0, new OrderRoutes { OrderRouteId = 0, RouteName = "Select Recipient" });
+                taskVM.Orderrouteslst.Insert(0, new OrderRoutes { OrderRouteId = 0, RouteName = "Select Route" });
             }
 
 
@@ -125,7 +125,6 @@ namespace CIT_Web.Controllers
             {
                 taskVM.crews = new List<CrewCommanderDTO>(); // Initialize empty list if the API fails
             }
-
             return View(taskVM);
         }
         public async Task<JsonResult> GetBranchNameById(int CustomerId)

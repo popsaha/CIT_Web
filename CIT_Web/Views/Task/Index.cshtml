@@ -30,7 +30,6 @@
                 $('#add-save-btn').prop('disabled', true);
                 $("#btnAddmoreTask").click();
             }
-
         })
         $("#CustomerId").change(function () {
             debugger
@@ -139,6 +138,7 @@
         var OrderId = $("#OrderId").val();
         var PickUpTypeId = $("#PickUpType").val();
         var Createorderdate = $("#orderCreateDate").val();
+        var fullDayCheck = $("#fullDayCheck").prop("checked") ? 1 : 0;
         var CustomerId = $("#CustomerId").val();
         var BranchID = $("#BranchID").val();
         var VaultId = $("#VaultID").val();
@@ -195,62 +195,67 @@
             IsValid = false;
         }
 
-        else {
-            $("#CustomerId").css("border", "1px solid #C3C1C1");
-        }
+        // else {
+        //     $("#CustomerId").css("border", "1px solid #C3C1C1");
+        // }
 
         if (OrderTypeID == "1" && (BranchID == "0" || BranchID == "" || BranchID == null)) {
             $("#BranchID").css("border", "1px solid red");
             IsValid = false;
         }
-        else {
-            $("#BranchID").css("border", "1px solid #C3C1C1");
-        }
+        // else {
+        //     $("#BranchID").css("border", "1px solid #C3C1C1");
+        // }
 
         //Add this code 03102024 open
 
-        if (OrderTypeID == "2" && (CustomerId != "0") && (BranchID == "0" || BranchID == "" || BranchID == null)) {
+        if (OrderTypeID == "2" && (fullDayCheck == 1) && (CustomerId == "0" || CustomerId == "" || CustomerId == undefined)) {
+            $("#CustomerId").css("border", "1px solid red");
+            IsValid = false;
+        }
+
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 1) && (BranchID == "0" || BranchID == "" || BranchID == null)) {
             $("#BranchID").css("border", "1px solid red");
             IsValid = false;
         }
-        else {
-            $("#BranchID").css("border", "1px solid #C3C1C1");
-        }
-       //Add this code 03102024 close
+        // else {
+        //     $("#BranchID").css("border", "1px solid #C3C1C1");
+        // }
+        //Add this code 03102024 close
 
         if (OrderTypeID == "1" && (CustomerRecipiantId == "0" || CustomerRecipiantId == "" || CustomerRecipiantId == undefined)) {
             $("#CustomerRecipiantId").css("border", "1px solid red");
             IsValid = false;
         }
-        else {
-            $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
-        }
+        // else {
+        //     $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
+        // }
 
         if (OrderTypeID == "1" && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == null)) {
             $("#CustomerRecipiantLocationId").css("border", "1px solid red");
             IsValid = false;
         }
-        else {
-            $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
-        }
+        // else {
+        //     $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+        // }
 
         //Add this code 03102024 open
 
-        if (OrderTypeID == "2" && CustomerId != "0" && CustomerRecipiantId == "0") {
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 1) && CustomerRecipiantId == "0") {
             $("#CustomerRecipiantId").css("border", "1px solid red");
             IsValid = false;
         }
-        else {
-            $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
-        }
+        // else {
+        //     $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+        // }
 
-        if (OrderTypeID == "2" && CustomerId != "0" && CustomerRecipiantId != "0" && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == "" || CustomerRecipiantLocationId == null)) {
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 1 || CustomerRecipiantId != "0") && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == "" || CustomerRecipiantLocationId == null)) {
             $("#CustomerRecipiantLocationId").css("border", "1px solid red");
             IsValid = false;
         }
-        else {
-            $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
-        }
+        // else {
+        //     $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+        // }
         //Add this code 03102024 close
 
 
@@ -266,13 +271,21 @@
             $("#CustomerRecipiantLocationId").css("border", "1px solid red");
             IsValid = false;
         }
+
         if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && repeatsMode == 0) {
             $("#repeatsMode").css("border", "1px solid red");
             IsValid = false;
         }
+        else {
+            $("#repeatsMode").css("border", "1px solid #C3C1C1");
+        }
+
         if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && (EndOnDate == 0 || EndOnDate == undefined)) {
             $("#EndOnDate").css("border", "1px solid red");
             IsValid = false;
+        }
+        else {
+            $("#EndOnDate").css("border", "1px solid #C3C1C1");
         }
         // if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && repeatsMode == 2 && (repeatdaysname == "" || repeatdaysname == undefined)) {
         //     $("#choices-multiple-remove-button").css("border", "1px solid red");
@@ -907,13 +920,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                                                                                                                                                                        <td>${PickupCustomer}</td>
-                                                                                                                                                                                        <td>${DeliveryCustomer}</td>
-                                                                                                                                                                                        <td>${DeliveryLocation}</td>
-                                                                                                                                                                                        <td>${time}</td>
-                                                                                                                                                                                        <td>${type}</td>
-                                                                                                                                                                                        <td class="d-none">${taskId}</td>
-                                                                                                                                                                                    `;
+                                                                                                                                                                                                                        <td>${PickupCustomer}</td>
+                                                                                                                                                                                                                        <td>${DeliveryCustomer}</td>
+                                                                                                                                                                                                                        <td>${DeliveryLocation}</td>
+                                                                                                                                                                                                                        <td>${time}</td>
+                                                                                                                                                                                                                        <td>${type}</td>
+                                                                                                                                                                                                                        <td class="d-none">${taskId}</td>
+                                                                                                                                                                                                                    `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -1018,11 +1031,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                                                                                                                                                                        <tr class="order-header">
-                                                                                                                                                                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
-                                                                                                                                                                                <div>${orderType}</div>
-                                                                                                                                                                            </td>
-                                                                                                                                                                        </tr>`;
+                                                                                                                                                                                                        <tr class="order-header">
+                                                                                                                                                                                                            <td colspan="12" class="subheader-cell" style="background:#d9d9db !important;">
+                                                                                                                                                                                                                <div>${orderType}</div>
+                                                                                                                                                                                                            </td>
+                                                                                                                                                                                                        </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         const tasksByOrderNumber = tasks.reduce((grouped, task) => {
@@ -1033,26 +1046,26 @@
 
                         for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
                             const orderNumberHeader = `
-                                                                                                                                                                            <tr class="order-subheader">
-                                                                                                                                                                                <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
-                                                                                                                                                                            </tr>`;
+                                                                                                                                                                                                            <tr class="order-subheader">
+                                                                                                                                                                                                                <td colspan="12" class="standing-order-no fw">${orderNumber}</td>
+                                                                                                                                                                                                            </tr>`;
                             tableBody.innerHTML += orderNumberHeader;
 
                             orderTasks.forEach(task => {
                                 const row = `
-                                                                                                                                                                                <tr class="table-border">
-                                                                                                                                                                                    <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                                                                                                                                                                    <td>${task.pickupCustomerName || 'N/A'}</td>
-                                                                                                                                                                                    <td>${task.pickupLocation || 'N/A'}</td>
-                                                                                                                                                                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                                                                                                                                                                    <td>${task.deliveryLocation || 'N/A'}</td>
-                                                                                                                                                                                    <td>${task.pickupType || 'N/A'}</td>
-                                                                                                                                                                                    <td></td><td></td><td></td>
-                                                                                                                                                                                    <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                                                                                                                                                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                                                                                                                                                                    <td class="d-none">${task.taskId}</td>
-                                                                                                                                                                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                                                                                                                                                                </tr>`;
+                                                                                                                                                                                                                <tr class="table-border">
+                                                                                                                                                                                                                    <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                                                                                                                                                                                    <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                                                                                                                                                                                    <td>${task.pickupLocation || 'N/A'}</td>
+                                                                                                                                                                                                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                                                                                                                                                                                    <td>${task.deliveryLocation || 'N/A'}</td>
+                                                                                                                                                                                                                    <td>${task.pickupType || 'N/A'}</td>
+                                                                                                                                                                                                                    <td></td><td></td><td></td>
+                                                                                                                                                                                                                    <td class="order-date">${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                                                                                                                                                                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                                                                                                                                                                                    <td class="d-none">${task.taskId}</td>
+                                                                                                                                                                                                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                                                                                                                                                                                                </tr>`;
                                 tableBody.innerHTML += row;
                             });
                         }
@@ -1105,6 +1118,10 @@
         } else {
             newVehicleCheckbox.disabled = false; // Enable the "New Vehicle Required" checkbox
         }
+        $("#CustomerId").css("border", "1px solid #C3C1C1");
+        $("#BranchID").css("border", "1px solid #C3C1C1");
+        $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
+        $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
     });
 
     document.getElementById('NewVehicleRequired').addEventListener('change', function () {
@@ -1143,6 +1160,10 @@
                 fullDayOccupancy.style.display = 'block';
                 repeatTaskCheckbox.checked = true;
                 repeatsSection.style.display = 'flex';
+                $("#CustomerId").css("border", "1px solid #C3C1C1");
+                $("#BranchID").css("border", "1px solid #C3C1C1");
+                $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
+                $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
             } else {
                 repeatTaskSection.style.display = 'none';
                 fullDayOccupancy.style.display = 'none';
