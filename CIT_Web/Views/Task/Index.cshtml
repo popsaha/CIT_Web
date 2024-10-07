@@ -11,9 +11,8 @@
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css"><script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 
 
 <!-- Flatpickr JS -->
@@ -995,7 +994,6 @@
 
 @* ******************************Filter data based on Date*********************************** *@
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         let selectedPickupType = null;
@@ -1020,13 +1018,13 @@
 
             // Convert the selected date (DD-MM-YYYY) to (YYYY-MM-DD) for API
             const [day, month, year] = selectedDate.split('-');
-            const formattedDateForAPI = `${year}-${month}-${day}`; // Format to 'YYYY-MM-DD'
+            const formattedDateForAPI = ${ year }-${ month } -${ day }; // Format to 'YYYY-MM-DD'
 
             fetchTasksByDate(formattedDateForAPI);
         });
 
         function fetchTasksByDate(date) {
-            fetch(`${API_BASE_URL}/api/Order/getOrdersList?date=${date}`)
+            fetch(${ API_BASE_URL } / api / Order / getOrdersList ? date = ${ date })
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#task-table tbody');
@@ -1045,12 +1043,12 @@
                     }, {});
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
-                        const orderTypeHeader = `
-                                        <tr class="order-header">
-                                            <td colspan="14" class="subheader-cell" style="background:#d9d9db !important;">
-                                                <div>${orderType}</div>
-                                            </td>
-                                        </tr>`;
+                        const orderTypeHeader =
+                            <tr class="order-header" >
+                                <td colspan="14" class="subheader-cell" style = "background:#d9d9db !important;" >
+                                    <div>${ orderType } </div>
+                                        < /td>
+                                        < /tr>;
                         tableBody.innerHTML += orderTypeHeader;
 
                         // Group tasks by orderNumber within the current orderType
@@ -1066,27 +1064,27 @@
 
                             orderTasks.forEach((task, index) => {
                                 const orderNumberCell = firstRow
-                                    ? `<td rowspan="${rowspan}">${orderNumber}</td>`
-                                    : ''; // Empty cell for subsequent rows in the group
+                                    ? <td rowspan="${rowspan}" > ${ orderNumber } </td>
+                                        : ''; // Empty cell for subsequent rows in the group
 
-                                const row = `
-                                                <tr class="table-border">
-                                                    <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                                    ${orderNumberCell}
-                                                    <td>${task.pickupCustomerName || 'N/A'}</td>
-                                                    <td>${task.pickupLocation || 'N/A'}</td>
-                                                    <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                                    <td>${task.deliveryLocation || 'N/A'}</td>
-                                                    <td>${task.pickupType || 'N/A'}</td>
-                                                     <td>${task.routeName || 'N/A'}</td>
-                                                    <td class="d-none">${task.orderID || 'N/A'}</td>
-                                                    <td>${task.crewCommander || ''}</td>
-                                                    <td>${task.leadVehicle || ''}</td>
-                                                    <td>${task.chaseVehicle || ''}</td>
-                                                    <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                                    <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                                    <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                                </tr>`;
+                                const row =
+                                    <tr class="table-border" >
+                                        <td><input type="checkbox" class="row-checkbox" data - pickup - type="${task.pickupType}" > </td>
+                                                        ${ orderNumberCell }
+                                <td>${ task.pickupCustomerName || 'N/A' } </td>
+                                    < td > ${ task.pickupLocation || 'N/A' } </td>
+                                        < td > ${ task.deliveryCustomerName || 'N/A' } </td>
+                                            < td > ${ task.deliveryLocation || 'N/A' } </td>
+                                                < td > ${ task.pickupType || 'N/A' } </td>
+                                                    < td > ${ task.routeName || 'N/A' } </td>
+                                                        < td class="d-none" > ${ task.orderID || 'N/A' } </td>
+                                                            < td > ${ task.crewCommander || '' } </td>
+                                                                < td > ${ task.leadVehicle || '' } </td>
+                                                                    < td > ${ task.chaseVehicle || '' } </td>
+                                                                        < td > ${ new Date(task.orderDate).toLocaleDateString() || 'N/A' } </td>
+                                                                            < td > <span class="badge bg-secondary" > ${ task.status || 'Unassigned' } </span></td >
+                                                                                <td><a href="#" > <i class="bi bi-pencil-square" > </i></a > </td>
+                                                                                    < /tr>;
                                 tableBody.innerHTML += row;
                                 firstRow = false; // Ensure only the first row has the order number cell
                             });
@@ -1104,20 +1102,20 @@
                             }
 
                             if (this.checked && currentPickupType !== selectedPickupType) {
-                                alert(`You can only select tasks with the same Pickup Type: ${selectedPickupType}`);
-                                this.checked = false;
-                            } else if (!this.checked) {
-                                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-                                if (!anyChecked) selectedPickupType = null;
-                            }
-                        });
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
+                                alert(You can only select tasks with the same Pickup Type: ${ selectedPickupType });
+                        this.checked = false;
+                    } else if (!this.checked) {
+                        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                        if (!anyChecked) selectedPickupType = null;
+                    }
                 });
-        }
+        });
+                    })
+                    .catch (error => {
+        console.error('Error fetching data:', error);
     });
+            }
+        });
 
 </script>
 
@@ -1266,6 +1264,9 @@
 @* ********************************************************************************************************** *@
 
 
-                
+<script>
+
+    new DataTable('#task-table');
+</script>
 
 
