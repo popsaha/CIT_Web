@@ -1,4 +1,5 @@
-﻿@model CIT_Web.Models.ViewModel.TaskCreateVM
+﻿@using Newtonsoft.Json
+@model CIT_Web.Models.ViewModel.TaskCreateVM
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -327,7 +328,7 @@
         document.querySelector("#repeatsMode").style.pointerEvents = "auto";
         document.querySelector("#EndOnDate").style.pointerEvents = "auto";
         document.querySelector("#RepeatDaysName").style.pointerEvents = "auto";
-        document.querySelector("#OrderRouteId").style.pointerEvents = "auto";    
+        document.querySelector("#OrderRouteId").style.pointerEvents = "auto";
         $("#OrderNumber").val("");
         $("#orderType").val(0);
         $("#priority").val(0);
@@ -640,7 +641,7 @@
 
 <div class="tab-container mt-3 ms-3" style="width: 100%;">
     <div class="table-wrapper" style=" max-height:90vh; margin-right: 21px;">
-        <table class="table  mt-3" id="task-table"  style="width:100%">
+        <table class="table  mt-3" id="task-table" style="width:100%">
             <thead class="sticky-header table-hover">
                 <tr>
                     <th></th>
@@ -678,9 +679,33 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="ms-4 mt-4" style="font-size:14px !important">
-                <span>Route Name : </span>
-                <input type="text" id="routeNameInput" placeholder="Enter Route..." style="padding:0px 3px" />
+                <div class="d-flex align-items-center ">
+                    <label for="routeNameInput" class="form-label">Route Name : </label>
+
+                    <!-- Text input combined with dropdown (datalist) -->
+                    <input list="routeOptions" id="routeNameInput" name="RouteName" class="form-control ms-2" placeholder="Enter or select route..." style="width:24%" />
+                </div>
+
+
+                <!-- Datalist for displaying existing routes -->
+                <datalist id="routeOptions">
+                    @if (Model.orderRouteDTOs != null && Model.orderRouteDTOs.Any())
+                    {
+                        @foreach (var route in Model.orderRouteDTOs)
+                        {
+                            <option value="@route.RouteName"></option>
+                        }
+                    }
+                    else
+                    {
+                        <option disabled>No routes available</option>
+                    }
+                </datalist>
             </div>
+
+
+
+
             <div class="modal-body" id="modal-content" style="overflow-x:auto">
                 <table class="table table-bordered" style="font-size:12px !important">
                     <thead>
@@ -708,6 +733,7 @@
         </div>
     </div>
 </div>
+
 
 @* ******************************************************************************************** *@
 
@@ -907,13 +933,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                            <td>${PickupCustomer}</td>
-                            <td>${DeliveryCustomer}</td>
-                            <td>${DeliveryLocation}</td>
-                            <td>${time}</td>
-                            <td>${type}</td>
-                            <td class="d-none">${orderID}</td>
-                        `;
+                                    <td>${PickupCustomer}</td>
+                                    <td>${DeliveryCustomer}</td>
+                                    <td>${DeliveryLocation}</td>
+                                    <td>${time}</td>
+                                    <td>${type}</td>
+                                    <td class="d-none">${orderID}</td>
+                                `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -961,7 +987,7 @@
         console.log("requestData", requestData); // For debugging
 
         // Send the data to the API
-        fetch(`${API_BASE_URL}/api/Order/updateRoute`, {
+        fetch(`${API_BASE_URL}/api/OrderRoute/updateRoute`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1018,13 +1044,13 @@
 
             // Convert the selected date (DD-MM-YYYY) to (YYYY-MM-DD) for API
             const [day, month, year] = selectedDate.split('-');
-            const formattedDateForAPI = ${ year }-${ month } -${ day }; // Format to 'YYYY-MM-DD'
+            const formattedDateForAPI = `${year}-${month}-${day}`; // Format to 'YYYY-MM-DD'
 
             fetchTasksByDate(formattedDateForAPI);
         });
 
         function fetchTasksByDate(date) {
-            fetch(${ API_BASE_URL } / api / Order / getOrdersList ? date = ${ date })
+            fetch(`${API_BASE_URL}/api/Order/getOrdersList?date=${date}`)
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#task-table tbody');
@@ -1043,12 +1069,12 @@
                     }, {});
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
-                        const orderTypeHeader =
-                            <tr class="order-header" >
-                                <td colspan="14" class="subheader-cell" style = "background:#d9d9db !important;" >
-                                    <div>${ orderType } </div>
-                                        < /td>
-                                        < /tr>;
+                        const orderTypeHeader = `
+                                                <tr class="order-header">
+                                                    <td colspan="14" class="subheader-cell" style="background:#d9d9db !important;">
+                                                        <div>${orderType}</div>
+                                                    </td>
+                                                </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         // Group tasks by orderNumber within the current orderType
@@ -1064,27 +1090,27 @@
 
                             orderTasks.forEach((task, index) => {
                                 const orderNumberCell = firstRow
-                                    ? <td rowspan="${rowspan}" > ${ orderNumber } </td>
-                                        : ''; // Empty cell for subsequent rows in the group
+                                    ? `<td rowspan="${rowspan}">${orderNumber}</td>`
+                                    : ''; // Empty cell for subsequent rows in the group
 
-                                const row =
-                                    <tr class="table-border" >
-                                        <td><input type="checkbox" class="row-checkbox" data - pickup - type="${task.pickupType}" > </td>
-                                                        ${ orderNumberCell }
-                                <td>${ task.pickupCustomerName || 'N/A' } </td>
-                                    < td > ${ task.pickupLocation || 'N/A' } </td>
-                                        < td > ${ task.deliveryCustomerName || 'N/A' } </td>
-                                            < td > ${ task.deliveryLocation || 'N/A' } </td>
-                                                < td > ${ task.pickupType || 'N/A' } </td>
-                                                    < td > ${ task.routeName || 'N/A' } </td>
-                                                        < td class="d-none" > ${ task.orderID || 'N/A' } </td>
-                                                            < td > ${ task.crewCommander || '' } </td>
-                                                                < td > ${ task.leadVehicle || '' } </td>
-                                                                    < td > ${ task.chaseVehicle || '' } </td>
-                                                                        < td > ${ new Date(task.orderDate).toLocaleDateString() || 'N/A' } </td>
-                                                                            < td > <span class="badge bg-secondary" > ${ task.status || 'Unassigned' } </span></td >
-                                                                                <td><a href="#" > <i class="bi bi-pencil-square" > </i></a > </td>
-                                                                                    < /tr>;
+                                const row = `
+                                                        <tr class="table-border">
+                                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                            ${orderNumberCell}
+                                                            <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                            <td>${task.pickupLocation || 'N/A'}</td>
+                                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                            <td>${task.deliveryLocation || 'N/A'}</td>
+                                                            <td>${task.pickupType || 'N/A'}</td>
+                                                             <td>${task.routeName || 'N/A'}</td>
+                                                            <td class="d-none">${task.orderID || 'N/A'}</td>
+                                                            <td>${task.crewCommander || ''}</td>
+                                                            <td>${task.leadVehicle || ''}</td>
+                                                            <td>${task.chaseVehicle || ''}</td>
+                                                            <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                                        </tr>`;
                                 tableBody.innerHTML += row;
                                 firstRow = false; // Ensure only the first row has the order number cell
                             });
@@ -1102,20 +1128,20 @@
                             }
 
                             if (this.checked && currentPickupType !== selectedPickupType) {
-                                alert(You can only select tasks with the same Pickup Type: ${ selectedPickupType });
-                        this.checked = false;
-                    } else if (!this.checked) {
-                        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-                        if (!anyChecked) selectedPickupType = null;
-                    }
+                                alert(`You can only select tasks with the same Pickup Type: ${selectedPickupType}`);
+                                this.checked = false;
+                            } else if (!this.checked) {
+                                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                                if (!anyChecked) selectedPickupType = null;
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
                 });
-        });
-                    })
-                    .catch (error => {
-        console.error('Error fetching data:', error);
+        }
     });
-            }
-        });
 
 </script>
 
@@ -1205,12 +1231,14 @@
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#orderCreateDate", {
             dateFormat: "d-m-Y",  // Customize the date format
-            allowInput: true      // Optional: Allow manual input
+            allowInput: true,      // Optional: Allow manual input
+            minDate: "today"
         });
 
         flatpickr("#EndOnDate", {
             dateFormat: "d-m-Y",  // Customize the date format
-            allowInput: true      // Optional: Allow manual input
+            allowInput: true,      // Optional: Allow manual input
+            minDate: "today"
         });
     });
 </script>
