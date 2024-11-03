@@ -21,5 +21,9 @@
         public bool NewVehicleRequired { get; set; }
         public bool fullDayCheck { get; set; }
         public string OrderNumber { get; set; }
+        public bool OrderCreateStatus { get; set; }
+        public int IsEditTask { get; set; }
+        public int TaskId { get; set; }
+        public int CreatedBy { get; set; }
     }
 }

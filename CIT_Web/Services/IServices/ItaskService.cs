@@ -12,5 +12,6 @@ namespace CIT_Web.Services.IServices
         Task<T> CreateAsync<T>(TaskCreateDTO dto);
         Task<T> GetOrderRoutesAsync<T>();
         Task<T> GetOrderTaskAsync<T>(string OrderNumber);
+        Task<T> GetEditTask_DetailsAsync<T>(int taskId);
     }
 }

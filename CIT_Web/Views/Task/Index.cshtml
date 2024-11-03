@@ -1,5 +1,5 @@
 ﻿@model CIT_Web.Models.ViewModel.TaskCreateVM
-
+@using CIT_Web.Models.Dto.Login;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -14,16 +14,24 @@
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+@{
+    var UserLoginDetails = this.Context.Session.Get<LoginResponseDTO>("LoginUserDetailsSession");
+    var UserRegionId = UserLoginDetails.User.RegionID;
+
+}
+
 <script type="text/javascript">
     $('document').ready(function () {
-
 
         $("#btnAddTsk").click(function () {
             $('#myModal').show();
         })
 
+        // $("#btnEditTask").click(function () {
+        //     $('#myModal').show();
+        // })
+
         $("#btnAddTaskInRows").click(function () {
-            debugger
             //var Valid = true;
             var Valid = Validation()
             if (Valid == true) {
@@ -32,45 +40,17 @@
             }
         })
         $("#CustomerId").change(function () {
-            debugger
             var CustomerId = $(this).val();
-            $.ajax({
-                type: "GET",
-                url: "/Task/GetBranchNameById",
-                data: { "CustomerId": CustomerId },
-                dataType: "json",
-                success: function (data) {
-                    console.log(data);
-                    var Branchlst = '<option value="">Select</option>';
-                    for (var i = 0; i < data.length; i++) {
-                        Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
-                    }
-                    $("#BranchID").html(Branchlst);
-                }
-            })
+            BindLocation(CustomerId);
         })
 
         $("#CustomerRecipiantId").change(function () {
-            debugger
             var CustomerId = $(this).val();
-            $.ajax({
-                type: "GET",
-                url: "/Task/GetBranchNameById",
-                data: { "CustomerId": CustomerId },
-                dataType: "json",
-                success: function (data) {
-                    console.log(data);
-                    var Branchlst = '<option value="">Select</option>';
-                    for (var i = 0; i < data.length; i++) {
-                        Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
-                    }
-                    $("#CustomerRecipiantLocationId").html(Branchlst);
-                }
-            })
+            BindCustRecipiantId(CustomerId);
         })
 
         $("#choices-multiple-remove-button").change(function () {
-            debugger
+
             var Days = $(this).val();
             $("#RepeatDaysName").val(Days);
         })
@@ -83,55 +63,64 @@
                 data: { "OrderNumber": OrderNumber },
                 dataType: "json",
                 success: function (data) {
-                    debugger
-                    $("#orderType").val(data.orderTypeID);
+                    if (data.orderCreateStatus == true) {
+                        $("#orderType").val(data.orderTypeID);
 
-                    document.querySelector("#orderType").style.pointerEvents = "none";
-                    document.querySelector("#PickUpType").style.pointerEvents = "none";
-                    document.querySelector("#priority").style.pointerEvents = "none";
-                    document.querySelector("#orderCreateDate").style.pointerEvents = "none";
-                    document.querySelector("#repeatsMode").style.pointerEvents = "none";
-                    document.querySelector("#OrderRouteId").style.pointerEvents = "none";
-                    $("#PickUpType").val(data.pickUpTypeId);
-                    $("#priority").val(data.priorityId);
-                    $("#orderCreateDate").val(data.orderCreateDate);
-                    if (data.orderTypeID == 2) {
-                        // if (data.fullDayCheck == true) {
-                        //     $("#fullDayCheck").prop('checked', true);
-                        //     $("#NewVehicleRequired").attr('disabled', true);
-                        // }
-                        $("#fullDay").show();
-                        $("#repeatTaskSection").show();
-                        $("#repeatsSection").show();
-                        $("#repeatTask").prop("checked", true);
-                        $("#repeatsMode").val(data.repeatId);
-                        $("#EndOnDate").val(data.endOnDate);
-                        $("#choices-multiple-remove-button").val(data.repeatDaysName);
+                        document.querySelector("#orderType").style.pointerEvents = "none";
+                        document.querySelector("#PickUpType").style.pointerEvents = "none";
+                        document.querySelector("#priority").style.pointerEvents = "none";
+                        document.querySelector("#orderCreateDate").style.pointerEvents = "none";
+                        document.querySelector("#repeatsMode").style.pointerEvents = "none";
+                        document.querySelector("#OrderRouteId").style.pointerEvents = "none";
+                        $("#PickUpType").val(data.pickUpTypeId);
+                        $("#priority").val(data.priorityId);
+                        $("#orderCreateDate").val(data.orderCreateDate);
+                        if (data.orderTypeID == 2) {
+                            // if (data.fullDayCheck == true) {
+                            //     $("#fullDayCheck").prop('checked', true);
+                            //     $("#NewVehicleRequired").attr('disabled', true);
+                            // }
+                            $("#fullDay").show();
+                            $("#repeatTaskSection").show();
+                            $("#repeatsSection").show();
+                            $("#repeatTask").prop("checked", true);
+                            $("#repeatsMode").val(data.repeatId);
+                            $("#EndOnDate").val(data.endOnDate);
+                            $("#choices-multiple-remove-button").val(data.repeatDaysName);
+                        }
+                        else {
+                            // if (data.fullDayCheck == true) {
+                            //     $("#fullDayCheck").prop('checked', false);
+                            //     $("#NewVehicleRequired").attr('disabled', false);
+                            // }
+                            $("#fullDay").hide();
+                            $("#repeatTaskSection").hide();
+                            $("#repeatsSection").hide();
+                            $("#repeatTask").prop("checked", false);
+                        }
+                        $("#OrderRouteId").val(data.orderRouteId);
+                        if (data.orderTypeID == 1) {
+                            $("#btnAddTaskInRows").attr('disabled', true);
+                            document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                            document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
+                            $('#fullDayCheck').prop('checked', false);
+                        }
+                        if (data.orderTypeID == 2 && data.fullDayCheck == false) {
+                            $("#btnAddTaskInRows").attr('disabled', true);
+                            document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                            document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
+                            $('#fullDayCheck').prop('checked', false);
+                        }
+                        if (data.orderTypeID == 2 && data.fullDayCheck == true) {
+                            $("#btnAddTaskInRows").attr('disabled', false);
+                            $('#fullDayCheck').prop('checked', true);
+                        }
                     }
                     else {
-                        // if (data.fullDayCheck == true) {
-                        //     $("#fullDayCheck").prop('checked', false);
-                        //     $("#NewVehicleRequired").attr('disabled', false);
-                        // }
-                        $("#fullDay").hide();
-                        $("#repeatTaskSection").hide();
-                        $("#repeatsSection").hide();
-                        $("#repeatTask").prop("checked", false);
+                        alert("This order expired");
+                        Reset();
                     }
-                    $("#OrderRouteId").val(data.orderRouteId);
-                    if (data.orderTypeID == 1) {
-                        $("#btnAddTaskInRows").attr('disabled', true);
-                        document.querySelector("#EndOnDate").style.pointerEvents = "none";
-                        document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
-                    }
-                    if (data.orderTypeID == 2 && data.fullDayCheck == false) {
-                        $("#btnAddTaskInRows").attr('disabled', true);
-                        document.querySelector("#EndOnDate").style.pointerEvents = "none";
-                        document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
-                    }
-                    if (data.orderTypeID == 2 && data.fullDayCheck == true) {
-                        $("#btnAddTaskInRows").attr('disabled', false);
-                    }
+                    $("#IsEditTask").val(0);
                 }
             })
         })
@@ -144,6 +133,38 @@
         });
     });
 
+    function BindLocation(CustomerId) {
+        $.ajax({
+            type: "GET",
+            url: "/Task/GetBranchNameById",
+            data: { "CustomerId": CustomerId },
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                var Branchlst = '<option value="">Select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
+                }
+                $("#BranchID").html(Branchlst);
+            }
+        })
+    }
+    function BindCustRecipiantId(CustomerId) {
+        $.ajax({
+            type: "GET",
+            url: "/Task/GetBranchNameById",
+            data: { "CustomerId": CustomerId },
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                var Branchlst = '<option value="">Select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
+                }
+                $("#CustomerRecipiantLocationId").html(Branchlst);
+            }
+        })
+    }
     function Validation() {
         debugger
         var IsValid = true;
@@ -307,7 +328,6 @@
         // }
         return IsValid;
     }
-
     function ResetRepeat() {
         debugger
         $("#fullDayCheck").prop('checked', false);
@@ -315,7 +335,6 @@
         $("#EndOnDate").val('');
     }
     function Reset() {
-        debugger
         document.querySelector("#orderType").style.pointerEvents = "auto";
         document.querySelector("#PickUpType").style.pointerEvents = "auto";
         document.querySelector("#priority").style.pointerEvents = "auto";
@@ -323,7 +342,8 @@
         document.querySelector("#repeatsMode").style.pointerEvents = "auto";
         document.querySelector("#EndOnDate").style.pointerEvents = "auto";
         document.querySelector("#RepeatDaysName").style.pointerEvents = "auto";
-        document.querySelector("#OrderRouteId").style.pointerEvents = "auto";    
+        document.querySelector("#OrderRouteId").style.pointerEvents = "auto";
+        $("#btnAddTaskInRows").attr('value', 'Save and Close');
         $("#OrderNumber").val("");
         $("#orderType").val(0);
         $("#priority").val(0);
@@ -345,10 +365,103 @@
         $("#repeatsSection").hide();
         $("#repeatTask").prop("checked", false);
         $("#btnAddTaskInRows").attr('disabled', false);
+        $('#fullDayCheck').prop('checked', false);
+        $("#IsEditTask").val(0);
+        $("TaskId").val(0);
+    }
+    function EditTask(taskId) {
+        debugger
+
+        $.ajax({
+            type: "GET",
+            url: "/Task/GetEditTask_Details",
+            data: { "taskId": taskId },
+            dataType: "json",
+            success: function (data) {
+                // if (data.orderCreateStatus == true) {
+
+                $("#orderType").val(data.orderTypeID);
+
+                BindLocation(data.customerId);
+                BindCustRecipiantId(data.customerId);
+
+                document.querySelector("#orderType").style.pointerEvents = "none";
+                document.querySelector("#PickUpType").style.pointerEvents = "none";
+                document.querySelector("#priority").style.pointerEvents = "none";
+                document.querySelector("#orderCreateDate").style.pointerEvents = "none";
+                document.querySelector("#repeatsMode").style.pointerEvents = "none";
+                document.querySelector("#OrderRouteId").style.pointerEvents = "none";
+                document.querySelector("#OrderNumber").style.pointerEvents = "none";
+                $("#PickUpType").val(data.pickUpTypeId);
+                $("#priority").val(data.priorityId);
+                $("#orderCreateDate").val(data.orderCreateDate);
+                $("#CustomerId").val(data.customerId);
+                $("#OrderNumber").val(data.orderNumber);
+
+                $("#CustomerRecipiantId").val(data.customerRecipiantId);
+
+                if (data.orderTypeID == 2) {
+                    // if (data.fullDayCheck == true) {
+                    //     $("#fullDayCheck").prop('checked', true);
+                    //     $("#NewVehicleRequired").attr('disabled', true);
+                    // }
+                    $("#fullDay").show();
+                    $("#repeatTaskSection").show();
+                    $("#repeatsSection").show();
+                    $("#repeatTask").prop("checked", true);
+                    $("#repeatsMode").val(data.repeatId);
+                    $("#EndOnDate").val(data.endOnDate);
+                    $("#choices-multiple-remove-button").val(data.repeatDaysName);
+                }
+                else {
+                    // if (data.fullDayCheck == true) {
+                    //     $("#fullDayCheck").prop('checked', false);
+                    //     $("#NewVehicleRequired").attr('disabled', false);
+                    // }
+                    $("#fullDay").hide();
+                    $("#repeatTaskSection").hide();
+                    $("#repeatsSection").hide();
+                    $("#repeatTask").prop("checked", false);
+                }
+                $("#OrderRouteId").val(data.orderRouteId);
+                if (data.orderTypeID == 1) {
+                    //$("#btnAddTaskInRows").attr('disabled', true);
+                    document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                    document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
+                    $('#fullDayCheck').prop('checked', false);
+                }
+                if (data.orderTypeID == 2 && data.fullDayCheck == false) {
+                    //$("#btnAddTaskInRows").attr('disabled', true);
+                    document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                    document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
+                    $('#fullDayCheck').prop('checked', false);
+                }
+                if (data.orderTypeID == 2 && data.fullDayCheck == true) {
+                    //$("#btnAddTaskInRows").attr('disabled', false);
+                    $('#fullDayCheck').prop('checked', true);
+                }
+                $("#BranchID").val(data.branchID);
+                $("#CustomerRecipiantLocationId").val(data.customerRecipiantLocationId);
+                $("#btnAddTaskInRows").attr('value', 'Edit And Close');
+                $("#IsEditTask").val(1);
+                $("#TaskId").val(taskId);
+                $('#myModal').modal('show');
+                $("#choices-multiple-remove-button").val(data.repeatDaysName);
+                //}
+                // else {
+                //     alert("This order expired");
+                //     Reset();
+                // }
+            }
+        })
     }
 </script>
 <form enctype="multipart/form-data" asp-controller="Task" ,asp-action="Index" method="post">
     <input asp-for="RepeatDaysName" type="hidden" />
+    <input asp-for="IsEditTask" type="hidden" />
+    <input asp-for="TaskId" type="hidden" />
+    <input asp-for="UserRegionId" type="hidden" value="@UserRegionId" />
+
     <div class="modal fade new-task-dashboard-data" id="myModal" aria-labelledby="myNewTaskModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -470,9 +583,9 @@
                                     <div class="input-group-text">
                                         <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
                                     </div>
-                                    @* <select asp-for="VaultID" class="form-select small-input"
-                                    asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
-                                    </select> *@
+                                    <select asp-for="VaultID" class="form-select small-input"
+                                            asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-4">
@@ -521,7 +634,7 @@
                                         </select>
                                     </div>
                                 </div>
-                           
+
 
                             </div>
                             <div id="repeatTaskSection" class="mt-0 mb-2" style="display:none;">
@@ -558,9 +671,6 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text repeats-on-text">Repeats On</span>
                                             </div>
-                                            @* <select asp-for="RepeatDaysName" class="form-select small-input" multiple="multiple"
-                                            asp-items="@(new SelectList(Model.repeatsInDaysMasterslist, "RepeatDaysName", "RepeatInDay"))">
-                                            </select> *@
                                             <select id="choices-multiple-remove-button" class="form-select small-input" name="options" multiple>
                                                 <option value="Sunday">Sunday</option>
                                                 <option value="Monday">Monday</option>
@@ -584,254 +694,251 @@
                     <div class="modal-footer d-flex justify-content-between " style="font-size:12px !important; padding:0px !important">
                         <button type="button" id="btnClose" style="font-size:12px !important;" class="btn btn-secondary mt-3" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
                         <div>
-
-                            <input type="button" style="font-size:12px !important; color: #032b56; border-color: #032b56; bi bi-file-earmark-pdf !important;"
-                                   class="btn btn-outline mt-3" value="Save & Add Another" id="btnsave">
-
+                            <input type="button" style="font-size:12px !important; color: #032b56; border-color: #032b56; bi bi-file-earmark-pdf !important;" class="btn btn-outline mt-3" value="Save & Add Another" id="btnsave">
                             <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
-                            @* <button type="button" style="font-size:12px !important;" class="btn btn-color" data-bs-dismiss="modal" id="btnAddTaskInRows" style="background:#132553 !important;"><i class="bi bi-file-earmark-pdf"></i> Save & Add more location to this Task</button> *@
                             <input type="button" style="font-size:12px !important;" class="btn btn-color mt-3" value="Save and Close" id="btnAddTaskInRows" />
-                            @* <i class="bi bi-file-earmark-lock-fill"></i> Save and close *@
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
+    @* ************************************************************************************************************ *@
+
+
+    <div class="tab-container-task-header mt-3 ms-3" style="width: 100%;">
+        <div class="group-data-action-container d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+
+                <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#vehicleAssignModal"><i class="bi bi-person-check-fill"></i></button>
+
+
+                <a class="me-3" href="#"><i class="bi bi-pencil-square"></i></a>
+                <a class="me-3" href="#"><i class="bi bi-trash-fill"></i></a>
+                <a class="me-3" href="#"><i class="bi bi-arrow-down-circle-fill"></i></a>
+                <a class="me-3" href="#"><i class="bi bi-gear-fill"></i></a>
+                <button class="btn btn-color group-button" data-bs-toggle="Groupmodal" data-bs-target="#groupModal" id="groupPopup">Order Grouping</button>
+                <div class="dropdown-new-task  me-2 ms-3" style="width:100px  !important">
+                    <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk">
+                        <i class="bi bi-plus"></i> New Order
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex" style="margin-right: 21px;">
+                <div class="input-group w-100 me-2">
+                    <input type="text" id="filter-date" class="form-control small-input" placeholder="Select end date">
+                    <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                </div>
+
+                <input type="text" placeholder="Search..." style="padding: 5px" />
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-container mt-3 ms-3" style="width: 100%;">
+        <div class="table-wrapper" style=" max-height:90vh; margin-right: 21px;">
+            <table class="table datatable mt-3" id="task-table">
+                <thead class="sticky-header table-hover">
+                    <tr>
+                        <th></th>
+                        <th>Order Number</th>
+                        <th>Pickup Customer</th>
+                        <th>Pickup Location</th>
+                        <th>Delivery Customer</th>
+                        <th>Delivery Location</th>
+                        <th>Type</th>
+                        <th>Route</th>
+                        <th class="d-none">OrderID</th>
+                        <th>Crew Commander</th>
+                        <th>Lead Vehicle</th>
+                        <th>Chase Vehicle</th>
+                        <th>Date</th>
+                        <th>Status</th>
+
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    @* **************************************Grouped data modal************************* *@
+
+    <!-- Modal -->
+    <div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="groupModalLabel" style="font-size:14px !important">Selected Orders</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="ms-4 mt-4" style="font-size:14px !important">
+                    <span>Route Name : </span>
+                    <input type="text" id="routeNameInput" placeholder="Enter Route..." style="padding:0px 3px" />
+                </div>
+                <div class="modal-body" id="modal-content" style="overflow-x:auto">
+                    <table class="table table-bordered" style="font-size:12px !important">
+                        <thead>
+                            <tr>
+                                <th>Pickup Customer</th>
+                                <th>Delivery Customer</th>
+                                <th>Delivery Location</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th class="d-none">OrderID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="selectedOrdersTableBody">
+                            <!-- Selected orders will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
+                    <form method="post" asp-action="Index" asp-controller="Assignment" target="_blank">
+                        @* target="_blank" *@
+                        <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ******************************************************************************************** *@
+
+
+    @* ************************************Vehicle Assignment Model ********************************* *@
+
+    <div class="modal fade custom-modal-size" id="vehicleAssignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <!-- Custom size class applied -->
+            <div class="modal-content" style="width:430px">
+                @*  <div class="modal-header">
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> *@
+                <div class="modal-body">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs " id="assignTabs" role="tablist">
+                        <li class="nav-item " role="presentation">
+                            <button class="nav-link active" id="leadVehicle-tab" data-bs-toggle="tab" data-bs-target="#leadVehicleDriver-tab" type="button" role="tab" aria-controls="lead" aria-selected="false">
+                                <i class="bi bi-car-front-fill "></i>
+                                <span class="ms-1 ">
+                                    Lead Vehicle
+                                </span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="chaseVehicle-tab" data-bs-toggle="tab" data-bs-target="#chaseVehicleDriver-tab" type="button" role="tab" aria-controls="Chase" aria-selected="false">
+                                <i class="bi bi-truck "></i> <span class="ms-1 ">Chase vehicle </span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="crew-tab" data-bs-toggle="tab" data-bs-target="#crewCommandor-tab" type="button" role="tab" aria-controls="crewCommandor" aria-selected="false">  <i class="bi bi-person-badge-fill "></i> <span class="ms-1 ">Crew Commander </span> </button>
+                        </li>
+
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content mt-3" style="height: 200px;">
+                        <!-- Lead Vehicle Tab -->
+                        <div class="tab-pane fade show active" id="leadVehicleDriver-tab" role="tabpanel" aria-labelledby="leadVehicle-tab">
+                            <h5>Select a Lead Vehicle driver to assign tasks:</h5>
+                            <div class="p-3">
+                                @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
+                                {
+                                    @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Lead"))
+                                    {
+                                        <div class="form-check d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input class="form-check-input lead-vehicle-checkbox" type="checkbox" name="leadVehicleDriver" id="leadVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
+                                                <i class="bi bi-car-front-fill" style="font-size: 25px;"></i>
+                                                <label class="form-check-label" for="leadVehicleDriver_@vehicle.VehicleID">
+                                                    @vehicle.RegistrationNo
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No vehicles available</p>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Chase Vehicle Tab -->
+                        <div class="tab-pane fade" id="chaseVehicleDriver-tab" role="tabpanel" aria-labelledby="chaseVehicle-tab">
+                            <h5>Select a Chase Vehicle driver to assign tasks:</h5>
+                            <div class="p-3">
+                                @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
+                                {
+                                    @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Chase"))
+                                    {
+                                        <div class="form-check d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input class="form-check-input chase-vehicle-checkbox" type="checkbox" name="chaseVehicleDriver" id="chaseVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
+                                                <i class="bi bi-truck" style="font-size: 25px;"></i>
+                                                <label class="form-check-label" for="chaseVehicleDriver_@vehicle.VehicleID">
+                                                    @vehicle.RegistrationNo
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No vehicles available</p>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Crew Commander Tab -->
+                        <div class="tab-pane fade assignment-container" id="crewCommandor-tab" role="tabpanel" aria-labelledby="crew-tab">
+                            <h5>Select a  Crew Commander to assign tasks:</h5>
+                            <div class="p-3">
+                                @if (Model.crews != null && Model.crews.Any())
+                                {
+                                    @foreach (var crewCommander in Model.crews)
+                                    {
+                                        <div class="form-check d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.CrewCommanderId" value="@crewCommander.CrewCommanderId">
+                                                <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
+                                                <label class="form-check-label" for="crewCommander_@crewCommander.CrewCommanderId">
+                                                    @crewCommander.Name
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No crew commanders available</p>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-color" id="">Assign</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
 
 </form>
-
-@* ************************************************************************************************************ *@
-
-
-<div class="tab-container-task-header mt-3 ms-3" style="width: 100%;">
-    <div class="group-data-action-container d-flex justify-content-between">
-        <div class="d-flex align-items-center">
-
-            <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#vehicleAssignModal"><i class="bi bi-person-check-fill"></i></button>
-
-
-            <a class="me-3" href="#"><i class="bi bi-pencil-square"></i></a>
-            <a class="me-3" href="#"><i class="bi bi-trash-fill"></i></a>
-            <a class="me-3" href="#"><i class="bi bi-arrow-down-circle-fill"></i></a>
-            <a class="me-3" href="#"><i class="bi bi-gear-fill"></i></a>
-            <button class="btn btn-color group-button" data-bs-toggle="Groupmodal" data-bs-target="#groupModal" id="groupPopup">Order Grouping</button>
-            <div class="dropdown-new-task  me-2 ms-3" style="width:100px  !important">
-                <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk" data-bs-target="#myNewTaskModal">
-                    <i class="bi bi-plus"></i> New Order
-                </button>
-            </div>
-        </div>
-        <div class="d-flex" style="margin-right: 21px;">
-            <div class="input-group w-100 me-2">
-                <input type="text" id="filter-date" class="form-control small-input" placeholder="Select end date">
-                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
-            </div>
-
-            <input type="text" placeholder="Search..." style="padding: 5px" />
-        </div>
-    </div>
-</div>
-
-<div class="tab-container mt-3 ms-3" style="width: 100%;">
-    <div class="table-wrapper" style=" max-height:90vh; margin-right: 21px;">
-        <table class="table datatable mt-3" id="task-table">
-            <thead class="sticky-header table-hover">
-                <tr>
-                    <th></th>
-                    <th>Order Number</th>
-                    <th>Pickup Customer</th>
-                    <th>Pickup Location</th>
-                    <th>Delivery Customer</th>
-                    <th>Delivery Location</th>
-                    <th>Type</th>
-                    <th class="d-none">OrderID</th>
-                    <th>Crew Commander</th>
-                    <th>Lead Vehicle</th>
-                    <th>Chase Vehicle</th>
-                    <th>Date</th>
-                    <th>Status</th>
-
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-@* **************************************Grouped data modal************************* *@
-
-<!-- Modal -->
-<div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg ">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="groupModalLabel" style="font-size:14px !important">Selected Orders</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="ms-4 mt-4" style="font-size:14px !important">
-                <span>Route Name : </span>
-                <input type="text" id="routeNameInput" placeholder="Enter Route..." style="padding:0px 3px" />
-            </div>
-            <div class="modal-body" id="modal-content" style="overflow-x:auto">
-                <table class="table table-bordered" style="font-size:12px !important">
-                    <thead>
-                        <tr>
-                            <th>Pickup Customer</th>
-                            <th>Delivery Customer</th>
-                            <th>Delivery Location</th>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th class="d-none">OrderID</th>
-                        </tr>
-                    </thead>
-                    <tbody id="selectedOrdersTableBody">
-                        <!-- Selected orders will be added here dynamically -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
-                <form method="post" asp-action="Index" asp-controller="Assignment" target="_blank">
-                    @* target="_blank" *@
-                    <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-@* ******************************************************************************************** *@
-
-
-@* ************************************Vehicle Assignment Model ********************************* *@
-
-<div class="modal fade custom-modal-size" id="vehicleAssignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
-        <!-- Custom size class applied -->
-        <div class="modal-content" style="width:430px">
-            @*  <div class="modal-header">
-
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div> *@
-            <div class="modal-body">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs " id="assignTabs" role="tablist">
-                    <li class="nav-item " role="presentation">
-                        <button class="nav-link active" id="leadVehicle-tab" data-bs-toggle="tab" data-bs-target="#leadVehicleDriver-tab" type="button" role="tab" aria-controls="lead" aria-selected="false">
-                            <i class="bi bi-car-front-fill "></i>
-                            <span class="ms-1 ">
-                                Lead Vehicle
-                            </span>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="chaseVehicle-tab" data-bs-toggle="tab" data-bs-target="#chaseVehicleDriver-tab" type="button" role="tab" aria-controls="Chase" aria-selected="false">
-                            <i class="bi bi-truck "></i> <span class="ms-1 ">Chase vehicle </span>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="crew-tab" data-bs-toggle="tab" data-bs-target="#crewCommandor-tab" type="button" role="tab" aria-controls="crewCommandor" aria-selected="false">  <i class="bi bi-person-badge-fill "></i> <span class="ms-1 ">Crew Commander </span> </button>
-                    </li>
-
-                </ul>
-
-                <!-- Tab content -->
-                <div class="tab-content mt-3" style="height: 200px;">
-                    <!-- Lead Vehicle Tab -->
-                    <div class="tab-pane fade show active" id="leadVehicleDriver-tab" role="tabpanel" aria-labelledby="leadVehicle-tab">
-                        <h5>Select a Lead Vehicle driver to assign tasks:</h5>
-                        <div class="p-3">
-                            @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
-                            {
-                                @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Lead"))
-                                {
-                                    <div class="form-check d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <input class="form-check-input lead-vehicle-checkbox" type="checkbox" name="leadVehicleDriver" id="leadVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
-                                            <i class="bi bi-car-front-fill" style="font-size: 25px;"></i>
-                                            <label class="form-check-label" for="leadVehicleDriver_@vehicle.VehicleID">
-                                                @vehicle.RegistrationNo
-                                            </label>
-                                        </div>
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <p>No vehicles available</p>
-                            }
-                        </div>
-                    </div>
-
-                    <!-- Chase Vehicle Tab -->
-                    <div class="tab-pane fade" id="chaseVehicleDriver-tab" role="tabpanel" aria-labelledby="chaseVehicle-tab">
-                        <h5>Select a Chase Vehicle driver to assign tasks:</h5>
-                        <div class="p-3">
-                            @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
-                            {
-                                @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Chase"))
-                                {
-                                    <div class="form-check d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <input class="form-check-input chase-vehicle-checkbox" type="checkbox" name="chaseVehicleDriver" id="chaseVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
-                                            <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                            <label class="form-check-label" for="chaseVehicleDriver_@vehicle.VehicleID">
-                                                @vehicle.RegistrationNo
-                                            </label>
-                                        </div>
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <p>No vehicles available</p>
-                            }
-                        </div>
-                    </div>
-
-                    <!-- Crew Commander Tab -->
-                    <div class="tab-pane fade assignment-container" id="crewCommandor-tab" role="tabpanel" aria-labelledby="crew-tab">
-                        <h5>Select a  Crew Commander to assign tasks:</h5>
-                        <div class="p-3">
-                            @if (Model.crews != null && Model.crews.Any())
-                            {
-                                @foreach (var crewCommander in Model.crews)
-                                {
-                                    <div class="form-check d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.CrewCommanderId" value="@crewCommander.CrewCommanderId">
-                                            <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
-                                            <label class="form-check-label" for="crewCommander_@crewCommander.CrewCommanderId">
-                                                @crewCommander.Name
-                                            </label>
-                                        </div>
-                                    </div>
-                                }
-                            }
-                            else
-                            {
-                                <p>No crew commanders available</p>
-                            }
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-color" id="">Assign</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-</div>
-
 
 @* *********************************************************************************************** *@
 
@@ -902,13 +1009,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                    <td>${PickupCustomer}</td>
-                    <td>${DeliveryCustomer}</td>
-                    <td>${DeliveryLocation}</td>
-                    <td>${time}</td>
-                    <td>${type}</td>
-                    <td class="d-none">${orderID}</td>
-                `;
+                                                                                                    <td>${PickupCustomer}</td>
+                                                                                                    <td>${DeliveryCustomer}</td>
+                                                                                                    <td>${DeliveryLocation}</td>
+                                                                                                    <td>${time}</td>
+                                                                                                    <td>${type}</td>
+                                                                                                    <td class="d-none">${orderID}</td>
+                                                                                                `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -1007,7 +1114,8 @@
 
         // Convert 'today' to 'YYYY-MM-DD' format for the API
         const todayISO = new Date().toISOString().split('T')[0];
-        fetchTasksByDate(todayISO);
+        const regionId = $("#UserRegionId").val();
+        fetchTasksByDate(todayISO, regionId);
 
         document.getElementById('filter-date').addEventListener('change', function () {
             const selectedDate = this.value;
@@ -1016,11 +1124,12 @@
             const [day, month, year] = selectedDate.split('-');
             const formattedDateForAPI = `${year}-${month}-${day}`; // Format to 'YYYY-MM-DD'
 
-            fetchTasksByDate(formattedDateForAPI);
+            fetchTasksByDate(formattedDateForAPI, regionId);
         });
 
-        function fetchTasksByDate(date) {
-            fetch(`${API_BASE_URL}/api/Order/getOrdersList?date=${date}`)
+        function fetchTasksByDate(date, regionId) {
+            debugger
+            fetch(`${API_BASE_URL}/api/Order/getOrdersList?date=${date}&regionId=${regionId}`)
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.querySelector('#task-table tbody');
@@ -1040,11 +1149,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                                <tr class="order-header">
-                                    <td colspan="13" class="subheader-cell" style="background:#d9d9db !important;">
-                                        <div>${orderType}</div>
-                                    </td>
-                                </tr>`;
+                                                                                                                                <tr class="order-header">
+                                                                                                                                    <td colspan="14" class="subheader-cell" style="background:#d9d9db !important;">
+                                                                                                                                        <div>${orderType}</div>
+                                                                                                                                    </td>
+                                                                                                                                </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         // Group tasks by orderNumber within the current orderType
@@ -1064,22 +1173,23 @@
                                     : ''; // Empty cell for subsequent rows in the group
 
                                 const row = `
-                                        <tr class="table-border">
-                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                            ${orderNumberCell}
-                                            <td>${task.pickupCustomerName || 'N/A'}</td>
-                                            <td>${task.pickupLocation || 'N/A'}</td>
-                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                            <td>${task.deliveryLocation || 'N/A'}</td>
-                                            <td>${task.pickupType || 'N/A'}</td>
-                                            <td class="d-none">${task.orderID || 'N/A'}</td>
-                                            <td>${task.crewCommander || ''}</td>
-                                            <td>${task.leadVehicle || ''}</td>
-                                            <td>${task.chaseVehicle || ''}</td>
-                                            <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
-                                        </tr>`;
+                                                                                                                                        <tr class="table-border">
+                                                                                                                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                                                                                                            ${orderNumberCell}
+                                                                                                                                            <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                                                                                                            <td>${task.pickupLocation || 'N/A'}</td>
+                                                                                                                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                                                                                                            <td>${task.deliveryLocation || 'N/A'}</td>
+                                                                                                                                            <td>${task.pickupType || 'N/A'}</td>
+                                                                                                                                             <td>${task.routeName || 'N/A'}</td>
+                                                                                                                                            <td class="d-none">${task.orderID || 'N/A'}</td>
+                                                                                                                                            <td>${task.crewCommander || ''}</td>
+                                                                                                                                            <td>${task.leadVehicle || ''}</td>
+                                                                                                                                            <td>${task.chaseVehicle || ''}</td>
+                                                                                                                                            <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                                                                                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                                                                                                             <td><a><i class="bi bi-pencil-square" onclick="EditTask(${task.taskID})"></i></a></td>
+                                                                                                                                        </tr>`;
                                 tableBody.innerHTML += row;
                                 firstRow = false; // Ensure only the first row has the order number cell
                             });
@@ -1124,13 +1234,14 @@
 
 <script>
     document.getElementById('fullDayCheck').addEventListener('change', function () {
-        var newVehicleCheckbox = document.getElementById('NewVehicleRequired');
+        // var newVehicleCheckbox = document.getElementById('NewVehicleRequired');
 
-        if (this.checked) {
-            newVehicleCheckbox.disabled = true; // Disable the "New Vehicle Required" checkbox
-        } else {
-            newVehicleCheckbox.disabled = false; // Enable the "New Vehicle Required" checkbox
-        }
+        // if (this.checked) {
+        //     newVehicleCheckbox.disabled = true; // Disable the "New Vehicle Required" checkbox
+        // } else {
+        //     newVehicleCheckbox.disabled = false; // Enable the "New Vehicle Required" checkbox
+        // }
+
         $("#CustomerId").css("border", "1px solid #C3C1C1");
         $("#BranchID").css("border", "1px solid #C3C1C1");
         $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
@@ -1199,12 +1310,12 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#orderCreateDate", {
-            dateFormat: "d-m-y",  // Customize the date format
+            dateFormat: "d-m-Y",  // Customize the date format
             allowInput: true      // Optional: Allow manual input
         });
 
         flatpickr("#EndOnDate", {
-            dateFormat: "d-m-y",  // Customize the date format
+            dateFormat: "d-m-Y",  // Customize the date format
             allowInput: true      // Optional: Allow manual input
         });
     });
