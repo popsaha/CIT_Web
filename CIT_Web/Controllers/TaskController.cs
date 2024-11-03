@@ -31,11 +31,12 @@ namespace CIT_Web.Controllers
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
         int Refresh = 1;
-        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IMapper mapper, ILoginService login_Service)
-        //private readonly IOrderService _orderService;
         private readonly IOrderRouteService _orderRouteService;
+        //public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IMapper mapper, ILoginService login_Service)
+        //private readonly IOrderService _orderService;
         
-        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IOrderRouteService orderRouteService, IMapper mapper)
+        
+        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IOrderRouteService orderRouteService, IMapper mapper, ILoginService login_Service)
         {
             _taskService = taskService;
             _taskListService = taskListService;

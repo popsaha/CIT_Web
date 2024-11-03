@@ -172,6 +172,7 @@
                     <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-0 text-white min-vh-90">
                         @{
                             var UserLoginDetails = this.Context.Session.Get<LoginResponseDTO>("LoginUserDetailsSession");
+                            var LoginUserName = UserLoginDetails.User.UserName;
                             var RoleName = UserLoginDetails.Role;                           
                         }
                         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
@@ -195,7 +196,7 @@
                                                  width="30"
                                                  height="30"
                                                  class="rounded-circle" />
-                                            <span class="text-dark ms-2 ms-1 ">Hariom User</span>
+                                            <span class="text-dark ms-2 ms-1 ">@LoginUserName</span>
                                         </a>
 
                                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow"
