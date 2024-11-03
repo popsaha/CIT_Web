@@ -1,4 +1,5 @@
-﻿@model CIT_Web.Models.ViewModel.TaskCreateVM
+﻿@using Newtonsoft.Json
+@model CIT_Web.Models.ViewModel.TaskCreateVM
 @using CIT_Web.Models.Dto.Login;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,6 +11,10 @@
 
 <!-- Flatpickr CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css"><script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
 
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -344,6 +349,7 @@
         document.querySelector("#RepeatDaysName").style.pointerEvents = "auto";
         document.querySelector("#OrderRouteId").style.pointerEvents = "auto";
         $("#btnAddTaskInRows").attr('value', 'Save and Close');
+        document.querySelector("#OrderRouteId").style.pointerEvents = "auto";
         $("#OrderNumber").val("");
         $("#orderType").val(0);
         $("#priority").val(0);
@@ -808,8 +814,72 @@
             </div>
         </div>
     </div>
+<!-- Modal -->
+<div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groupModalLabel" style="font-size:14px !important">Selected Orders</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="ms-4 mt-4" style="font-size:14px !important">
+                <div class="d-flex align-items-center ">
+                    <label for="routeNameInput" class="form-label">Route Name : </label>
 
-    @* ******************************************************************************************** *@
+                    <!-- Text input combined with dropdown (datalist) -->
+                    <input list="routeOptions" id="routeNameInput" name="RouteName" class="form-control ms-2" placeholder="Enter or select route..." style="width:24%" />
+                </div>
+
+
+                <!-- Datalist for displaying existing routes -->
+                <datalist id="routeOptions">
+                    @if (Model.orderRouteDTOs != null && Model.orderRouteDTOs.Any())
+                    {
+                        @foreach (var route in Model.orderRouteDTOs)
+                        {
+                            <option value="@route.RouteName"></option>
+                        }
+                    }
+                    else
+                    {
+                        <option disabled>No routes available</option>
+                    }
+                </datalist>
+            </div>
+
+
+
+
+            <div class="modal-body" id="modal-content" style="overflow-x:auto">
+                <table class="table table-bordered" style="font-size:12px !important">
+                    <thead>
+                        <tr>
+                            <th>Pickup Customer</th>
+                            <th>Delivery Customer</th>
+                            <th>Delivery Location</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th class="d-none">OrderID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="selectedOrdersTableBody">
+                        <!-- Selected orders will be added here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
+                <form method="post" asp-action="Index" asp-controller="Assignment" target="_blank">
+                    @* target="_blank" *@
+                    <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* ******************************************************************************************** *@
 
 
     @* ************************************Vehicle Assignment Model ********************************* *@
@@ -898,41 +968,41 @@
                             </div>
                         </div>
 
-                        <!-- Crew Commander Tab -->
-                        <div class="tab-pane fade assignment-container" id="crewCommandor-tab" role="tabpanel" aria-labelledby="crew-tab">
-                            <h5>Select a  Crew Commander to assign tasks:</h5>
-                            <div class="p-3">
-                                @if (Model.crews != null && Model.crews.Any())
+                    <!-- Crew Commander Tab -->
+                    <div class="tab-pane fade assignment-container" id="crewCommandor-tab" role="tabpanel" aria-labelledby="crew-tab">
+                        <h5>Select a  Crew Commander to assign tasks:</h5>
+                        <div class="p-3">
+                            @if (Model.crews != null && Model.crews.Any())
+                            {
+                                @foreach (var crewCommander in Model.crews)
                                 {
-                                    @foreach (var crewCommander in Model.crews)
-                                    {
-                                        <div class="form-check d-flex justify-content-between align-items-center">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.CrewCommanderId" value="@crewCommander.CrewCommanderId">
-                                                <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
-                                                <label class="form-check-label" for="crewCommander_@crewCommander.CrewCommanderId">
-                                                    @crewCommander.Name
-                                                </label>
-                                            </div>
+                                    <div class="form-check d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.Id" value="@crewCommander.Id">
+                                            <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
+                                            <label class="form-check-label" for="crewCommander_@crewCommander.Id">
+                                                @crewCommander.Name
+                                            </label>
                                         </div>
-                                    }
+                                    </div>
                                 }
-                                else
-                                {
-                                    <p>No crew commanders available</p>
-                                }
-                            </div>
+                            }
+                            else
+                            {
+                                <p>No crew commanders available</p>
+                            }
                         </div>
+                    </div>
 
                     </div>
 
-                    <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-color" id="">Assign</button>
-                    </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-color" id="submitVehicleAssignment">Assign</button>
                 </div>
             </div>
         </div>
+    </div>
 
 
     </div>
@@ -994,9 +1064,9 @@
             const pickupCustomerCellIndex = isGroupedRow ? 2 : 1;
             const deliveryCustomerCellIndex = isGroupedRow ? 3 : 2;
             const deliveryLocationCellIndex = isGroupedRow ? 5 : 4;
-            const timeCellIndex = isGroupedRow ? 11 : 10;
+            const timeCellIndex = isGroupedRow ? 12 : 11;
             const typeCellIndex = isGroupedRow ? 6 : 5;
-            const orderIDCellIndex = isGroupedRow ? 7 : 6;
+            const orderIDCellIndex = isGroupedRow ? 8 : 7;
 
             // Collect the task details
             const PickupCustomer = row.cells[pickupCustomerCellIndex].textContent.trim();
@@ -1009,13 +1079,13 @@
             // Create a table row for the selected task
             const tableRow = document.createElement('tr');
             tableRow.innerHTML = `
-                                                                                                    <td>${PickupCustomer}</td>
-                                                                                                    <td>${DeliveryCustomer}</td>
-                                                                                                    <td>${DeliveryLocation}</td>
-                                                                                                    <td>${time}</td>
-                                                                                                    <td>${type}</td>
-                                                                                                    <td class="d-none">${orderID}</td>
-                                                                                                `;
+                                    <td>${PickupCustomer}</td>
+                                    <td>${DeliveryCustomer}</td>
+                                    <td>${DeliveryLocation}</td>
+                                    <td>${time}</td>
+                                    <td>${type}</td>
+                                    <td class="d-none">${orderID}</td>
+                                `;
             selectedOrdersTableBody.appendChild(tableRow);
         });
     });
@@ -1063,7 +1133,7 @@
         console.log("requestData", requestData); // For debugging
 
         // Send the data to the API
-        fetch(`${API_BASE_URL}/api/Order/updateRoute`, {
+        fetch(`${API_BASE_URL}/api/OrderRoute/updateRoute`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1095,7 +1165,6 @@
 
 
 @* ******************************Filter data based on Date*********************************** *@
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -1149,11 +1218,11 @@
 
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
-                                                                                                                                <tr class="order-header">
-                                                                                                                                    <td colspan="14" class="subheader-cell" style="background:#d9d9db !important;">
-                                                                                                                                        <div>${orderType}</div>
-                                                                                                                                    </td>
-                                                                                                                                </tr>`;
+                                                <tr class="order-header">
+                                                    <td colspan="14" class="subheader-cell" style="background:#d9d9db !important;">
+                                                        <div>${orderType}</div>
+                                                    </td>
+                                                </tr>`;
                         tableBody.innerHTML += orderTypeHeader;
 
                         // Group tasks by orderNumber within the current orderType
@@ -1173,23 +1242,23 @@
                                     : ''; // Empty cell for subsequent rows in the group
 
                                 const row = `
-                                                                                                                                        <tr class="table-border">
-                                                                                                                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
-                                                                                                                                            ${orderNumberCell}
-                                                                                                                                            <td>${task.pickupCustomerName || 'N/A'}</td>
-                                                                                                                                            <td>${task.pickupLocation || 'N/A'}</td>
-                                                                                                                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
-                                                                                                                                            <td>${task.deliveryLocation || 'N/A'}</td>
-                                                                                                                                            <td>${task.pickupType || 'N/A'}</td>
-                                                                                                                                             <td>${task.routeName || 'N/A'}</td>
-                                                                                                                                            <td class="d-none">${task.orderID || 'N/A'}</td>
-                                                                                                                                            <td>${task.crewCommander || ''}</td>
-                                                                                                                                            <td>${task.leadVehicle || ''}</td>
-                                                                                                                                            <td>${task.chaseVehicle || ''}</td>
-                                                                                                                                            <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                                                                                                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                                                                                                                             <td><a><i class="bi bi-pencil-square" onclick="EditTask(${task.taskID})"></i></a></td>
-                                                                                                                                        </tr>`;
+                                                        <tr class="table-border">
+                                                            <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                            ${orderNumberCell}
+                                                            <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                            <td>${task.pickupLocation || 'N/A'}</td>
+                                                            <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                            <td>${task.deliveryLocation || 'N/A'}</td>
+                                                            <td>${task.pickupType || 'N/A'}</td>
+                                                             <td>${task.routeName || 'N/A'}</td>
+                                                            <td class="d-none">${task.orderID || 'N/A'}</td>
+                                                            <td>${task.crewCommander || ''}</td>
+                                                            <td>${task.leadVehicle || ''}</td>
+                                                            <td>${task.chaseVehicle || ''}</td>
+                                                            <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                                        </tr>`;
                                 tableBody.innerHTML += row;
                                 firstRow = false; // Ensure only the first row has the order number cell
                             });
@@ -1311,12 +1380,14 @@
     document.addEventListener('DOMContentLoaded', function () {
         flatpickr("#orderCreateDate", {
             dateFormat: "d-m-Y",  // Customize the date format
-            allowInput: true      // Optional: Allow manual input
+            allowInput: true,      // Optional: Allow manual input
+            minDate: "today"
         });
 
         flatpickr("#EndOnDate", {
             dateFormat: "d-m-Y",  // Customize the date format
-            allowInput: true      // Optional: Allow manual input
+            allowInput: true,      // Optional: Allow manual input
+            minDate: "today"
         });
     });
 </script>
@@ -1368,3 +1439,72 @@
 </script>
 
 @* ********************************************************************************************************** *@
+
+<script src="~/js/config.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add the click event listener to the button with the ID 'submitVehicleAssignment'
+        document.getElementById('submitVehicleAssignment').addEventListener('click', function () {
+            // Collect selected Lead Vehicle IDs as an array
+            const leadVehicleIDs = Array.from(document.querySelectorAll('.lead-vehicle-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.value));
+
+            // Collect selected Chase Vehicle IDs as an array
+            const chaseVehicleIDs = Array.from(document.querySelectorAll('.chase-vehicle-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.value));
+
+            // Collect selected Crew Commander IDs as an array
+            const crewCommanderIDs = Array.from(document.querySelectorAll('.crew-commander-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.value));
+
+            // Check if the number of IDs are the same
+            if (leadVehicleIDs.length !== chaseVehicleIDs.length ||
+                leadVehicleIDs.length !== crewCommanderIDs.length) {
+                alert('The number of IDs for Lead Vehicles, Chase Vehicles, and Crew Commanders must be the same.');
+                return; // Exit the function if the counts do not match
+            }
+
+            // Prepare the data in the required format (matching the API response format)
+            const requestData = {
+                crewId: crewCommanderIDs,
+                leadVehicleId: leadVehicleIDs,
+                chaseVehicleId: chaseVehicleIDs,
+                assignDate: new Date().toISOString() // Get the current date and time in ISO format
+            };
+
+            console.log("requestData", requestData);
+
+            // Send data to the API using fetch
+            fetch(`${API_BASE_URL}/api/Assignment/assign`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData) // Ensure this matches the expected DTO
+            })
+                .then(response => {
+                    console.log(response); // Log response for debugging
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                })
+                .then(data => {
+                    alert('Selection submitted successfully!');
+                    console.log('Success:', data);
+
+                    // Close the modal after successful submission
+                    const vehicleAssignModal = new bootstrap.Modal(document.getElementById('vehicleAssignModal'));
+                    vehicleAssignModal.hide();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    });
+</script>
+
+
+
+
+

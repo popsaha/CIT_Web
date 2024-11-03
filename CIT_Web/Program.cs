@@ -68,6 +68,9 @@ builder.Services.AddScoped<ItaskService, TaskService>();
 //builder.Services.AddHttpClient<IOrderService, OrderService>();
 //builder.Services.AddScoped<IOrderService, OrderService>();
 
+builder.Services.AddHttpClient<IOrderRouteService, OrderRouteService>();
+builder.Services.AddScoped<IOrderRouteService, OrderRouteService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 

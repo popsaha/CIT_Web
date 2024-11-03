@@ -1,5 +1,6 @@
 ﻿using CIT_Web.Models.Dto.CrewCommander;
 using CIT_Web.Models.Dto.Order;
+using CIT_Web.Models.Dto.OrderRoute;
 using CIT_Web.Models.Dto.Vehicle;
 
 namespace CIT_Web.Models.ViewModel
@@ -44,6 +45,9 @@ namespace CIT_Web.Models.ViewModel
         public int UserRegionId { get; set; }
 
         //public List<OrderListDTO> orderLists { get; set; }
+
+        public List<OrderRouteDTO> orderRouteDTOs { get; set; } = new List<OrderRouteDTO>();
+
     }
     public class CustomerDTO
     {

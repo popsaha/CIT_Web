@@ -4,6 +4,7 @@ using CIT_Web.Models;
 using CIT_Web.Models.Dto.CrewCommander;
 using CIT_Web.Models.Dto.Login;
 using CIT_Web.Models.Dto.Order;
+using CIT_Web.Models.Dto.OrderRoute;
 using CIT_Web.Models.Dto.Task;
 using CIT_Web.Models.Dto.TaskList;
 using CIT_Web.Models.Dto.Vehicle;
@@ -31,6 +32,10 @@ namespace CIT_Web.Controllers
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
         int Refresh = 1;
         public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IMapper mapper, ILoginService login_Service)
+        //private readonly IOrderService _orderService;
+        private readonly IOrderRouteService _orderRouteService;
+        
+        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IOrderRouteService orderRouteService, IMapper mapper)
         {
             _taskService = taskService;
             _taskListService = taskListService;
@@ -38,6 +43,9 @@ namespace CIT_Web.Controllers
             _vehicleService = vehicleService;
             _mapper = mapper;
             loginResponseDTO = login_Service.GetLoginDetails(loginRequestDTO, Refresh);
+            //_orderService = orderService;
+            _orderRouteService = orderRouteService;
+
         }
         public async Task<IActionResult> Index()
         {
@@ -146,8 +154,21 @@ namespace CIT_Web.Controllers
             //    taskVM.orderLists = new List<OrderListDTO>(); // Initialize empty list if the API fails
             //}
 
+            var orderRouteList = await _orderRouteService.GetAllOrderRouteList<APIResponse>();
+            if (orderRouteList != null && orderRouteList.IsSuccess)
+            {
+                taskVM.orderRouteDTOs = JsonConvert.DeserializeObject<List<OrderRouteDTO>>(Convert.ToString(orderRouteList.Result)) ?? new List<OrderRouteDTO>();
+            }
+            else
+            {
+                taskVM.orderRouteDTOs = new List<OrderRouteDTO>(); // Initialize empty list if the API fails
+            }
+
+
             return View(taskVM);
         }
+
+
         public async Task<JsonResult> GetBranchNameById(int CustomerId)
         {
             var Res = 0;
