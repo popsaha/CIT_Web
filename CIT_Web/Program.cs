@@ -1,6 +1,7 @@
 using CIT_Web;
 using CIT_Web.Services;
 using CIT_Web.Services.IServices;
+using Microsoft.AspNetCore.Mvc;
 //using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,14 +10,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//                .AddJwtBearer(options =>
-//                {
-//                    options.Audience = "aud";
-//                    options.Authority = "http://localhost:5112";
-//                    //options.TokenValidationParameters.ValidIssuers = "issuers";
-//                });
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+});
 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddMvc();
+builder.Services.AddMemoryCache();
+builder.Services.AddRazorPages();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<ICustomerService, CustomerService>();
@@ -27,6 +42,9 @@ builder.Services.AddScoped<ITaskListService, TaskListService>();
 
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddHttpClient<ILoginService, LoginService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
 
 builder.Services.AddHttpClient<ITaskGroupService, TaskGroupService>();
 builder.Services.AddScoped<ITaskGroupService, TaskGroupService>();
@@ -67,15 +85,21 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseStaticFiles();
-
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = context =>
+    {
+        context.Context.Response.Headers.Add("Expires", "-1");
+    }
+});
 app.UseRouting();
+app.UseSession();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Dashboard}/{action=Overview}/{id?}");
+    pattern: "{controller=Login}/{action=Index}/{id?}");
 
 app.Run();

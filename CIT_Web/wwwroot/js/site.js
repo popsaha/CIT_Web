@@ -62,7 +62,7 @@ function toggleIsVaultFinal() {
     if (isVaultCheckbox.checked) {
         isVaultFinalContainer.style.display = 'block';
         VaultLocationContainer.style.display = 'block';
-        
+
     } else {
         isVaultFinalContainer.style.display = 'none';
         VaultLocationContainer.style.display = 'none';
@@ -81,14 +81,20 @@ isVaultCheckbox.addEventListener('change', toggleIsVaultFinal);
 
 
 //*********************************** MOdal popup clicked js ***************************************
-    $(document).ready(function () {
-        // Open modal when button is clicked
-        var TaskCollection = [];
+$(document).ready(function () {
+    // Open modal when button is clicked
+    var TaskCollection = [];
     $("[id*=btnAddTsk]").click(function () {
         $('#myModal').modal('show');
-        });
-
+    });
+    $("[id*=btnEditTask]").click(function () {
+        $('#myModal').modal('show');
+    });
 })
+//function EditTask(taskId) {
+//    debugger
+//    $('#myModal').show();
+//}
 
 //*************************************************************************************************
 

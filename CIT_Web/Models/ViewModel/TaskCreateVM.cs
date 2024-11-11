@@ -7,7 +7,7 @@ namespace CIT_Web.Models.ViewModel
 {
     public class TaskCreateVM
     {
-        
+
         public string OrderId { get; set; }
         public int OrderTypeID { get; set; }
         public int PriorityId { get; set; }
@@ -27,6 +27,8 @@ namespace CIT_Web.Models.ViewModel
         public bool NewVehicleRequired { get; set; }
         public bool fullDayCheck { get; set; }
         public string OrderNumber { get; set; }
+        public bool OrderCreateStatus { get; set; }
+        public int TaskId { get; set; } 
         public List<OrderType> OrderTypelist { get; set; }
         public List<PriorityMaster> PriorityMasterlist { get; set; }
         public List<PickTypeMaster> Picktypemasterlst { get; set; }
@@ -36,11 +38,11 @@ namespace CIT_Web.Models.ViewModel
         public List<RepeatsInDaysMaster> repeatsInDaysMasterslist { get; set; }
         public List<VaultLovationMaster> vaultLovationMasters { get; set; }
         public List<TaskDTOlst> taskDTOlsts { get; set; }
-
         public List<OrderRoutes> Orderrouteslst { get; set; }
-
         public List<VehicleDTO> vehicledtolst { get; set; }
         public List<CrewCommanderDTO> crews { get; set; }
+        public int IsEditTask { get; set; }
+        public int UserRegionId { get; set; }
 
         //public List<OrderListDTO> orderLists { get; set; }
 
@@ -110,6 +112,6 @@ namespace CIT_Web.Models.ViewModel
         public string RouteName { get; set; }
     }
 
-   
+
 
 }

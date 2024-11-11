@@ -1,6 +1,7 @@
 ﻿using CIT_Utility;
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.Customer;
+using CIT_Web.Models.Dto.Login;
 using CIT_Web.Models.Dto.Task;
 using CIT_Web.Services.IServices;
 
@@ -10,11 +11,14 @@ namespace CIT_Web.Services
     {
         private readonly IHttpClientFactory _clientFactory;
         private string citUrl;
-
-        public TaskService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        int Refresh = 1;
+        public TaskService(IHttpClientFactory clientFactory, IConfiguration configuration, ILoginService login_Service) : base(clientFactory)
         {
             _clientFactory = clientFactory;
             citUrl = configuration.GetValue<string>("ServiceUrls:CitAPI");
+            loginResponseDTO = login_Service.GetLoginDetails(loginRequestDTO, Refresh);
         }
 
         public Task<T> GetAllOrderTypeAsync<T>()
@@ -78,6 +82,15 @@ namespace CIT_Web.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = citUrl + "/api/Task/GetOrderTaskData?OrderNumber=" + OrderNumber,
+            });
+        }
+
+        public Task<T> GetEditTask_DetailsAsync<T>(int taskId)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = citUrl + "/api/Task/GetEditTask_Details?taskId=" + taskId,
             });
         }
     }

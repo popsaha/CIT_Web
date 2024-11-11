@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using CIT_Web.CITFlter;
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.CrewCommander;
+using CIT_Web.Models.Dto.Login;
 using CIT_Web.Models.Dto.Order;
 using CIT_Web.Models.Dto.OrderRoute;
 using CIT_Web.Models.Dto.Task;
@@ -9,13 +11,16 @@ using CIT_Web.Models.Dto.Vehicle;
 using CIT_Web.Models.ViewModel;
 using CIT_Web.Services;
 using CIT_Web.Services.IServices;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace CIT_Web.Controllers
 {
+    [CITAppFilter]
     public class TaskController : Controller
     {
         private readonly ItaskService _taskService;
@@ -23,16 +28,22 @@ namespace CIT_Web.Controllers
         private readonly IMapper _mapper;
         private readonly IVehicleService _vehicleService;
         private readonly ICrewCommanderService _crewCommanderService;
-        //private readonly IOrderService _orderService;
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        int Refresh = 1;
         private readonly IOrderRouteService _orderRouteService;
+        //public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IMapper mapper, ILoginService login_Service)
+        //private readonly IOrderService _orderService;
         
-        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IOrderRouteService orderRouteService, IMapper mapper)
+        
+        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IOrderRouteService orderRouteService, IMapper mapper, ILoginService login_Service)
         {
             _taskService = taskService;
             _taskListService = taskListService;
             _crewCommanderService = crewCommanderService;
             _vehicleService = vehicleService;
             _mapper = mapper;
+            loginResponseDTO = login_Service.GetLoginDetails(loginRequestDTO, Refresh);
             //_orderService = orderService;
             _orderRouteService = orderRouteService;
 
@@ -106,7 +117,6 @@ namespace CIT_Web.Controllers
                 taskVM.Orderrouteslst = JsonConvert.DeserializeObject<List<OrderRoutes>>(Convert.ToString(Orderrouteslst_response.Result));
                 taskVM.Orderrouteslst.Insert(0, new OrderRoutes { OrderRouteId = 0, RouteName = "Select Route" });
             }
-
 
             var response = await _taskListService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
@@ -183,7 +193,6 @@ namespace CIT_Web.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Index(TaskCreateVM taskcreateModel)
         {
@@ -209,7 +218,9 @@ namespace CIT_Web.Controllers
                 taskCreateDTO.OrderRouteId = taskcreateModel.OrderRouteId;
                 taskCreateDTO.NewVehicleRequired = taskcreateModel.NewVehicleRequired;
                 taskCreateDTO.fullDayCheck = taskcreateModel.fullDayCheck;
-
+                taskCreateDTO.IsEditTask = taskcreateModel.IsEditTask;
+                taskCreateDTO.TaskId = taskcreateModel.TaskId;
+                taskCreateDTO.CreatedBy = Convert.ToInt32(loginResponseDTO.User.userID);
                 var TaskcreateDTO = _mapper.Map<TaskCreateDTO>(taskCreateDTO);
 
                 var response = await _taskService.CreateAsync<APIResponse>(TaskcreateDTO);
@@ -221,7 +232,6 @@ namespace CIT_Web.Controllers
             }
             return RedirectToAction("Index", "Task");
         }
-
         public async Task<JsonResult> GetAllOrderTask(string OrderNumber)
         {
             TaskCreateVM taskCreateVM = new TaskCreateVM();
@@ -229,6 +239,25 @@ namespace CIT_Web.Controllers
             try
             {
                 var response = await _taskService.GetOrderTaskAsync<APIResponse>(OrderNumber);
+                if (response != null && response.IsSuccess)
+                {
+                    taskCreateDTO = JsonConvert.DeserializeObject<TaskCreateDTO>(Convert.ToString(response.Result));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(taskCreateDTO);
+        }
+
+        public async Task<JsonResult> GetEditTask_Details(int taskId)
+        {
+            TaskCreateVM taskCreateVM = new TaskCreateVM();
+            TaskCreateDTO taskCreateDTO = new TaskCreateDTO();
+            try
+            {
+                var response = await _taskService.GetEditTask_DetailsAsync<APIResponse>(taskId);
                 if (response != null && response.IsSuccess)
                 {
                     taskCreateDTO = JsonConvert.DeserializeObject<TaskCreateDTO>(Convert.ToString(response.Result));
