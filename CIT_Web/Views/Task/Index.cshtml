@@ -226,7 +226,9 @@
         //     $("#BranchID").css("border", "1px solid #C3C1C1");
         // }
 
-        //Add this code 03102024 open
+        //Add this code 03102024 
+
+
 
         if (OrderTypeID == "2" && (fullDayCheck == 0) && (CustomerId == "0" || CustomerId == "" || CustomerId == undefined)) {
             $("#CustomerId").css("border", "1px solid red");
@@ -350,6 +352,9 @@
         $("#repeatsSection").hide();
         $("#repeatTask").prop("checked", false);
         $("#btnAddTaskInRows").attr('disabled', false);
+    }
+    function EditTask(taskId) {
+        $('#myModal').modal('show');
     }
 </script>
 <form enctype="multipart/form-data" asp-controller="Task" ,asp-action="Index" method="post">
@@ -1050,6 +1055,7 @@
         });
 
         function fetchTasksByDate(date) {
+            debugger;
             fetch(`${API_BASE_URL}/api/Order/getOrdersList?date=${date}`)
                 .then(response => response.json())
                 .then(data => {
@@ -1109,7 +1115,8 @@
                                                             <td>${task.chaseVehicle || ''}</td>
                                                             <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
                                                             <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
-                                                            <td><a href="#"><i class="bi bi-pencil-square"></i></a></td>
+                                                            
+                                                             <td><a><i class="bi bi-pencil-square" onclick="EditTask(${task.taskID})"></i></a></td>
                                                         </tr>`;
                                 tableBody.innerHTML += row;
                                 firstRow = false; // Ensure only the first row has the order number cell
