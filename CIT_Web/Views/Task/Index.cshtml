@@ -464,6 +464,9 @@
         })
     }
 </script>
+
+ @*------------------------------- Order Creation Modal --------------------------*@
+
 <form enctype="multipart/form-data" asp-controller="Task" ,asp-action="Index" method="post">
     <input asp-for="RepeatDaysName" type="hidden" />
     <input asp-for="IsEditTask" type="hidden" />
@@ -720,8 +723,9 @@
         <div class="group-data-action-container d-flex justify-content-between">
             <div class="d-flex align-items-center">
 
-                <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#vehicleAssignModal"><i class="bi bi-person-check-fill"></i></button>
-
+                @* <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#vehicleAssignModal"><i class="bi bi-person-check-fill"></i></button> *@
+                <input type="button" class="btn btn-color me-4" value="Assign " data-bs-toggle="modal" data-bs-target="#vehicleAssignModal" />
+               
 
                 <a class="me-3" href="#"><i class="bi bi-pencil-square"></i></a>
                 <a class="me-3" href="#"><i class="bi bi-trash-fill"></i></a>
@@ -980,10 +984,10 @@
                                 {
                                     <div class="form-check d-flex justify-content-between align-items-center">
                                         <div class="d-flex align-items-center gap-2">
-                                            <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.Id" value="@crewCommander.Id">
+                                            <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.UserID" value="@crewCommander.UserID">
                                             <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
-                                            <label class="form-check-label" for="crewCommander_@crewCommander.Id">
-                                                @crewCommander.Name
+                                            <label class="form-check-label" for="crewCommander_@crewCommander.UserID">
+                                                @crewCommander.UserName
                                             </label>
                                         </div>
                                     </div>
@@ -1203,6 +1207,7 @@
             fetch(`${API_BASE_URL}/api/Order/getOrdersList?date=${date}&regionId=${regionId}`)
                 .then(response => response.json())
                 .then(data => {
+                
                     const tableBody = document.querySelector('#task-table tbody');
                     tableBody.innerHTML = ''; // Clear the table content
 

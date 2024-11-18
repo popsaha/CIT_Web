@@ -1,2 +1,2 @@
-﻿const API_BASE_URL = 'http://localhost:5112'; // You can update this during deployment or from your app config
+﻿const API_BASE_URL = 'https://localhost:7192'; // You can update this during deployment or from your app config
 

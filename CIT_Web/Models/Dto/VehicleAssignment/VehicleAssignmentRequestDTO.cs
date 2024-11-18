@@ -4,7 +4,7 @@
     {
         public int? LeadID { get; set; }
         public int? ChaseID { get; set; }
-        public int? CrewCommanderID { get; set; }
-       
+        public int? CrewCommanderID { get; set; }     
+        public DateTime AssignDate { get; set; }
     }
 }
