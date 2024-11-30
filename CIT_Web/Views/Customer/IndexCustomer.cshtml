@@ -53,54 +53,40 @@
 </div>
 
 
-
-
-<div class="tab-container mt-3 ms-2" style="width: 100%">
-    <div class="dashboard-tab-content" id="myTabContent">
-        <!-- Tab panes go here -->
-        <!-- Content -->
-        <div class="col-auto  py-1 ms-2 mt-2">
-            <div class="table-container" style="overflow-x:auto; margin-right: 16px;">
-                <table class="table table-bordered table-hover">
-                    <thead>
+<div class="table-tab-content" id="myTabContent">
+    <div class="col-auto py-1 ms-2 mt-2">
+        <div class="table-container" style=" margin-right: 16px;">
+            <table id="dataTable" class="table datatable table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var customer in Model)
+                    {
                         <tr>
-                            <th></th>
+                            <td><input type="checkbox"></td>
+                            <td>@customer.CustomerName</td>
+                            <td>@customer.Address</td>
+                            <td>@customer.CustomerName</td>
+                            <td>@customer.Email</td>
 
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th>Contact Number</th>
-                            <th>Email</th>
-
-                            <th>Actions</th>
-
+                            <td>
+                                <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var customer in Model)
-                        {
-                            <tr>
-                                <td><input type="checkbox"></td>
-                                <td>@customer.CustomerName</td>
-                                <td>@customer.Address</td>
-                                <td>@customer.CustomerName</td>
-                                <td>@customer.Email</td>
-
-                                <td>
-                                    <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
-                                    <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                        }
-
-                        <!-- Repeat similar rows for other data -->
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
-        <!-- Content End -->
     </div>
 </div>
-
-
 
 
