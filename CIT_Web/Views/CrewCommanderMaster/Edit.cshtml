@@ -1,0 +1,70 @@
+﻿@model CIT_Web.Models.Dto.CrewCommanderMaster.CrewUpdateDTO
+
+
+
+
+<div class="card" style="margin: 10px;">
+    <div class="card-header text-white btn-color">
+        <h5 class="card-title btn-color">Edit Vehicle</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-action="EditCrew" novalidate>
+            <input type="hidden" asp-for="UserId" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">User Name</label>
+                        <input class="form-control" asp-for="UserName" />
+                        <span class="text-danger" asp-validation-for="UserName"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input class="form-control" asp-for="Password" type="Password" />
+                        <span class="text-danger" asp-validation-for="Password"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3">
+                    <label class="form-label" for="IsActive">Active</label>
+                    <select class="form-select" id="IsActive" asp-for="IsActive">
+                        <option value="" disabled selected>Select Active Type</option>
+                        <option value="True">Yes</option>
+                        <option value="False">No</option>
+                    </select>
+                    <span class="text-danger" asp-validation-for="IsActive"></span>
+                </div>
+            </div>
+
+            <div class="row">
+               @*  <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" asp-for="RoleName">
+                            <option selected disabled>Select a role</option>
+                            @foreach (var role in Model.)
+                            {
+                                <option value="@role.RoleName">@role.RoleName</option> <!-- Change RoleID to RoleName -->
+                            }
+                        </select>
+
+                        <span class="text-danger" asp-validation-for="CrewUser.RoleName"></span>
+
+
+                    </div>
+                </div> *@
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-color me-2">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+                <a asp-action="CrewCreate" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
