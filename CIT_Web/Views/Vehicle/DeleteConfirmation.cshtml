@@ -1,0 +1,33 @@
+﻿@model CIT_Web.Models.Dto.Vehicle.VehicleDTO
+
+<div class="card" style="margin: 10px;">
+    <div class="card-header text-white btn-color">
+        <h5 class="card-title">Confirm Deletion</h5>
+    </div>
+    <div class="card-body">
+        <p>Are you sure you want to delete the vehicle?</p>
+        <table class="table">
+            <tr>
+                <th>Registration No</th>
+                <td>@Model.RegistrationNo</td>
+            </tr>
+            <tr>
+                <th>Capacity</th>
+                <td>@Model.Capacity</td>
+            </tr>
+            <tr>
+                <th>Maintenance Date</th>
+                <td>@Model.MaintenanceDate</td>
+            </tr>
+            <tr>
+                <th>Vehicle Type</th>
+                <td>@Model.VehicleType</td>
+            </tr>
+        </table>
+
+        <form method="post" action="@Url.Action("Delete", "Vehicle", new { id = Model.VehicleID })">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="@Url.Action("VehiclesIndex", "Vehicle")" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

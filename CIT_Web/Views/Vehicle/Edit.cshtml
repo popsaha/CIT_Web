@@ -1,0 +1,71 @@
+﻿@model CIT_Web.Models.Dto.Vehicle.VehicleUpdateDTO
+
+<div class="card" style="margin: 10px;">
+    <div class="card-header text-white btn-color">
+        <h5 class="card-title btn-color">Edit Vehicle</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-action="EditVehicle" novalidate>
+            <input type="hidden" asp-for="VehicleID" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Registration No</label>
+                        <input class="form-control" asp-for="RegistrationNo" />
+                        <span class="text-danger" asp-validation-for="RegistrationNo"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Capacity</label>
+                        <input class="form-control" asp-for="Capacity" type="number" />
+                        <span class="text-danger" asp-validation-for="Capacity"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Maintenance Date</label>
+                        <input class="form-control" asp-for="MaintenanceDate" type="date" />
+                        <span class="text-danger" asp-validation-for="MaintenanceDate"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="VehicleType">Vehicle Type</label>
+                        <select class="form-select" id="VehicleType" asp-for="VehicleType">
+                            <option value="" disabled selected>Select Vehicle Type</option>
+                            <option value="Lead">Lead</option>
+                            <option value="Chase">Chase</option>
+                        </select>
+                        <span class="text-danger" asp-validation-for="VehicleType"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="IsActive">Active</label>
+                        <select class="form-select" id="IsActive" asp-for="IsActive">
+                            <option value="" disabled selected>Select Active Type</option>
+                            <option value="True">Yes</option>
+                            <option value="False">No</option>
+                        </select>
+                        <span class="text-danger" asp-validation-for="IsActive"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-color me-2">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+                <a asp-action="VehiclesIndex" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
