@@ -731,7 +731,10 @@
                 <a class="me-3" href="#"><i class="bi bi-trash-fill"></i></a>
                 <a class="me-3" href="#"><i class="bi bi-arrow-down-circle-fill"></i></a>
                 <a class="me-3" href="#"><i class="bi bi-gear-fill"></i></a>
-                <button class="btn btn-color group-button" data-bs-toggle="Groupmodal" data-bs-target="#groupModal" id="groupPopup">Order Grouping</button>
+
+                <input type="button" class="btn btn-color" value="Order Grouping" data-bs-toggle="modal" data-bs-target="#Groupmodal" />
+
+
                 <div class="dropdown-new-task  me-2 ms-3" style="width:100px  !important">
                     <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk">
                         <i class="bi bi-plus"></i> New Order
@@ -782,7 +785,7 @@
     @* **************************************Grouped data modal************************* *@
 
     <!-- Modal -->
-    <div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+  @*   <div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg ">
             <div class="modal-content">
                 <div class="modal-header">
@@ -813,13 +816,13 @@
                 <div class="modal-footer d-flex justify-content-between">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
                     <form method="post" asp-action="Index" asp-controller="Assignment" target="_blank">
-                        @* target="_blank" *@
+                         target="_blank" 
                         <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 <!-- Modal -->
 <div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg ">
@@ -1176,6 +1179,32 @@
     document.addEventListener('DOMContentLoaded', function () {
         let selectedPickupType = null;
 
+
+        // Define the status colors
+        const statusColors = {
+            "Unassigned": "#6c757d", // Grey
+            "Assigned": "#007bff",   // Blue
+            "Started": "#ffc107",    // Yellow
+            "ArrivedAtPickup": "#0dcaf0", // Teal
+            "Loaded": "#795548",     // Brown
+            "Transit": "#ff5722",    // Orange
+            "ArrivedAtDelivery": "#6f42c1", // Purple
+            "Unloaded": "#00796b",   // Greenish Teal
+            "Completed": "#198754",  // Green
+            "Failed": "#dc3545"      // Red
+        };
+
+        // Function to update the badge's color and text
+        function updateBadge(badgeElement, newStatus) {
+            if (statusColors[newStatus]) {
+                badgeElement.style.backgroundColor = statusColors[newStatus]; // Update color
+                badgeElement.textContent = newStatus; // Update status text
+            } else {
+                badgeElement.style.backgroundColor = statusColors["Unassigned"]; // Default color
+                badgeElement.textContent = "Unassigned"; // Default status
+            }
+        }
+
         // Initialize flatpickr for the input with id 'filter-date'
         flatpickr("#filter-date", {
             dateFormat: "d-m-Y",  // Customize the date format to 'DD-MM-YYYY'
@@ -1263,7 +1292,11 @@
                                                             <td>${task.leadVehicle || ''}</td>
                                                             <td>${task.chaseVehicle || ''}</td>
                                                             <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
-                                                            <td><span class="badge bg-secondary">${task.status || 'Unassigned'}</span></td>
+                                                                   <td>
+                                            <span class="badge" style="background-color: ${statusColors[task.taskStatus] || statusColors['Unassigned']};">
+                                                ${task.taskStatus || 'Unassigned'}
+                                            </span>
+                                        </td>
                                                             
                                                              <td><a><i class="bi bi-pencil-square" onclick="EditTask(${task.taskID})"></i></a></td>
                                                         </tr>`;
