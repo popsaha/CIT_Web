@@ -1,0 +1,100 @@
+﻿@model CIT_Web.Models.ViewModel.PoliceVM
+
+<div class="card" style="margin: 10px;">
+    <div class="card-header text-white btn-color">
+        <h5 class="card-title btn-color">Police Form</h5>
+    </div>
+    <div class="card-body">
+        <!-- Display success message if available -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        <!-- Display form validation errors -->
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <form method="post" asp-action="PoliceIndex" novalidate>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input class="form-control" asp-for="PoliceCreateDTO.Name" />
+                        <span class="text-danger" asp-validation-for="PoliceCreateDTO.Name"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Contact Number</label>
+                        <input class="form-control" asp-for="PoliceCreateDTO.ContactNumber" type="number" />
+                        <span class="text-danger" asp-validation-for="PoliceCreateDTO.ContactNumber"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input class="form-control" asp-for="PoliceCreateDTO.Address" type="text" />
+                        <span class="text-danger" asp-validation-for="PoliceCreateDTO.Address"></span>
+                    </div>
+                </div>
+             
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-color me-2">
+                    <i class="bi bi-save"></i> Submit
+                </button>
+                <button type="reset" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Reset
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="table-tab-content" id="myTabContent">
+    <div class="col-auto py-1 ms-2 mt-2">
+        <div class="table-container" style="margin-right: 16px;">
+            <table id="dataTable" class="table datatable table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Contact Number</th>
+                        <th>Date</th>
+                        <th>Active</th>
+                        <th>Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var police in Model.PoliceDTOs)
+                    {
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>@police.Name</td>
+                            <td>@police.Address</td>
+                            <td>@police.ContactNumber</td>
+                            <td>@police.CreatedOn</td>
+                            <th>@police.IsActive</th>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@police.PoliceId" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@Url.Action("DeleteConfirmation", "Police", new { id = police.PoliceId })" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
