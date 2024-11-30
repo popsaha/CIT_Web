@@ -71,6 +71,15 @@ builder.Services.AddScoped<ItaskService, TaskService>();
 builder.Services.AddHttpClient<IOrderRouteService, OrderRouteService>();
 builder.Services.AddScoped<IOrderRouteService, OrderRouteService>();
 
+builder.Services.AddHttpClient<IRoleService, RoleService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+builder.Services.AddHttpClient<ICrewCommanderMasterService, CrewCommanderMasterService>();
+builder.Services.AddScoped<ICrewCommanderMasterService, CrewCommanderMasterService>();
+
+builder.Services.AddHttpClient<IPoliceService, PoliceService>();
+builder.Services.AddScoped<IPoliceService, PoliceService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
