@@ -1,0 +1,274 @@
+﻿/* Import Google font - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+
+.no-data-message {
+    background-color: #f44336; /* Red background */
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    /* Initially hidden, can be displayed via JavaScript */
+}
+
+    /* Optional: Animation to fade in the message */
+    .no-data-message.show {
+        display: block;
+        animation: fadeIn 1s ease-out;
+    }
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+.body {
+    min-height: 100vh;
+    display: flex;
+    /* align-items: center;*/
+    /* justify-content: center;*/
+    padding: 20px;
+    background: rgb(130, 106, 251);
+}
+
+.container_Ben {
+    position: relative;
+    /* max-width: 700px;*/
+    width: 100%;
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+    .container_Ben header {
+        font-size: 1.5rem;
+        color: #333;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .container_Ben .form {
+        margin-top: 30px;
+    }
+
+.form .input-box {
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+.input-box label {
+    color: #333;
+}
+
+.form :where(.input-box input, .select-box) {
+    position: relative;
+    height: 50px;
+    width: 100%;
+    outline: none;
+    font-size: 1rem;
+    color: #707070;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0 15px;
+}
+
+
+
+.input-box input:focus {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.form .column {
+    display: flex;
+    column-gap: 15px;
+}
+
+.form .gender-box {
+    margin-top: 20px;
+}
+
+.gender-box h3 {
+    color: #333;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+
+.form :where(.gender-option, .gender) {
+    display: flex;
+    align-items: center;
+    column-gap: 50px;
+    flex-wrap: wrap;
+}
+
+.form .gender {
+    column-gap: 5px;
+}
+
+.gender input {
+    accent-color: rgb(130, 106, 251);
+}
+
+.form :where(.gender input, .gender label) {
+    cursor: pointer;
+}
+
+.gender label {
+    color: #707070;
+}
+
+.address :where(input, .select-box) {
+    margin-top: 15px;
+}
+
+.select-box select {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    border: none;
+    color: #707070;
+    font-size: 1rem;
+}
+
+.form button {
+    height: 48px;
+    width: 100%;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-top: 30px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgb(130, 106, 251);
+}
+
+    .form button:hover {
+        background: rgb(88, 56, 250);
+    }
+/*Responsive*/
+@media screen and (max-width: 500px) {
+    .form .column {
+        flex-wrap: wrap;
+    }
+
+    .form :where(.gender-option, .gender) {
+        row-gap: 15px;
+    }
+}
+
+.greenText {
+    color: green
+}
+
+.redText {
+    color: red
+}
+
+
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: #379937;
+}
+
+body {
+    margin: 0px; /*40px*/
+}
+
+.dropdown {
+    position: relative;
+    font-size: 14px;
+    color: #333;
+    .dropdown-list
+
+{
+    padding: 12px;
+    background: #fff;
+    position: absolute;
+    top: 50px; /*30px;*/
+    left: 2px;
+    right: 2px;
+    box-shadow: 0 1px 2px 1px rgba(0, 0, 0, .15);
+    transform-origin: 50% 0;
+    transform: scale(1, 0);
+    transition: transform .15s ease-in-out .15s;
+    max-height: 66vh;
+    overflow-y: scroll;
+}
+
+.dropdown-option {
+    display: block;
+    padding: 8px 12px;
+    opacity: 0;
+    transition: opacity .15s ease-in-out;
+}
+
+.dropdown-label {
+    display: block;
+    height: 30px;
+    background: #fff;
+    border: 0px solid #ccc; /*1px*/
+    padding: 20px 12px; /*6px 12px;*/
+    line-height: 1;
+    cursor: pointer;
+    &:before
+
+{
+    content: '▼';
+    float: right;
+}
+
+}
+
+&.on {
+    .dropdown-list
+
+{
+    transform: scale(1, 1);
+    transition-delay: 0s;
+    z-index: 1;
+    .dropdown-option
+
+{
+    opacity: 1;
+    transition-delay: .2s;
+}
+
+}
+
+.dropdown-label:before {
+    content: '▲';
+}
+
+}
+
+[type="checkbox"] {
+    position: relative;
+    top: -1px;
+    margin-right: 4px;
+}
+}

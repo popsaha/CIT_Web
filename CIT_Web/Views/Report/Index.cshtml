@@ -1,0 +1,323 @@
+﻿@model Task<CIT_Web.Models.Reports.ViewModel>;
+
+
+
+<link rel="stylesheet" href="~/css/Report.css" />
+@* <script src="~/js/jquery.min.js"></script> *@
+
+
+
+<div class="body">
+    <section class="container_Ben">
+        @* <header>Add Beneficery</header>*@
+        <form action="/Report/Index" method="post" class="form">
+
+            <div id="AddBeneficery">
+
+                <div class="column">
+                    <div class="select-box dropdown dropdown-list">
+                        <label id="CustomerSelectedText" name="Customername" style="display:none"></label>
+                        <select id="IdCustomerDrop">
+                            <option hidden>--Select Customer--</option>
+                            @foreach (var item in Model.Result.DroDownData)
+                            {
+                                if (item.Group.Name == "Customer")
+                                {
+                                    <option class="dropdown-option" value="@item.Value"> @item.Text </option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="select-box">
+
+                        <div class="dropdown" id="Service" data-control="checkbox-dropdown">
+                            <label class="dropdown-label">Select</label>
+                            <label id="ServiceSelectedText" name="Servicename" style="display:none"></label>
+
+                            <div class="dropdown-list">
+                                <a href="#" data-toggle="check-all" class="dropdown-option">
+                                    Check All
+                                </a>
+
+                                @foreach (var item in Model.Result.DroDownData)
+                                {
+                                    if (item.Group.Name == "Service")
+                                    {
+                                        <label class="dropdown-option">
+                                            <input type="checkbox" name="Service-dropdown-group" value="@item.Value" />
+                                            @item.Text
+                                        </label>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="select-box">
+
+
+
+                        <div class="dropdown" id="Branch" data-control="checkbox-dropdown">
+                            <label class="dropdown-label">Select</label>
+                            <label id="BranchSelectedText" name="Branchname" style="display:none"></label>
+
+                            <div class="dropdown-list">
+                                <a href="#" data-toggle="check-all" class="dropdown-option">
+                                    Check All
+                                </a>
+
+                                @foreach (var item in Model.Result.DroDownData)
+                                {
+                                    if (item.Group.Name == "Branch")
+                                    {
+                                        <label class="dropdown-option">
+                                            <input type="checkbox" name="Branch-dropdown-group" value="@item.Value" />
+                                            @item.Text
+                                        </label>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="column">
+                    <div class="input-box">
+                        <label>From Date</label>
+                        <input type="date" id="fromdate" />
+                    </div>
+                    <div class="input-box">
+                        <label>To Date</label>
+                        <input type="date" id="todate" />
+                    </div>
+                    <div class="input-box">
+                        <label></label>
+                        <button class="btn btn-primary btn-sm mt-2" onclick="return FeatchData()">Search Filter data</button>
+
+                    </div>
+                </div>
+
+
+                <div>
+
+
+                    <div id="NoralView">
+
+                        <div id="tbody"></div>
+
+
+
+
+
+                    </div>
+                </div>
+
+            </div>
+
+            @* <button>Submit</button>*@
+        </form>
+    </section>
+</div>
+
+
+
+
+
+<div class=" table-tab-content mt-5" id="myTabContent">
+    <form action="/Report/Index" method="post">
+        <!-- Row 1: Customer Dropdown -->
+        <div class="row mb-3 align-items-center">
+            <!-- Customer Dropdown -->
+            <div class="col-md-2">
+                <label for="IdCustomerDrop" class="form-label fw-bold">Customer</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                    <label id="CustomerSelectedText" name="Customername" style="display:none"></label>
+                    <select id="IdCustomerDrop" name="Customername" class="form-select">
+                        <option hidden> Select Customer</option>
+                        @foreach (var item in Model.Result.DroDownData)
+                        {
+                            if (item.Group.Name == "Customer")
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Service Dropdown -->
+            <div class="col-md-2">
+                <label for="serviceDropdown" class="form-label fw-bold">Service</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-tools"></i></span>
+                    <select id="serviceDropdown" name="Service" class="form-select">
+                        <option hidden> Select Service</option>
+                        @foreach (var item in Model.Result.DroDownData)
+                        {
+                            if (item.Group.Name == "Service")
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Branch Dropdown -->
+            <div class="col-md-2">
+                <label for="branchDropdown" class="form-label fw-bold">Branch</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-building"></i></span>
+                    <select id="branchDropdown" name="Branch" class="form-select">
+                        <option hidden> Select Branch</option>
+                        @foreach (var item in Model.Result.DroDownData)
+                        {
+                            if (item.Group.Name == "Branch")
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-2">
+                <label for="fromdate" class="form-label fw-bold">From Date</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                    <input type="date" id="fromdate" name="fromdate" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label for="todate" class="form-label fw-bold">To Date</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                    <input type="date" id="todate" name="todate" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-2 mt-4">
+                <button class="btn btn-color btn-sm mt-2" onclick="return FeatchData()">Search</button>
+            </div>
+        </div>
+
+        <!-- Row 3: Table Display -->
+        <div class="row">
+            <div class="col-md-12">
+                <div id="NormalView">
+                    <div id="tbody">
+                        <!-- Dynamic data will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@* 
+<div class=" table-tab-content py-5" id="myTabContent ">
+    <form action="/Report/Index" method="post">
+        <!-- Row 1: Customer Dropdown -->
+        <div class="row mb-3 align-items-center">
+            <!-- Customer Dropdown -->
+            <div class="col-md-4">
+                <label for="IdCustomerDrop" class="form-label fw-bold">Customer</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                    <select id="IdCustomerDrop" name="Customername" class="form-select">
+                        <option hidden>--Select Customer--</option>
+                        @foreach (var item in Model.Result.DroDownData)
+                        {
+                            if (item.Group.Name == "Customer")
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Service Dropdown -->
+            <div class="col-md-4">
+                <label for="serviceDropdown" class="form-label fw-bold">Service</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-tools"></i></span>
+                    <select id="serviceDropdown" name="Service" class="form-select">
+                        <option hidden>--Select Service--</option>
+                        @foreach (var item in Model.Result.DroDownData)
+                        {
+                            if (item.Group.Name == "Service")
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Branch Dropdown -->
+            <div class="col-md-4">
+                <label for="branchDropdown" class="form-label fw-bold">Branch</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-building"></i></span>
+                    <select id="branchDropdown" name="Branch" class="form-select">
+                        <option hidden>--Select Branch--</option>
+                        @foreach (var item in Model.Result.DroDownData)
+                        {
+                            if (item.Group.Name == "Branch")
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Date Inputs -->
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-4">
+                <label for="fromdate" class="form-label fw-bold">From Date</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                    <input type="date" id="fromdate" name="fromdate" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="todate" class="form-label fw-bold">To Date</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                    <input type="date" id="todate" name="todate" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-color btn-sm mt-2" onclick="return FeatchData()">Search Filter data</button>
+            </div>
+        </div>
+
+        <!-- Row 3: Table Display -->
+        <div class="row">
+            <div class="col-md-12">
+                <div id="NormalView">
+                    <div id="tbody">
+                        <!-- Dynamic data will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+ *@
+
+
+
+
