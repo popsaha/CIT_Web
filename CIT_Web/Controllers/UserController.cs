@@ -114,39 +114,100 @@ namespace CIT_Web.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _userService.GetAllAsync<APIResponse>();
-            if (response != null && response.IsSuccess)
+            var userResponse = await _userService.GetByIdAsync<APIResponse>(id); // Fetch specific user
+            if (userResponse?.IsSuccess != true)
             {
-                var users = JsonConvert.DeserializeObject<List<UserUpdateDTO>>(Convert.ToString(response.Result));
-                var user = users.FirstOrDefault(v => v.UserId == id);
-                if (user != null)
-                {
-                    return View(user);
-                }
+                TempData["ErrorMessage"] = "User not found!";
+                return RedirectToAction(nameof(UserIndex));
             }
 
-            TempData["ErrorMessage"] = "User not found!";
-            return RedirectToAction(nameof(UserIndex));
+            var user = JsonConvert.DeserializeObject<UserUpdateDTO>(Convert.ToString(userResponse.Result));
+
+            var roleResponse = await _roleService.GetAllRole<APIResponse>();
+            var regionResponse = await _regionService.GetAllRegion<APIResponse>();
+
+            if (roleResponse?.IsSuccess != true || regionResponse?.IsSuccess != true)
+            {
+                TempData["ErrorMessage"] = "Failed to load roles or regions!";
+                return RedirectToAction(nameof(UserIndex));
+            }
+
+            var roles = JsonConvert.DeserializeObject<List<RoleListDTO>>(Convert.ToString(roleResponse.Result));
+            var regions = JsonConvert.DeserializeObject<List<RegionDTO>>(Convert.ToString(regionResponse.Result));
+
+            var viewModel = new UserRoleVM
+            {
+                Roles = roles,
+                Regions = regions,
+                createDTO = new UserCreateDTO
+                {   UserId = user.UserId,
+                    UserName = user.UserName,
+                    Password = user.Password,
+                    RoleName = user.RoleName,
+                    RegionName = user.RegionName
+                }
+            };
+
+            return View(viewModel);
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> EditUser(UserUpdateDTO dto)
+        public async Task<IActionResult> EditUser(UserRoleVM viewModel)
         {
-            if (!ModelState.IsValid)
+            //if (!ModelState.IsValid)
+            //{
+            //    // Reload roles and regions for dropdowns
+            //    var roleResponse = await _roleService.GetAllRole<APIResponse>();
+            //    var regionResponse = await _regionService.GetAllRegion<APIResponse>();
+
+            //    viewModel.Roles = JsonConvert.DeserializeObject<List<RoleListDTO>>(Convert.ToString(roleResponse.Result));
+            //    viewModel.Regions = JsonConvert.DeserializeObject<List<RegionDTO>>(Convert.ToString(regionResponse.Result));
+
+            //    TempData["ErrorMessage"] = "Invalid input!";
+            //    return View(viewModel);
+            //}
+
+            var dto = new UserUpdateDTO
             {
-                TempData["ErrorMessage"] = "Invalid input!";
-                return View(dto); // Return to the edit view with the current data
-            }
+                UserId = viewModel.createDTO.UserId,
+                UserName = viewModel.createDTO.UserName,
+                Password = viewModel.createDTO.Password,
+                RoleName = viewModel.createDTO.RoleName,
+                RegionName = viewModel.createDTO.RegionName
+            };
 
             var response = await _userService.UpdateAsync<APIResponse>(dto);
-            if (response != null && response.IsSuccess)
+            if (response?.IsSuccess == true)
             {
                 TempData["SuccessMessage"] = "User updated successfully!";
                 return RedirectToAction(nameof(UserIndex));
             }
 
             TempData["ErrorMessage"] = "Failed to update User.";
-            return View(dto); // Return to the edit view with the current data
+            return View(viewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            int deletedBy = 1;
+            if (userId <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid User ID.";
+                return RedirectToAction(nameof(UserIndex));
+            }
+
+            var response = await _userService.DeleteAsync<APIResponse>(userId, deletedBy);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "User deleted successfully!";
+                return RedirectToAction(nameof(UserIndex));
+            }
+
+            TempData["ErrorMessage"] = "Failed to delete user.";
+            return RedirectToAction(nameof(UserIndex));
+        }
+
     }
 }

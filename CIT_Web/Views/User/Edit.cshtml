@@ -1,4 +1,4 @@
-﻿@* @model CIT_Web.Models.Dto.User.UserUpdateDTO
+﻿@model CIT_Web.Models.ViewModel.UserRoleVM
 
 
 
@@ -10,20 +10,55 @@
     </div>
     <div class="card-body">
         <form method="post" asp-action="EditUser" novalidate>
-            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="createDTO.UserId" />
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label">User Name</label>
-                        <input class="form-control" asp-for="UserName" />
-                        <span class="text-danger" asp-validation-for="UserName"></span>
+                        <input class="form-control" asp-for="createDTO.UserName" />
+                        <span class="text-danger" asp-validation-for="createDTO.UserName"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label">Password</label>
-                        <input class="form-control" asp-for="Password" type="Password" />
-                        <span class="text-danger" asp-validation-for="Password"></span>
+                        <input class="form-control" asp-for="createDTO.Password" type="password" />
+                        <span class="text-danger" asp-validation-for="createDTO.Password"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" asp-for="createDTO.RoleName">
+                            <option selected disabled>Select a role</option>
+                            @foreach (var role in Model.Roles)
+                            {
+                                <option value="@role.RoleName">@role.RoleName</option> <!-- Change RoleID to RoleName -->
+                            }
+                        </select>
+
+                        <span class="text-danger" asp-validation-for="createDTO.RoleName"></span>
+
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Region</label>
+                        <select class="form-select" asp-for="createDTO.RegionName">
+                            <option selected disabled>Select a region</option>
+                            @foreach (var region in Model.Regions)
+                            {
+                                <option value="@region.RegionName">@region.RegionName</option> <!-- Change RoleID to RoleName -->
+                            }
+                        </select>
+
+                        <span class="text-danger" asp-validation-for="createDTO.RegionName"></span>
+
+
                     </div>
                 </div>
             </div>
@@ -37,4 +72,4 @@
             </div>
         </form>
     </div>
-</div> *@
+</div>

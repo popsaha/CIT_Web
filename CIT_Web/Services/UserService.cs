@@ -53,5 +53,26 @@ namespace CIT_Web.Services
                 //Token = token
             });
         }
+
+        public Task<T> GetByIdAsync<T>(int id)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = citUrl + "/api/LocalUser/" + id,
+                //Token = token
+            });
+        }
+
+        public Task<T> DeleteAsync<T>(int userId, int deletedBy)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.DELETE,
+                Url = $"{citUrl}/api/LocalUser/{userId}?deletedBy={deletedBy}", // Pass userId in the URL path
+                                                          // Token = token // Add authorization token if required
+            });
+        }
+
     }
 }
