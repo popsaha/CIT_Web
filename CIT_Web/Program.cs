@@ -80,6 +80,12 @@ builder.Services.AddScoped<ICrewCommanderMasterService, CrewCommanderMasterServi
 builder.Services.AddHttpClient<IPoliceService, PoliceService>();
 builder.Services.AddScoped<IPoliceService, PoliceService>();
 
+builder.Services.AddHttpClient<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddHttpClient<IRegionService, RegionService>();
+builder.Services.AddScoped<IRegionService, RegionService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
