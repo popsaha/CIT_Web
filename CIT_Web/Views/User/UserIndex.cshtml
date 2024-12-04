@@ -1,0 +1,124 @@
+﻿@model CIT_Web.Models.ViewModel.UserRoleVM
+
+
+
+<div class="card" style="margin: 10px;">
+    <div class="card-header text-white btn-color">
+        <h5 class="card-title btn-color">User Form</h5>
+    </div>
+    <div class="card-body">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        <form method="post" asp-action="UserIndex">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">User Name</label>
+                        <input class="form-control" asp-for="createDTO.UserName" />
+                        <span class="text-danger" asp-validation-for="createDTO.UserName"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input class="form-control" asp-for="createDTO.Password" type="password" />
+                        <span class="text-danger" asp-validation-for="createDTO.Password"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" asp-for="createDTO.RoleName">
+                            <option selected disabled>Select a role</option>
+                            @foreach (var role in Model.Roles)
+                            {
+                                <option value="@role.RoleName">@role.RoleName</option> <!-- Change RoleID to RoleName -->
+                            }
+                        </select>
+
+                        <span class="text-danger" asp-validation-for="createDTO.RoleName"></span>
+
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Region</label>
+                        <select class="form-select" asp-for="createDTO.RegionName">
+                            <option selected disabled>Select a region</option>
+                            @foreach (var region in Model.Regions)
+                            {
+                                <option value="@region.RegionName">@region.RegionName</option> <!-- Change RoleID to RoleName -->
+                            }
+                        </select>
+
+                        <span class="text-danger" asp-validation-for="createDTO.RegionName"></span>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-color me-2">
+                    <i class="bi bi-save"></i> Submit
+                </button>
+                <button type="reset" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Reset
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div class="table-tab-content" id="myTabContent">
+    <div class="col-auto py-1 ms-2 mt-2">
+        <div class="table-container" style="margin-right: 16px;">
+            <table id="dataTable" class="table datatable table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>UserName</th>
+                        <th>Password</th>
+                        <th> Date</th>
+                        <th>Active</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var users in Model.Users)
+                    {
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>@users.UserName</td>
+                            <td>@users.Password</td>
+                            <td>@users.CreatedOn</td>
+                            <td>@users.IsActive</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@users.UserId" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

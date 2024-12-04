@@ -352,6 +352,15 @@
                                                 <span class="ms-1 ">Police</span>
                                             </a>
                                         </li>
+
+                                        <li class="nav-item-sub">
+                                            <a asp-action="UserIndex" asp-controller="User" class="nav-link  align-middle @(ViewContext.RouteData.Values["controller"].ToString() == "User" && ViewContext.RouteData.Values["action"].ToString() == "UserIndex" ? "active" : "")" data-bs-toggle="nav"
+                                               role="nav"
+                                               aria-selected="false">
+                                                <i class="bi bi-person"></i>
+                                                <span class="ms-1 ">User</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
                             }
