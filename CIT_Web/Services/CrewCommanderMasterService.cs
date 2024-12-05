@@ -51,5 +51,25 @@ namespace CIT_Web.Services
                 //Token = token
             });
         }
+
+        public Task<T> GetByIdAsync<T>(int id)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = citUrl + "/api/UsersAuth/" + id,
+                //Token = token
+            });
+        }
+
+        public Task<T> DeleteAsync<T>(int userId)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.DELETE,
+                Url = $"{citUrl}/api/UsersAuth/{userId}",
+                                                                                
+            });
+        }
     }
 }

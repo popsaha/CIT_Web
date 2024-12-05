@@ -125,11 +125,11 @@ namespace CIT_Web.Controllers
         [HttpPost]
         public async Task<IActionResult> EditCrew(CrewUpdateDTO dto)
         {
-            if (!ModelState.IsValid)
-            {
-                TempData["ErrorMessage"] = "Invalid input!";
-                return View(dto); // Return to the edit view with the current data
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    TempData["ErrorMessage"] = "Invalid input!";
+            //    return View(dto); // Return to the edit view with the current data
+            //}
 
             var response = await _crewCommanderMasterService.UpdateAsync<APIResponse>(dto);
             if (response != null && response.IsSuccess)
@@ -142,5 +142,26 @@ namespace CIT_Web.Controllers
             return View(dto); // Return to the edit view with the current data
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCrew(int userId)
+        {
+            //int deletedBy = 1;
+            if (userId <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid User ID.";
+                return RedirectToAction(nameof(CrewCreate));
+            }
+
+            var response = await _crewCommanderMasterService.DeleteAsync<APIResponse>(userId);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "Crew deleted successfully!";
+                return RedirectToAction(nameof(CrewCreate));
+            }
+
+            TempData["ErrorMessage"] = "Failed to delete Crew.";
+            return RedirectToAction(nameof(CrewCreate));
+        }
     }
 }
