@@ -98,5 +98,26 @@ namespace CIT_Web.Controllers
             TempData["ErrorMessage"] = "Failed to update Police.";
             return View(dto); // Return to the edit view with the current data
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePolice(int policeId)
+        {
+            int userId = 1;
+            if (policeId <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid User ID.";
+                return RedirectToAction(nameof(PoliceIndex));
+            }
+
+            var response = await _policeService.DeleteAsync<APIResponse>(policeId, userId);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "User deleted successfully!";
+                return RedirectToAction(nameof(PoliceIndex));
+            }
+
+            TempData["ErrorMessage"] = "Failed to delete Police.";
+            return RedirectToAction(nameof(PoliceIndex));
+        }
     }
 }

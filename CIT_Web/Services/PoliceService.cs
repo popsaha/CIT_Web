@@ -30,12 +30,12 @@ namespace CIT_Web.Services
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id)
+        public Task<T> DeleteAsync<T>(int policeId, int userId)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = citUrl + "/api/Police/" + id,
+                Url = $"{citUrl}/api/Police/{policeId}?deletedBy={userId}",
                 //Token = token
             });
         }

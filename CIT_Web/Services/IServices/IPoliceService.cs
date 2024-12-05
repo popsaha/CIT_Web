@@ -8,6 +8,6 @@ namespace CIT_Web.Services.IServices
         Task<T> GetAllPoliceAsync<T>();
         Task<T> CreateAsync<T>(PoliceCreateDTO dto);
         Task<T> UpdateAsync<T>(PoliceUpdateDTO dto);
-        Task<T> DeleteAsync<T>(int id);
+        Task<T> DeleteAsync<T>(int policeId, int userId);
     }
 }
