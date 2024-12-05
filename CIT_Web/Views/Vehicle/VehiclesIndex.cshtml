@@ -96,9 +96,12 @@
                                 <a asp-action="Edit" asp-route-id="@vehicle.VehicleID" class="btn btn-sm btn-primary">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="@Url.Action("DeleteConfirmation", "Vehicle", new { id = vehicle.VehicleID })" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <form method="post" asp-action="DeleteVehicle" style="display:inline;">
+                                    <input type="hidden" name="vehicleId" value="@vehicle.VehicleID" />
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this Vehicle?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }

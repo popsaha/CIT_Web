@@ -9,6 +9,6 @@ namespace CIT_Web.Services.IServices
         Task<T> GetAsync<T>(int id);
         Task<T> CreateAsync<T>(VehicleCreateDTO dto);
         Task<T> UpdateAsync<T>(VehicleUpdateDTO dto);
-        Task<T> DeleteAsync<T>(int id);
+        Task<T> DeleteAsync<T>(int vehicleId, int userId);
     }
 }

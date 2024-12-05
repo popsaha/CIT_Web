@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CIT_Web.Services.IServices;
 using CIT_Web.Models.ViewModel;
+using CIT_Web.Services;
 
 namespace CIT_Web.Controllers
 {
@@ -110,32 +111,39 @@ namespace CIT_Web.Controllers
         }
 
 
-        public async Task<IActionResult> DeleteConfirmation(int id)
+        //public async Task<IActionResult> DeleteConfirmation(int id)
+        //{
+        //    var response = await _vehicleService.GetAsync<APIResponse>(id);
+        //    if (response == null || !response.IsSuccess)
+        //    {
+        //        TempData["ErrorMessage"] = "Vehicle not found.";
+        //        return RedirectToAction("VehiclesIndex");
+        //    }
+
+        //    var vehicle = JsonConvert.DeserializeObject<VehicleDTO>(Convert.ToString(response.Result));
+        //    return View(vehicle);  // Pass the vehicle details to the view
+        //}
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteVehicle(int vehicleId)
         {
-            var response = await _vehicleService.GetAsync<APIResponse>(id);
-            if (response == null || !response.IsSuccess)
+            int userId = 1;
+            if (vehicleId <= 0)
             {
-                TempData["ErrorMessage"] = "Vehicle not found.";
-                return RedirectToAction("VehiclesIndex");
+                TempData["ErrorMessage"] = "Invalid Vehicle ID.";
+                return RedirectToAction(nameof(VehiclesIndex));
             }
 
-            var vehicle = JsonConvert.DeserializeObject<VehicleDTO>(Convert.ToString(response.Result));
-            return View(vehicle);  // Pass the vehicle details to the view
-        }
-
-
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var response = await _vehicleService.DeleteAsync<APIResponse>(id);
+            var response = await _vehicleService.DeleteAsync<APIResponse>(vehicleId, userId);
             if (response != null && response.IsSuccess)
             {
                 TempData["SuccessMessage"] = "Vehicle deleted successfully!";
-                return RedirectToAction("VehiclesIndex");
+                return RedirectToAction(nameof(VehiclesIndex));
             }
 
-            TempData["ErrorMessage"] = "Failed to delete the vehicle.";
-            return RedirectToAction("VehiclesIndex");
+            TempData["ErrorMessage"] = "Failed to delete Vehicle.";
+            return RedirectToAction(nameof(VehiclesIndex));
         }
 
 

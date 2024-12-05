@@ -1,6 +1,7 @@
 ﻿using CIT_Utility;
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.Vehicle;
+using CIT_Web.Models.ViewModel;
 using CIT_Web.Services.IServices;
 using Newtonsoft.Json;
 
@@ -31,16 +32,17 @@ namespace CIT_Web.Services
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id)
+        public Task<T> DeleteAsync<T>(int vehicleId, int userId)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = citUrl + "/api/Vehicle/" + id,
+                
+                Url = $"{citUrl}/api/Vehicle/{vehicleId}?deletedBy={userId}",
                 //Token = token
             });
         }
-
+         
         public Task<T> GetAllVehicleAsync<T>()
         {
             return SendAsync<T>(new APIRequest()
