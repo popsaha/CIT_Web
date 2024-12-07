@@ -82,7 +82,7 @@ namespace CIT_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = citUrl + "/GetReportsData", //"http://localhost:5112/GetReportsData",
+                Url = citUrl + "/api/Report/GetReportsData", //"http://localhost:5112/GetReportsData",
             });
         }
 
@@ -92,7 +92,7 @@ namespace CIT_Web.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = citUrl + "/GetFilterReportsData", //"http://localhost:5112/GetFilterReportsData",
+                Url = citUrl + "/api/Report/GetFilterReportsData", //"http://localhost:5112/GetFilterReportsData",
             });
         }
 
