@@ -43,8 +43,8 @@
     display: flex;
     /* align-items: center;*/
     /* justify-content: center;*/
-    padding: 20px;
-    background: rgb(130, 106, 251);
+    padding: 0px !important;
+    background: none !important;
 }
 
 .container_Ben {
@@ -52,9 +52,9 @@
     /* max-width: 700px;*/
     width: 100%;
     background: #fff;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    /*padding: 25px;*/
+  /*  border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);*/
 }
 
     .container_Ben header {
@@ -69,8 +69,8 @@
     }
 
 .form .input-box {
-    width: 100%;
-    margin-top: 20px;
+    width: 38%;
+    /*margin-top: 20px;*/
 }
 
 
@@ -80,7 +80,7 @@
 
 .form :where(.input-box input, .select-box) {
     position: relative;
-    height: 50px;
+    height: 40px;
     width: 100%;
     outline: none;
     font-size: 1rem;
@@ -88,7 +88,7 @@
     margin-top: 8px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    padding: 0 15px;
+    padding: 3px 15px;
 }
 
 
@@ -176,6 +176,25 @@
     }
 }
 
+/* For screens 900px or smaller: Three rows with two fields in each row */
+@media screen and (max-width: 900px) {
+    .form .column {
+        display: flex;
+        flex-wrap: wrap; /* Allow wrapping */
+        gap: 20px;
+    }
+
+    .input-box, .select-box {
+        flex: 1 1 calc(33.33% - 20px); /* Three fields per row (33.33% width minus gap) */
+        min-width: 150px;
+    }
+    .form button {
+        width: 100%;
+    }
+        
+}
+
+
 .greenText {
     color: green
 }
@@ -209,7 +228,7 @@ body {
     padding: 12px;
     background: #fff;
     position: absolute;
-    top: 50px; /*30px;*/
+    top: 35px !important; /*30px;*/
     left: 2px;
     right: 2px;
     box-shadow: 0 1px 2px 1px rgba(0, 0, 0, .15);
@@ -232,7 +251,7 @@ body {
     height: 30px;
     background: #fff;
     border: 0px solid #ccc; /*1px*/
-    padding: 20px 12px; /*6px 12px;*/
+    padding: 8px 12px; /*6px 12px;*/
     line-height: 1;
     cursor: pointer;
     &:before
@@ -272,3 +291,9 @@ body {
     margin-right: 4px;
 }
 }
+
+
+
+
+
+
