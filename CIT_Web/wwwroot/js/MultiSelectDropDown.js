@@ -189,8 +189,8 @@ function createGridData(response) {
             '<th scope="col">PickupType</th>' +
             '<th scope="col">Trip</th>' +
             '<th scope="col">Bill</th>' +
-            //'<th scope="col">Discount</th>' +
-            //'<th scope="col">Final Bill</th>' +
+            '<th scope="col">Discount</th>' +
+            '<th scope="col">Final Bill</th>' +
             '</tr>' +
             '</thead>' +
             '<tbody>';
@@ -204,13 +204,14 @@ function createGridData(response) {
                 '<td>' + Value.branchName + '</td>' +
                 '<td>' + Value.pickupTypeName + '</td>' +
                 '<td>' + Value.trip + '</td>' +
-                '<td>' + Value.bill + '</td>' +
-                //'<td><select id="discount"><option>1</option>' +
-                //'<option>2</option>' +
-                //'<option>3</option>' +
-                //'<option>4</option>' +
-                //'<option>5</option></select></td>' +
-                //'<td id="finalCalc">fff</td>' +
+                '<td> <span id="Bill' + (Key + 1) + '">' + Value.bill + '</span></td>' +
+                '<td><select id="discount' + (Key + 1) + '" onchange="GetDiscount(' + (Key + 1) + ')"><option>0</option>' +
+                '<option>1</option>' +
+                '<option>2</option>' +
+                '<option>3</option>' +
+                '<option>4</option>' +
+                '<option>5</option></select></td>' +
+                '<td id="finalCalc' + (Key + 1) + '">' + Value.bill + '</td>' +
                 '</tr>';
 
         });
@@ -231,4 +232,33 @@ function myFunction(item, index) {
 function displayNum() {
     $("#CustomerSelectedText").html($("select#IdCustomerDrop").val());
 }
-$("select#IdCustomerDrop").change(displayNum); 
+$("select#IdCustomerDrop").change(displayNum);
+
+function GetDiscount(id) {
+    console.log("GetDiscounCalled");
+    $("#finalCalc" + id).text($("#Bill" + id).text() - (($("#Bill" + id).text() * $("#discount" + id).val()) / 100) + ".00");
+}
+
+function BtnGenratebill() {
+
+    var CheckedID = [];
+
+    $("input:checkbox").each(function () {
+        var $this = $(this);
+        if ($this.is(":checked")) {
+            CheckedID.push($this.attr("id"));
+        }
+    });
+    //console.log(CheckedID);
+
+    var total = 0; $.each(CheckedID, function (index, value) {
+        total = total + parseInt($("#finalCalc" + value).text())
+    });
+
+    $("#TotalAmount").text(total);
+    var tax = (total * 5) / 100;
+    var vat = (total * 10) / 100
+    $("#Tax").text(tax);
+    $("#Vat").text(vat);
+    $("#FinalAmount").text(total - vat - tax);
+}

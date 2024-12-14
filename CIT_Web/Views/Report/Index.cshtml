@@ -7,6 +7,92 @@
 
 
 
+
+
+<style>
+    .open-btn {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+        .open-btn:hover {
+            background-color: #0056b3;
+            color: white
+        }
+
+    /* Modal container styling */
+    .modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        width: 400px;
+        display: none; /* Initially hidden */
+        z-index: 1000;
+        height: 200px;
+    }
+
+    /* Overlay styling */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 999;
+    }
+
+    /* Show the modal and overlay when the target is active */
+    #popup:target {
+        display: block;
+    }
+
+        #popup:target + .modal-overlay {
+            display: block;
+        }
+
+    /* Close button styling */
+    .close-btn {
+        background: #f44336;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+        .close-btn:hover {
+            background-color: #d32f2f;
+        }
+
+    .BillDetails {
+        text-align: center;
+        font-size: 16px;
+        background-color: blue;
+        color: white;
+        padding: 3px;
+    }
+
+    .TextDetails {
+        font-size: 14px;
+        padding-top: 3px;
+    }
+</style>
+
+
+
+
 <div class="body">
     <section class="container_Ben">
         @* <header>Add Beneficery</header>*@
@@ -116,6 +202,20 @@
 
 
                     </div>
+                    <a href="#popup" class="open-btn" onclick="return BtnGenratebill()">Genrate Bill</a>
+
+                    <!-- Modal popup -->
+                    <div id="popup" class="modal">
+                        <div class="BillDetails">Bill Details</div>
+                        <div class="textDetails">Total : <span id="TotalAmount"></span></div>
+                        <div class="textDetails">Tax (5%) : <span id="Tax"></span></div>
+                        <div class="textDetails">Vat (10%) : <span id="Vat"></span></div>
+                        <div class="textDetails">Final Amount : <span id="FinalAmount"></span></div>
+                        <div style="margin-top: 10px;"><a href="#" class="close-btn">Close</a></div>
+                    </div>
+
+                    <!-- Overlay -->
+                    <div class="modal-overlay"></div>
                 </div>
 
             </div>
