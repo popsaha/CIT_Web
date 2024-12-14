@@ -11,7 +11,7 @@
 
 <style>
     .open-btn {
-        background-color: #007bff;
+        /* background-color: #007bff; */
         color: white;
         padding: 10px 20px;
         border: none;
@@ -74,6 +74,7 @@
 
         .close-btn:hover {
             background-color: #d32f2f;
+            color: white;
         }
 
     .BillDetails {
@@ -82,6 +83,7 @@
         background-color: blue;
         color: white;
         padding: 3px;
+        margin-bottom:20px ;
     }
 
     .TextDetails {
@@ -193,7 +195,7 @@
                 <div>
 
 
-                    <div id="NoralView">
+                    <div id="NoralView" style="margin-bottom:20px">
 
                         <div id="tbody" style="overflow-x : auto"></div>
 
@@ -202,11 +204,14 @@
 
 
                     </div>
-                    <a href="#popup" class="open-btn" onclick="return BtnGenratebill()">Genrate Bill</a>
+                    <div style="text-align:center">
+                        <a href="#popup" class="open-btn btn-color" onclick="return BtnGenratebill()">Genrate Bill</a>
+                    </div>
+                 
 
                     <!-- Modal popup -->
-                    <div id="popup" class="modal">
-                        <div class="BillDetails">Bill Details</div>
+                    <div id="popup" class="modal" >
+                        <div class="BillDetails  btn-color-main">Bill Details</div>
                         <div class="textDetails">Total : <span id="TotalAmount"></span></div>
                         <div class="textDetails">Tax (5%) : <span id="Tax"></span></div>
                         <div class="textDetails">Vat (10%) : <span id="Vat"></span></div>
