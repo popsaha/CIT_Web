@@ -1,43 +1,103 @@
-﻿@model List<CIT_Web.Models.Dto.Customer.CustomerDTO>
-
+﻿@model CIT_Web.Models.ViewModel.CustomerVM
 
 <div class="card " style="margin: 10px;">
     <div class="card-header text-white btn-color">
         <h5 class="card-title btn-color">Customer Form</h5>
     </div>
     <div class="card-body">
-        <form method="post">
+        <form method="post" asp-action="IndexCustomer" novalidate>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="mb-3">
                         <label class="form-label">Customer Name</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
+                        <input class="form-control" asp-for="createDTO.CustomerName" />
+                        <span class="text-danger" asp-validation-for="createDTO.CustomerName"></span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">CustomerCode</label>
+                        <input class="form-control" asp-for="createDTO.CustomerCode"/>
+                        <span class="text-danger" asp-validation-for="createDTO.CustomerCode"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <div class="mb-3">
                         <label class="form-label">Email</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
+                        <input class="form-control" asp-for="createDTO.Email" />
+                        <span class="text-danger" asp-validation-for="createDTO.Email"></span>
+                    </div>
+                </div>            
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input class="form-control" asp-for="createDTO.Address" />
+                        <span class="text-danger" asp-validation-for="createDTO.Address"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Contact Number</label>
+                        <input class="form-control" asp-for="createDTO.ContactNumber" />
+                        <span class="text-danger " asp-validation-for="createDTO.ContactNumber"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">ReferenceNo1</label>
+                        <input class="form-control" asp-for="createDTO.ReferenceNo1" />
+                        <span class="text-danger" asp-validation-for="createDTO.ReferenceNo1"></span>
                     </div>
                 </div>
             </div>
+
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="mb-3">
-                        <label class="form-label">Address</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
+                        <label class="form-label">ReferenceNo2</label>
+                        <input class="form-control" asp-for="createDTO.ReferenceNo2" />
+                        <span class="text-danger " asp-validation-for="createDTO.ReferenceNo2"></span>
                     </div>
                 </div>
-                <div class="col-md-6">
+ 
+                <div class="col-md-4">
                     <div class="mb-3">
-                        <label class="form-label">Contact Number</label>
-                        <input class="form-control" />
-                        <span class="text-danger"></span>
+                        <label class="form-label" for="country">Country</label>
+                        <select class="form-select" id="country" asp-for="createDTO.Country">
+                            <option value="" disabled selected>Select Country</option>
+                            <option value="Kenya">Kenya</option>
+                        </select>
+                        <span class="text-danger" asp-validation-for="createDTO.Country"></span>
                     </div>
                 </div>
+
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+                        <input class="form-control" asp-for="createDTO.City" />
+                        <span class="text-danger" asp-validation-for="createDTO.City"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">PostalCode</label>
+                        <input class="form-control" asp-for="createDTO.PostalCode" />
+                        <span class="text-danger" asp-validation-for="createDTO.PostalCode"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">TaxNumber</label>
+                        <input class="form-control" asp-for="createDTO.TaxNumber" />
+                        <span class="text-danger" asp-validation-for="createDTO.TaxNumber"></span>
+                    </div>
+                </div>        
             </div>
 
             <div class="d-flex justify-content-end">
@@ -61,25 +121,40 @@
                     <tr>
                         <th></th>
                         <th>Name</th>
+                        <th>CustomerCode</th>
                         <th>Address</th>
                         <th>Contact Number</th>
-                        <th>Email</th>
+                        <th>Email</th>                     
+                        <th>PostalCode</th>
+                        <th>TaxNumber</th>
+                        <th>City</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var customer in Model)
+                    @foreach (var customer in Model.customers)
                     {
                         <tr>
                             <td><input type="checkbox"></td>
                             <td>@customer.CustomerName</td>
+                            <td>@customer.CustomerCode</td>
                             <td>@customer.Address</td>
-                            <td>@customer.CustomerName</td>
+                            <td>@customer.ContactNumber</td>
                             <td>@customer.Email</td>
+                            <td>@customer.PostalCode</td>
+                            <td>@customer.TaxNumber</td>
+                            <td>@customer.City</td>
 
                             <td>
-                                <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
-                                <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                <a asp-action="Edit" asp-route-id="@customer.CustomerId" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="post" asp-action="DeleteCustomer" style="display:inline;">
+                                    <input type="hidden" name="customerId" value="@customer.CustomerId" />
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this Customer?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }

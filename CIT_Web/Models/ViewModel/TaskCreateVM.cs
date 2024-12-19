@@ -43,6 +43,7 @@ namespace CIT_Web.Models.ViewModel
         public List<CrewCommanderDTO> crews { get; set; }
         public int IsEditTask { get; set; }
         public int UserRegionId { get; set; }
+        public string PickupTime { get; set; }
 
         //public List<OrderListDTO> orderLists { get; set; }
 
@@ -105,6 +106,7 @@ namespace CIT_Web.Models.ViewModel
         public string PickupLocation { get; set; }
         public string DeliveryLocation { get; set; }
         public DateTime OrderDate { get; set; }
+        public string PickupTime { get; set; }
     }
     public class OrderRoutes
     {

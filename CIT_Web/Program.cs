@@ -86,6 +86,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddHttpClient<IRegionService, RegionService>();
 builder.Services.AddScoped<IRegionService, RegionService>();
 
+builder.Services.AddHttpClient<IBranchService, BranchService>();
+builder.Services.AddScoped<IBranchService, BranchService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
