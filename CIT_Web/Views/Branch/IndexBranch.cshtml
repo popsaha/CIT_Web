@@ -1,0 +1,181 @@
+﻿@model CIT_Web.Models.ViewModel.BranchVM
+
+
+
+<div class="card " style="margin: 10px;">
+    <div class="card-header text-white btn-color">
+        <h5 class="card-title btn-color">Branch Form</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-action="IndexBranch" novalidate>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Branch Name</label>
+                        <input class="form-control" asp-for="branchCreateDTO.BranchName" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.BranchName"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Branch Code</label>
+                        <input class="form-control" asp-for="branchCreateDTO.BranchCode" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.BranchCode"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input class="form-control" asp-for="branchCreateDTO.Address" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.Address"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Contact Number</label>
+                        <input class="form-control" asp-for="branchCreateDTO.ContactNumber" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.ContactNumber"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">ReferenceNo 1</label>
+                        <input class="form-control" asp-for="branchCreateDTO.ReferenceNo1" />
+                        <span class="text-danger " asp-validation-for="branchCreateDTO.ReferenceNo1"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">ReferenceNo2</label>
+                        <input class="form-control" asp-for="branchCreateDTO.ReferenceNo2" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.ReferenceNo2"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">  
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input class="form-control" asp-for="branchCreateDTO.Email" />
+                        <span class="text-danger " asp-validation-for="branchCreateDTO.Email"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label" for="country">Country</label>
+                        <select class="form-select" id="country" asp-for="branchCreateDTO.Country">
+                            <option value="" disabled selected>Select Country</option>
+                            <option value="Kenya">Kenya</option>
+                        </select>
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.Country"></span>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+                        <input class="form-control" asp-for="branchCreateDTO.City" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.City"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">PostalCode</label>
+                        <input class="form-control" asp-for="branchCreateDTO.PostalCode" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.PostalCode"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Latitude</label>
+                        <input class="form-control" asp-for="branchCreateDTO.Latitude" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.Latitude"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Longitude</label>
+                        <input class="form-control" asp-for="branchCreateDTO.Longitude" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.Longitude"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">CustomerId</label>
+                        <input class="form-control" asp-for="branchCreateDTO.CustomerID" />
+                        <span class="text-danger" asp-validation-for="branchCreateDTO.CustomerID"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-color me-2">
+                    <i class="bi bi-save"></i> Submit
+                </button>
+                <button type="reset" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Reset
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="table-tab-content" id="myTabContent">
+    <div class="col-auto py-1 ms-2 mt-2">
+        <div class="table-container" style=" margin-right: 16px;">
+            <table id="dataTable" class="table datatable table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>BranchCode</th>
+                        <th>Address</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>
+                        <th>PostalCode</th>
+                        <th>City</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var branch in Model.branchDTOs)
+                    {
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>@branch.BranchName</td>
+                            <td>@branch.BranchCode</td>
+                            <td>@branch.Address</td>
+                            <td>@branch.ContactNumber</td>
+                            <td>@branch.Email</td>
+                            <td>@branch.PostalCode</td>
+                            <td>@branch.City</td>
+
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@branch.BranchID" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="post" asp-action="DeleteBranch" style="display:inline;">
+                                    <input type="hidden" name="customerId" value="@branch.BranchID" />
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this Branch?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

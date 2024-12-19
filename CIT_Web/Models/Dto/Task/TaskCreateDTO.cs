@@ -25,5 +25,6 @@
         public int IsEditTask { get; set; }
         public int TaskId { get; set; }
         public int CreatedBy { get; set; }
+        public string PickupTime { get; set; }
     }
 }

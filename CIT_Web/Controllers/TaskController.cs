@@ -220,6 +220,7 @@ namespace CIT_Web.Controllers
                 taskCreateDTO.fullDayCheck = taskcreateModel.fullDayCheck;
                 taskCreateDTO.IsEditTask = taskcreateModel.IsEditTask;
                 taskCreateDTO.TaskId = taskcreateModel.TaskId;
+                taskCreateDTO.PickupTime = taskcreateModel.PickupTime;
                 taskCreateDTO.CreatedBy = Convert.ToInt32(loginResponseDTO.User.userID);
                 var TaskcreateDTO = _mapper.Map<TaskCreateDTO>(taskCreateDTO);
 

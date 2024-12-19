@@ -77,6 +77,7 @@
                         document.querySelector("#orderCreateDate").style.pointerEvents = "none";
                         document.querySelector("#repeatsMode").style.pointerEvents = "none";
                         document.querySelector("#OrderRouteId").style.pointerEvents = "none";
+                        document.querySelector("#pickupTime").style.pointerEvents = "none";
                         $("#PickUpType").val(data.pickUpTypeId);
                         $("#priority").val(data.priorityId);
                         $("#orderCreateDate").val(data.orderCreateDate);
@@ -197,6 +198,15 @@
         var isVaultFinal = $('#isVaultFinal').prop('checked');
 
         var repeatdaysname = $("#RepeatDaysName").val();
+
+        var pickupTime = $("#pickupTime").val();
+        if (pickupTime == "0" || pickupTime == undefined){
+            $("#pickupTime").css("border", "1px solid red");  
+            IsValid = false;
+        }
+        else {
+            $("#pickupTime").css("border", "1px solid #C3C1C1");
+        }
 
         if (OrderTypeID == "0" || OrderTypeID == undefined) {
             $("#orderType").css("border", "1px solid red");
@@ -352,6 +362,7 @@
         document.querySelector("#OrderRouteId").style.pointerEvents = "auto";
         $("#btnAddTaskInRows").attr('value', 'Save and Close');
         document.querySelector("#OrderRouteId").style.pointerEvents = "auto";
+        document.querySelector("#pickupTime").style.pointerEvents = "auto";
         $("#OrderNumber").val("");
         $("#orderType").val(0);
         $("#priority").val(0);
@@ -376,6 +387,7 @@
         $('#fullDayCheck').prop('checked', false);
         $("#IsEditTask").val(0);
         $("TaskId").val(0);
+        $("#pickupTime").val("")
     }
     function EditTask(taskId) {
         debugger
@@ -577,6 +589,13 @@
                                     </div>
                                     <select asp-for="BranchID" class="form-select small-input">
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12 mt-1">
+                                <label>Pickup Time</label>
+                                <div class="input-group mt-1">
+                                    <input asp-for="PickupTime" type="time" id="pickupTime" class="form-control" placeholder="Select time">
+                                    @* <span class="input-group-text"><i class="bi bi-clock"></i></span> *@
                                 </div>
                             </div>
                         </div>
@@ -1545,6 +1564,33 @@
     });
 </script>
 
+<script>
+    // Initialize Tempus Dominus
+    const timePicker = new tempusDominus.TempusDominus(document.getElementById('timePickerWrapper'), {
+        display: {
+            components: {
+                calendar: false,
+                clock: true,
+                hours: true,
+                minutes: true,
+                seconds: false
+            }
+        },
+        restrictions: {
+            inputFormat: "hh:mm A" // Enforces AM/PM formatting
+        }
+    });
+
+    // Open time picker on click anywhere in the input group
+    document.getElementById('timePickerWrapper').addEventListener('click', function () {
+        timePicker.show(); // Open the time picker
+    });
+
+    // Prevent immediate blur if the user clicks inside the input
+    document.getElementById('pickupTime').addEventListener('focus', function () {
+        timePicker.show(); // Ensure the picker shows when the input is focused
+    });
+</script>
 
 
 
