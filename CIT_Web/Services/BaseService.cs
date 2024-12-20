@@ -55,7 +55,7 @@ namespace CIT_Web.Services
                 //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
                 //}
 
-                    apiResponse = await client.SendAsync(message);
+                        apiResponse = await client.SendAsync(message);
 
                 var apiContent = await apiResponse.Content.ReadAsStringAsync();
 

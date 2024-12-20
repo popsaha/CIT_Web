@@ -8,7 +8,7 @@ namespace CIT_Web.Services.IServices
         Task<T> GetAsync<T>(int id);
         Task<T> CreateAsync<T>(CustomerCreateDTO dto);
         Task<T> UpdateAsync<T>(CustomerUpdateDTO dto);
-        Task<T> DeleteAsync<T>(int id);
+        Task<T> DeleteAsync<T>(int id ,int deletedBy);
 
         //Task<T> GetAllAsync<T>(string token);
         //Task<T> GetAsync<T>(int id, string token);

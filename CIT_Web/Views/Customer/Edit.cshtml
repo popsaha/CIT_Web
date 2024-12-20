@@ -6,13 +6,9 @@
         <h5 class="card-title btn-color">Customer Edit Form</h5>
     </div>
     <div class="card-body">
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success">
-                @TempData["SuccessMessage"]
-            </div>
-        }
-        <form method="post" asp-action="IndexCustomer" novalidate>
+     
+        <form method="post" asp-action="EditCustomer" novalidate>
+            <input type="hidden" asp-for="CustomerId" />
             <div class="row">
                 <div class="col-md-4">
                     <div class="mb-3">

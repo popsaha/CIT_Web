@@ -108,7 +108,7 @@ namespace CIT_Web.Controllers
                 return RedirectToAction(nameof(IndexCustomer));
             }
 
-            var response = await _customerService.DeleteAsync<APIResponse>(customerId);
+            var response = await _customerService.DeleteAsync<APIResponse>(customerId, userId);
             if (response != null && response.IsSuccess)
             {
                 TempData["SuccessMessage"] = "Customer deleted successfully!";

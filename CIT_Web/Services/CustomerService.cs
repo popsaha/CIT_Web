@@ -1,6 +1,7 @@
 ﻿using CIT_Utility;
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.Customer;
+using CIT_Web.Models.ViewModel;
 using CIT_Web.Services.IServices;
 
 namespace CIT_Web.Services
@@ -48,12 +49,12 @@ namespace CIT_Web.Services
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id)
+        public Task<T> DeleteAsync<T>(int customerId, int deletedBy)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = citUrl + "/api/Customer" + id,
+                Url = $"{citUrl}/api/Customer/{customerId}?deletedBy={deletedBy}",
                 //Token = token
             });
         }
