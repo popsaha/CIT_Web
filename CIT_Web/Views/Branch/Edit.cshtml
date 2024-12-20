@@ -6,7 +6,8 @@
         <h5 class="card-title btn-color">Branch Edit Form</h5>
     </div>
     <div class="card-body">
-        <form method="post" asp-action="IndexBranch" novalidate>
+        <form method="post" asp-action="EditBranch" novalidate>
+            <input type="hidden" asp-for="BranchID" />
             <div class="row">
                 <div class="col-md-4">
                     <div class="mb-3">

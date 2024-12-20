@@ -2,6 +2,7 @@
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.Branch;
 using CIT_Web.Models.Dto.Customer;
+using CIT_Web.Models.Dto.Region;
 using CIT_Web.Models.ViewModel;
 using CIT_Web.Services;
 using CIT_Web.Services.IServices;
@@ -14,12 +15,13 @@ namespace CIT_Web.Controllers
     public class BranchController : Controller
     {
         private readonly IBranchService _branchService;
+        private readonly ICustomerService _customerService;
         private readonly IMapper _mapper;
-        public BranchController(IBranchService branchService, IMapper mapper)
+        public BranchController(IBranchService branchService, IMapper mapper, ICustomerService customerService)
         {
             _branchService = branchService;
             _mapper = mapper;
-
+            _customerService = customerService;
         }
         public async Task<IActionResult> IndexBranch()
         {
@@ -30,10 +32,23 @@ namespace CIT_Web.Controllers
             {
                 branchlist = JsonConvert.DeserializeObject<List<BranchDTO>>(Convert.ToString(response.Result));
             }
+
+            var custlist = new List<CIT_Web.Models.ViewModel.CustomerDTO>();
+            var customerResponse = await _customerService.GetAllAsync<APIResponse>();
+            if (customerResponse != null && customerResponse.IsSuccess)
+            {
+                custlist = JsonConvert.DeserializeObject<List<CIT_Web.Models.ViewModel.CustomerDTO>>(Convert.ToString(customerResponse.Result)) ?? new List<CIT_Web.Models.ViewModel.CustomerDTO>();
+            }
+            else
+            {
+                custlist = new List<CIT_Web.Models.ViewModel.CustomerDTO>();
+            }
+
             var model = new BranchVM
             {
                 branchCreateDTO = new BranchCreateDTO(), // Empty form for new vehicle
-                branchDTOs = branchlist
+                branchDTOs = branchlist,
+                customerDTOs= custlist
             };
             return View(model);
         }
@@ -109,7 +124,7 @@ namespace CIT_Web.Controllers
                 return RedirectToAction(nameof(IndexBranch));
             }
 
-            var response = await _branchService.DeleteAsync<APIResponse>(branchId);
+            var response = await _branchService.DeleteAsync<APIResponse>(branchId, userId);
             if (response != null && response.IsSuccess)
             {
                 TempData["SuccessMessage"] = "Branch deleted successfully!";

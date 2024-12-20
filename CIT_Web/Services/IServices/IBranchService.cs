@@ -9,6 +9,6 @@ namespace CIT_Web.Services.IServices
         Task<T> GetAsync<T>(int id);
         Task<T> CreateAsync<T>(BranchCreateDTO dto);
         Task<T> UpdateAsync<T>(BranchUpdateDTO dto);
-        Task<T> DeleteAsync<T>(int id);
+        Task<T> DeleteAsync<T>(int id,int deletedBy);
     }
 }

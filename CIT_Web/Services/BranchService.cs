@@ -1,6 +1,7 @@
 ﻿using CIT_Utility;
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.Branch;
+using CIT_Web.Models.ViewModel;
 using CIT_Web.Services.IServices;
 using Microsoft.Extensions.Configuration;
 
@@ -26,12 +27,12 @@ namespace CIT_Web.Services
             });
         }
         
-        public Task<T> DeleteAsync<T>(int id)
+        public Task<T> DeleteAsync<T>(int branchId, int deletedBy)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = citUrl + "/api/Branch/DeleteBranch" + id,
+                Url = $"{citUrl}/api/Branch/{branchId}?deletedBy={deletedBy}",
                 //Token = token
             });
         }

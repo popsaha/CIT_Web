@@ -6,5 +6,6 @@ namespace CIT_Web.Models.ViewModel
     {
         public List<BranchDTO> branchDTOs { get; set; }
         public BranchCreateDTO branchCreateDTO { get; set; }
+        public List<CIT_Web.Models.ViewModel.CustomerDTO> customerDTOs { get; set; }
     }
 }
