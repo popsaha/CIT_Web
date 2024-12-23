@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
+using CIT_Web.CITFlter;
 using CIT_Web.Models;
 using CIT_Web.Models.Dto.CrewCommander;
+using CIT_Web.Models.Dto.Login;
+using CIT_Web.Models.Dto.OrderRoute;
+using CIT_Web.Models.Dto.Task;
 using CIT_Web.Models.Dto.TaskGrouping;
 using CIT_Web.Models.Dto.TaskGroupList;
 using CIT_Web.Models.Dto.TaskList;
 using CIT_Web.Models.Dto.Vehicle;
+using CIT_Web.Models.ViewModel;
 using CIT_Web.Services;
 using CIT_Web.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -13,59 +18,253 @@ using System.Collections.Generic;
 
 namespace CIT_Web.Controllers
 {
+    [CITAppFilter]
     public class AssignmentController : Controller
     {
-        private readonly ITaskGroupListService _taskGroupList;
-        private readonly IVehicleService _vehicleService;
-        private readonly ICrewCommanderService _crewCommanderList;
+        private readonly ItaskService _taskService;
+        private readonly ITaskListService _taskListService;
         private readonly IMapper _mapper;
+        private readonly IVehicleService _vehicleService;
+        private readonly ICrewCommanderService _crewCommanderService;
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        int Refresh = 1;
+        private readonly IOrderRouteService _orderRouteService;
 
-        public AssignmentController(ITaskGroupListService taskGroupList, IVehicleService vehicleService, ICrewCommanderService crewCommander, IMapper mapper)
+        public AssignmentController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IOrderRouteService orderRouteService, IMapper mapper, ILoginService login_Service)
         {
-            _taskGroupList = taskGroupList;
+            _taskService = taskService;
+            _taskListService = taskListService;
+            _crewCommanderService = crewCommanderService;
             _vehicleService = vehicleService;
-            _crewCommanderList = crewCommander;
             _mapper = mapper;
-           
+            loginResponseDTO = login_Service.GetLoginDetails(loginRequestDTO, Refresh);
+            //_orderService = orderService;
+            _orderRouteService = orderRouteService;
+
         }
 
 
         public async Task<IActionResult> Index()
         {
-            // Task Group List
-            List<TaskGroupListDTO> taskGroups = new();
-            var response = await _taskGroupList.GetAllGroupListAsync<APIResponse>();
-            if (response != null && response.IsSuccess)
+            TaskCreateVM taskVM = new TaskCreateVM();
+            //TaskMainVM taskMain = new TaskMainVM();
+
+            var OrderType_response = await _taskService.GetAllOrderTypeAsync<APIResponse>();
+            if (OrderType_response != null && OrderType_response.IsSuccess)
             {
-                taskGroups = JsonConvert.DeserializeObject<List<TaskGroupListDTO>>(Convert.ToString(response.Result));
+                taskVM.OrderTypelist = JsonConvert.DeserializeObject<List<OrderType>>(Convert.ToString(OrderType_response.Result));
+                taskVM.OrderTypelist.Insert(0, new OrderType { OrderTypeID = 0, TypeName = "Select Order Type" });
             }
 
-            // Vehicle List
-            List<VehicleDTO> vehileList = new();
+            List<PriorityMaster> Prioritymasterlist = new List<PriorityMaster>{
+                new PriorityMaster{ PriorityId =0,PriorityName="select"},
+                new PriorityMaster{ PriorityId =1,PriorityName="Low"},
+                new PriorityMaster{ PriorityId =2,PriorityName="Medium"},
+                new PriorityMaster{ PriorityId =3,PriorityName="High"}
+            };
+            taskVM.PriorityMasterlist = Prioritymasterlist;
+
+            List<PickTypeMaster> PickTypeMasterlist = new List<PickTypeMaster>{
+                new PickTypeMaster{ PickUpTypeId =0,PickUpTypeName="Select Pickup Type"},
+                new PickTypeMaster{ PickUpTypeId =1,PickUpTypeName="CIT"},
+                new PickTypeMaster{ PickUpTypeId =2,PickUpTypeName="BSS"},
+                new PickTypeMaster{ PickUpTypeId =3,PickUpTypeName="ATM"},
+                new PickTypeMaster{ PickUpTypeId =3,PickUpTypeName="Airlift"}
+            };
+            taskVM.Picktypemasterlst = PickTypeMasterlist;
+
+            List<RepeatsTaskMaster> Repeatstaskmasterlist = new List<RepeatsTaskMaster>{
+                new RepeatsTaskMaster{ RepeatId =0,RepeatName="select"},
+                new RepeatsTaskMaster{ RepeatId =1,RepeatName="Daily"},
+                new RepeatsTaskMaster{ RepeatId =2,RepeatName="Weekly"},
+                new RepeatsTaskMaster{ RepeatId =3,RepeatName="Monthly"},
+            };
+            taskVM.repeatsaskmasterslist = Repeatstaskmasterlist;
+
+            List<RepeatsInDaysMaster> repeatsInDaysmaster = new List<RepeatsInDaysMaster>{
+                new RepeatsInDaysMaster{ RepeatDaysName ="0",RepeatInDay="select"},
+                new RepeatsInDaysMaster{ RepeatDaysName ="Sunday",RepeatInDay="Sunday"},
+                new RepeatsInDaysMaster{ RepeatDaysName ="Monday",RepeatInDay="Monday"},
+                new RepeatsInDaysMaster{ RepeatDaysName ="Tuesday",RepeatInDay="Tuesday"},
+                new RepeatsInDaysMaster{ RepeatDaysName ="Wednesday",RepeatInDay="Wednesday"},
+                new RepeatsInDaysMaster{ RepeatDaysName ="Thursday",RepeatInDay="Thursday"},
+                new RepeatsInDaysMaster{ RepeatDaysName ="Friday",RepeatInDay="Friday"},
+                new RepeatsInDaysMaster{ RepeatDaysName ="Saturday",RepeatInDay="Saturday"},
+            };
+            taskVM.repeatsInDaysMasterslist = repeatsInDaysmaster;
+
+            var Customer_response = await _taskService.GetAllAsync<APIResponse>();
+            if (Customer_response != null && Customer_response.IsSuccess)
+            {
+                taskVM.customerslist = JsonConvert.DeserializeObject<List<CustomerDTO>>(Convert.ToString(Customer_response.Result));
+                taskVM.customerslist.Insert(0, new CustomerDTO { CustomerId = 0, CustomerName = "Select Sender" });
+            }
+
+            var IsVaultLocation_response = await _taskService.GetAllVaultLocationAsync<APIResponse>();
+            if (IsVaultLocation_response != null && IsVaultLocation_response.IsSuccess)
+            {
+                taskVM.vaultLovationMasters = JsonConvert.DeserializeObject<List<VaultLovationMaster>>(Convert.ToString(IsVaultLocation_response.Result));
+                taskVM.vaultLovationMasters.Insert(0, new VaultLovationMaster { VaultID = 0, VaultName = "Select Sender's Location" });
+            }
+
+            var Orderrouteslst_response = await _taskService.GetOrderRoutesAsync<APIResponse>();
+            if (Orderrouteslst_response != null && Orderrouteslst_response.IsSuccess)
+            {
+                taskVM.Orderrouteslst = JsonConvert.DeserializeObject<List<OrderRoutes>>(Convert.ToString(Orderrouteslst_response.Result));
+                taskVM.Orderrouteslst.Insert(0, new OrderRoutes { OrderRouteId = 0, RouteName = "Select Route" });
+            }
+
+            var response = await _taskListService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                taskVM.taskDTOlsts = JsonConvert.DeserializeObject<List<TaskDTOlst>>(Convert.ToString(response.Result));
+            }
 
             var vehicleResponse = await _vehicleService.GetAllVehicleAsync<APIResponse>();
             if (vehicleResponse != null && vehicleResponse.IsSuccess)
             {
-                vehileList = JsonConvert.DeserializeObject<List<VehicleDTO>>(Convert.ToString(vehicleResponse.Result));
+                taskVM.vehicledtolst = JsonConvert.DeserializeObject<List<VehicleDTO>>(Convert.ToString(vehicleResponse.Result)) ?? new List<VehicleDTO>();
+            }
+            else
+            {
+                taskVM.vehicledtolst = new List<VehicleDTO>(); // Initialize empty list if the API fails
+            }
+
+            var crewResponse = await _crewCommanderService.GetAllCrewCommanderList<APIResponse>();
+            if (crewResponse != null && crewResponse.IsSuccess)
+            {
+                taskVM.crews = JsonConvert.DeserializeObject<List<CrewCommanderDTO>>(Convert.ToString(crewResponse.Result)) ?? new List<CrewCommanderDTO>();
+            }
+            else
+            {
+                taskVM.crews = new List<CrewCommanderDTO>(); // Initialize empty list if the API fails
             }
 
 
-            // Crew Commander List
-            List<CrewCommanderDTO> crewList = new();
+            //var orderList = await _orderService.GetAllAsync<APIResponse>();
+            //if (orderList != null && orderList.IsSuccess)
+            //{
+            //    taskVM.orderLists = JsonConvert.DeserializeObject<List<OrderListDTO>>(Convert.ToString(crewResponse.Result)) ?? new List<OrderListDTO>();
+            //}
+            //else
+            //{
+            //    taskVM.orderLists = new List<OrderListDTO>(); // Initialize empty list if the API fails
+            //}
 
-            var crewCommanderResponse = await _crewCommanderList.GetAllCrewCommanderList<APIResponse>();
-            if (crewCommanderResponse != null && crewCommanderResponse.IsSuccess)
+            var orderRouteList = await _orderRouteService.GetAllOrderRouteList<APIResponse>();
+            if (orderRouteList != null && orderRouteList.IsSuccess)
             {
-                crewList = JsonConvert.DeserializeObject<List<CrewCommanderDTO>>(Convert.ToString(crewCommanderResponse.Result));
+                taskVM.orderRouteDTOs = JsonConvert.DeserializeObject<List<OrderRouteDTO>>(Convert.ToString(orderRouteList.Result)) ?? new List<OrderRouteDTO>();
+            }
+            else
+            {
+                taskVM.orderRouteDTOs = new List<OrderRouteDTO>(); // Initialize empty list if the API fails
             }
 
-            var taskGroupVehicle = new TaskGroupVehicleVM
+
+            return View(taskVM);
+        }
+
+        public async Task<JsonResult> GetBranchNameById(int CustomerId)
+        {
+            var Res = 0;
+            TaskCreateVM taskVM = new TaskCreateVM();
+            try
             {
-                TaskGroups = taskGroups,
-                Vehicles = vehileList ,
-                CrewCommanders = crewList
-            };
-            return View(taskGroupVehicle);
+                var response = await _taskService.GetAsync<APIResponse>(CustomerId);
+                if (response != null && response.IsSuccess)
+                {
+                    taskVM.taskbranchlist = JsonConvert.DeserializeObject<List<TaskBranch>>(Convert.ToString(response.Result));
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Json(taskVM.taskbranchlist);
+        }
+        public IActionResult GroupData()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Index(TaskCreateVM taskcreateModel)
+        {
+            try
+            {
+                TaskCreateDTO taskCreateDTO = new TaskCreateDTO();
+                taskCreateDTO.OrderNumber = taskcreateModel.OrderNumber == null ? "" : taskcreateModel.OrderNumber;
+                taskCreateDTO.OrderId = "1";
+                taskCreateDTO.OrderTypeID = taskcreateModel.OrderTypeID;
+                taskCreateDTO.PriorityId = taskcreateModel.PriorityId;
+                taskCreateDTO.PickUpTypeId = taskcreateModel.PickUpTypeId;
+                taskCreateDTO.CustomerId = taskcreateModel.CustomerId;
+                taskCreateDTO.BranchID = taskcreateModel.BranchID;
+                taskCreateDTO.CustomerRecipiantId = taskcreateModel.CustomerRecipiantId;
+                taskCreateDTO.CustomerRecipiantLocationId = taskcreateModel.CustomerRecipiantLocationId;
+                taskCreateDTO.RepeatId = taskcreateModel.RepeatId;
+                taskCreateDTO.RepeatDaysName = taskcreateModel.RepeatDaysName == null ? "" : taskcreateModel.RepeatDaysName;
+                taskCreateDTO.OrderCreateDate = taskcreateModel.OrderCreateDate;
+                taskCreateDTO.EndOnDate = taskcreateModel.EndOnDate == null ? "" : taskcreateModel.EndOnDate;
+                taskCreateDTO.VaultID = taskcreateModel.VaultID;
+                taskCreateDTO.isVault = taskcreateModel.isVault;
+                taskCreateDTO.isVaultFinal = taskcreateModel.isVaultFinal;
+                taskCreateDTO.OrderRouteId = taskcreateModel.OrderRouteId;
+                taskCreateDTO.NewVehicleRequired = taskcreateModel.NewVehicleRequired;
+                taskCreateDTO.fullDayCheck = taskcreateModel.fullDayCheck;
+                taskCreateDTO.IsEditTask = taskcreateModel.IsEditTask;
+                taskCreateDTO.TaskId = taskcreateModel.TaskId;
+                taskCreateDTO.PickupTime = taskcreateModel.PickupTime;
+                taskCreateDTO.CreatedBy = Convert.ToInt32(loginResponseDTO.User.userID);
+                var TaskcreateDTO = _mapper.Map<TaskCreateDTO>(taskCreateDTO);
+
+                var response = await _taskService.CreateAsync<APIResponse>(TaskcreateDTO);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return RedirectToAction("Index", "Assignment");
+        }
+        public async Task<JsonResult> GetAllOrderTask(string OrderNumber)
+        {
+            TaskCreateVM taskCreateVM = new TaskCreateVM();
+            TaskCreateDTO taskCreateDTO = new TaskCreateDTO();
+            try
+            {
+                var response = await _taskService.GetOrderTaskAsync<APIResponse>(OrderNumber);
+                if (response != null && response.IsSuccess)
+                {
+                    taskCreateDTO = JsonConvert.DeserializeObject<TaskCreateDTO>(Convert.ToString(response.Result));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(taskCreateDTO);
+        }
+
+        public async Task<JsonResult> GetEditTask_Details(int taskId)
+        {
+            TaskCreateVM taskCreateVM = new TaskCreateVM();
+            TaskCreateDTO taskCreateDTO = new TaskCreateDTO();
+            try
+            {
+                var response = await _taskService.GetEditTask_DetailsAsync<APIResponse>(taskId);
+                if (response != null && response.IsSuccess)
+                {
+                    taskCreateDTO = JsonConvert.DeserializeObject<TaskCreateDTO>(Convert.ToString(response.Result));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return Json(taskCreateDTO);
         }
     }
 }

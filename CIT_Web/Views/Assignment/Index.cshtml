@@ -1,206 +1,1512 @@
-﻿@model TaskGroupVehicleVM
+﻿@using Newtonsoft.Json
+@model CIT_Web.Models.ViewModel.TaskCreateVM
+@using CIT_Web.Models.Dto.Login;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="~/css/datepicker.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap-multiselect.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css"><script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 @{
-    var groupedData = Model.TaskGroups.GroupBy(item => item.GroupName).ToList();
+    var UserLoginDetails = this.Context.Session.Get<LoginResponseDTO>("LoginUserDetailsSession");
+    var UserRegionId = UserLoginDetails.User.RegionID;
+
 }
 
-<div class="container-fluid mt-3">
-    <div class="d-flex align-items-center mb-3" style="">
-        <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#assignModal">Vehicle Selection</button>
-        <button class="btn btn-color" onclick="location.reload();" asp-controller="Assignment" asp-action="Index">Shuffle</button>
+<script type="text/javascript">
+    $('document').ready(function () {
 
-    </div>
-    <div class="" style="overflow-x:auto">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Pickup Customer Name</th>
-                    <th>Pickup Location</th>
-                    <th>Delivery Customer Name</th>
-                    <th>Delivery Location</th>
-                    <th>Pickup Type</th>
-                    <th>Route</th>
-                    <th>Lead Vehicle</th>
-                    <th>Chase Vehicle</th>
-                    <th>Crew Commander</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var group in groupedData)
-                {
-                    var groupFirstItem = group.First();
-                    foreach (var item in group)
-                    {
-                        <tr>
-                            <td>@item.PickupCustomerName</td>
-                            <td>@item.PickupLocation</td>
-                            <td>@item.DeliveryCustomerName</td>
-                            <td>@item.DeliveryLocation</td>
-                            <td>@item.PickupType</td>
+        $("#btnAddTsk").click(function () {
+            $('#myModal').show();
+        })
 
-                            @if (item == groupFirstItem)
-                            {
-                                <td rowspan="@group.Count()">@group.Key</td>
-                                <td rowspan="@group.Count()">@groupFirstItem.LeadCarName</td>
-                                <td rowspan="@group.Count()">@groupFirstItem.ChaseCarName</td>
-                                <td rowspan="@group.Count()">@groupFirstItem.CrewCommander</td>
-      
-                            }
-                        </tr>
+        // $("#btnEditTask").click(function () {
+        //     $('#myModal').show();
+        // })
+
+        $("#btnAddTaskInRows").click(function () {
+            //var Valid = true;
+            var Valid = Validation()
+            if (Valid == true) {
+                $('#add-save-btn').prop('disabled', true);
+                $("#btnAddmoreTask").click();
+            }
+        })
+        $("#CustomerId").change(function () {
+            var CustomerId = $(this).val();
+            BindLocation(CustomerId);
+        })
+
+        $("#CustomerRecipiantId").change(function () {
+            var CustomerId = $(this).val();
+            BindCustRecipiantId(CustomerId);
+        })
+
+        $("#choices-multiple-remove-button").change(function () {
+
+            var Days = $(this).val();
+            $("#RepeatDaysName").val(Days);
+        })
+
+        $("#OrderNumber").change(function () {
+            var OrderNumber = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/Task/GetAllOrderTask",
+                data: { "OrderNumber": OrderNumber },
+                dataType: "json",
+                success: function (data) {
+                    if (data.orderCreateStatus == true) {
+                        $("#orderType").val(data.orderTypeID);
+
+                        document.querySelector("#orderType").style.pointerEvents = "none";
+                        document.querySelector("#PickUpType").style.pointerEvents = "none";
+                        document.querySelector("#priority").style.pointerEvents = "none";
+                        document.querySelector("#orderCreateDate").style.pointerEvents = "none";
+                        document.querySelector("#repeatsMode").style.pointerEvents = "none";
+                        document.querySelector("#OrderRouteId").style.pointerEvents = "none";
+                        document.querySelector("#pickupTime").style.pointerEvents = "none";
+                        $("#PickUpType").val(data.pickUpTypeId);
+                        $("#priority").val(data.priorityId);
+                        $("#orderCreateDate").val(data.orderCreateDate);
+                        if (data.orderTypeID == 2) {
+                            // if (data.fullDayCheck == true) {
+                            //     $("#fullDayCheck").prop('checked', true);
+                            //     $("#NewVehicleRequired").attr('disabled', true);
+                            // }
+                            $("#fullDay").show();
+                            $("#repeatTaskSection").show();
+                            $("#repeatsSection").show();
+                            $("#repeatTask").prop("checked", true);
+                            $("#repeatsMode").val(data.repeatId);
+                            $("#EndOnDate").val(data.endOnDate);
+                            $("#choices-multiple-remove-button").val(data.repeatDaysName);
+                        }
+                        else {
+                            // if (data.fullDayCheck == true) {
+                            //     $("#fullDayCheck").prop('checked', false);
+                            //     $("#NewVehicleRequired").attr('disabled', false);
+                            // }
+                            $("#fullDay").hide();
+                            $("#repeatTaskSection").hide();
+                            $("#repeatsSection").hide();
+                            $("#repeatTask").prop("checked", false);
+                        }
+                        $("#OrderRouteId").val(data.orderRouteId);
+                        if (data.orderTypeID == 1) {
+                            $("#btnAddTaskInRows").attr('disabled', true);
+                            document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                            document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
+                            $('#fullDayCheck').prop('checked', false);
+                        }
+                        if (data.orderTypeID == 2 && data.fullDayCheck == false) {
+                            $("#btnAddTaskInRows").attr('disabled', true);
+                            document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                            document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
+                            $('#fullDayCheck').prop('checked', false);
+                        }
+                        if (data.orderTypeID == 2 && data.fullDayCheck == true) {
+                            $("#btnAddTaskInRows").attr('disabled', false);
+                            $('#fullDayCheck').prop('checked', true);
+                        }
                     }
+                    else {
+                        alert("This order expired");
+                        Reset();
+                    }
+                    $("#IsEditTask").val(0);
                 }
-            </tbody>
-        </table>
-    </div>
+            })
+        })
 
-</div>
+        $("#btnpopupclose").click(function () {
+            Reset();
+        });
+        $("#btnClose").click(function () {
+            Reset();
+        });
+    });
+
+    function BindLocation(CustomerId) {
+        $.ajax({
+            type: "GET",
+            url: "/Task/GetBranchNameById",
+            data: { "CustomerId": CustomerId },
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                var Branchlst = '<option value="">Select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
+                }
+                $("#BranchID").html(Branchlst);
+            }
+        })
+    }
+    function BindCustRecipiantId(CustomerId) {
+        $.ajax({
+            type: "GET",
+            url: "/Task/GetBranchNameById",
+            data: { "CustomerId": CustomerId },
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                var Branchlst = '<option value="">Select</option>';
+                for (var i = 0; i < data.length; i++) {
+                    Branchlst += '<option value="' + data[i].branchID + '">' + data[i].branchName + '</option>';
+                }
+                $("#CustomerRecipiantLocationId").html(Branchlst);
+            }
+        })
+    }
+    function Validation() {
+        debugger
+        var IsValid = true;
+        var OrderTypeID = $("#orderType").val();
+        var PriorityId = $("#priority").val();
+        var OrderId = $("#OrderId").val();
+        var PickUpTypeId = $("#PickUpType").val();
+        var Createorderdate = $("#orderCreateDate").val();
+        var fullDayCheck = $("#fullDayCheck").prop("checked") ? 1 : 0;
+        var CustomerId = $("#CustomerId").val();
+        var BranchID = $("#BranchID").val();
+        var VaultId = $("#VaultID").val();
+
+        var CustomerRecipiantId = $("#CustomerRecipiantId").val();
+        var CustomerRecipiantLocationId = $("#CustomerRecipiantLocationId").val();
+
+        var OrderRouteId = $("#OrderRouteId").val();
+
+        var MyRadio_repeatTask = $('input[name=repeatTask]:checked').val();
+
+        var repeatsMode = $("#repeatsMode").val();
+        var EndOnDate = $("#EndOnDate").val();
+
+        var isVault = $('#isVault').prop('checked');
+        var isVaultFinal = $('#isVaultFinal').prop('checked');
+
+        var repeatdaysname = $("#RepeatDaysName").val();
+
+        var pickupTime = $("#pickupTime").val();
+        if (pickupTime == "0" || pickupTime == undefined) {
+            $("#pickupTime").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#pickupTime").css("border", "1px solid #C3C1C1");
+        }
+
+        if (OrderTypeID == "0" || OrderTypeID == undefined) {
+            $("#orderType").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#orderType").css("border", "1px solid #C3C1C1");
+        }
+
+        if (PriorityId == "0" || PriorityId == undefined) {
+            $("#priority").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#priority").css("border", "1px solid #C3C1C1");
+        }
+
+        if (PickUpTypeId == "0" || PickUpTypeId == undefined) {
+            $("#PickUpType").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#PickUpType").css("border", "1px solid #C3C1C1");
+        }
+
+        if (Createorderdate == "" || Createorderdate == undefined) {
+            $("#orderCreateDate").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#orderCreateDate").css("border", "1px solid #C3C1C1");
+        }
+
+        if (OrderTypeID == "1" && (CustomerId == "0" || CustomerId == "" || CustomerId == undefined)) {
+            $("#CustomerId").css("border", "1px solid red");
+            IsValid = false;
+        }
+
+        // else {
+        //     $("#CustomerId").css("border", "1px solid #C3C1C1");
+        // }
+
+        if (OrderTypeID == "1" && (BranchID == "0" || BranchID == "" || BranchID == null)) {
+            $("#BranchID").css("border", "1px solid red");
+            IsValid = false;
+        }
+        // else {
+        //     $("#BranchID").css("border", "1px solid #C3C1C1");
+        // }
+
+        //Add this code 03102024
 
 
 
-@* ***************************************Group Modal ******************************************** *@
+        if (OrderTypeID == "2" && (fullDayCheck == 0) && (CustomerId == "0" || CustomerId == "" || CustomerId == undefined)) {
+            $("#CustomerId").css("border", "1px solid red");
+            IsValid = false;
+        }
 
-<!-- Modal Structure -->
-<div class="modal fade custom-modal-size" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
-        <!-- Custom size class applied -->
-        <div class="modal-content">
-            @*  <div class="modal-header">
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 0) && (BranchID == "0" || BranchID == "" || BranchID == null)) {
+            $("#BranchID").css("border", "1px solid red");
+            IsValid = false;
+        }
+        // else {
+        //     $("#BranchID").css("border", "1px solid #C3C1C1");
+        // }
+        //Add this code 03102024 close
 
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div> *@
-            <div class="modal-body">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs " id="assignTabs" role="tablist">
-                    <li class="nav-item " role="presentation">
-                        <button class="nav-link active" id="leadVehicle-tab" data-bs-toggle="tab" data-bs-target="#leadVehicleDriver-tab" type="button" role="tab" aria-controls="lead" aria-selected="false">
-                            <i class="bi bi-car-front-fill "></i>
-                            <span class="ms-1 ">
-                                Lead Vehicle
-                            </span>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="chaseVehicle-tab" data-bs-toggle="tab" data-bs-target="#chaseVehicleDriver-tab" type="button" role="tab" aria-controls="Chase" aria-selected="false">
-                            <i class="bi bi-truck "></i> <span class="ms-1 ">Chase vehicle </span>
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="crew-tab" data-bs-toggle="tab" data-bs-target="#crewCommandor-tab" type="button" role="tab" aria-controls="crewCommandor" aria-selected="false">  <i class="bi bi-person-badge-fill "></i> <span class="ms-1 ">Crew Commander </span> </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="policeData-tab" data-bs-toggle="tab" data-bs-target="#police-tab" type="button" role="tab" aria-controls="police" aria-selected="false">  <i class="bi bi-shield-fill "></i> <span class="ms-1 ">Police </span> </button>
-                    </li>
-                </ul>
+        if (OrderTypeID == "1" && (CustomerRecipiantId == "0" || CustomerRecipiantId == "" || CustomerRecipiantId == undefined)) {
+            $("#CustomerRecipiantId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        // else {
+        //     $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
+        // }
 
-                <!-- Tab content -->
-                <div class="tab-content mt-3" style="height: 200px;">
-                    <!-- Lead Vehicle Tab -->
-                    <div class="tab-pane fade show active" id="leadVehicleDriver-tab" role="tabpanel" aria-labelledby="leadVehicle-tab">
-                        <h5>Select a Lead Vehicle driver to assign tasks:</h5>
-                        <div class="p-3">
-                            @foreach (var vehicle in Model.Vehicles.Where(v => v.VehicleType == "Lead"))
-                            {
-                                <div class="form-check d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input class="form-check-input lead-vehicle-checkbox" type="checkbox" name="leadVehicleDriver" id="leadVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
-                                        <i class="bi bi-car-front-fill" style="font-size: 25px;"></i>
-                                        <label class="form-check-label" for="leadVehicleDriver_@vehicle.VehicleID">
-                                            @vehicle.RegistrationNo
-                                        </label>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
+        if (OrderTypeID == "1" && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == "" || CustomerRecipiantLocationId == null)) {
+            $("#CustomerRecipiantLocationId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        // else {
+        //     $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+        // }
 
-                    <!-- Chase Vehicle Tab -->
-                    <div class="tab-pane fade" id="chaseVehicleDriver-tab" role="tabpanel" aria-labelledby="chaseVehicle-tab">
-                        <h5>Select a Chase Vehicle driver to assign tasks:</h5>
-                        <div class="p-3">
-                            @foreach (var vehicle in Model.Vehicles.Where(v => v.VehicleType == "Chase"))
-                            {
-                                <div class="form-check d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input class="form-check-input chase-vehicle-checkbox" type="checkbox" name="chaseVehicleDriver" id="chaseVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
-                                        <i class="bi bi-truck" style="font-size: 25px;"></i>
-                                        <label class="form-check-label" for="chaseVehicleDriver_@vehicle.VehicleID">
-                                            @vehicle.RegistrationNo
-                                        </label>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
+        //Add this code 03102024 open
 
-                    <!-- Crew Commander Tab -->
-                    <div class="tab-pane fade assignment-container" id="crewCommandor-tab" role="tabpanel" aria-labelledby="crew-tab">
-                        <h5>Select a  Crew Commander to assign tasks:</h5>
-                        <div class="p-3">
-                            @foreach (var crewCommander in Model.CrewCommanders)
-                            {
-                                <div class="form-check d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.UserID" value="@crewCommander.UserID">
-                                        <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
-                                        <label class="form-check-label" for="crewCommander_@crewCommander.UserID">
-                                            @crewCommander.UserName
-                                        </label>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 0) && CustomerRecipiantId == "0") {
+            $("#CustomerRecipiantId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        // else {
+        //     $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+        // }
 
-                    <div class="tab-pane fade assignment-container" id="police-tab" role="tabpanel" aria-labelledby="policeData-tab">
-                        <h5 style="" class="ps-3 ">  Police to assign tasks:</h5>
-                        <div class=" p-3 ">
-                            <div class="form-check  d-flex justify-content-between d-flex align-items-center">
-                                <div class=" d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver1" style="    ">
+        if (OrderTypeID == "2" && (CustomerId != "0" || fullDayCheck == 0 || CustomerRecipiantId != "0") && (CustomerRecipiantLocationId == "0" || CustomerRecipiantLocationId == "" || CustomerRecipiantLocationId == null)) {
+            $("#CustomerRecipiantLocationId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        // else {
+        //     $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+        // }
+        //Add this code 03102024 close
 
-                                    <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;"
-                                         alt="Avatar" />
-                                    <label class="form-check-label " for="driver1">
-                                        Felix L. Dan
-                                    </label>
-                                </div>
 
-                            </div>
-                            <div class="form-check   d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input class="form-check-input " type="checkbox" name="driver" id="driver2" style=" ">
+        if (OrderRouteId == "0" || OrderRouteId == null) {
+            $("#OrderRouteId").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#OrderRouteId").css("border", "1px solid #C3C1C1");
+        }
 
-                                    <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;"
-                                         alt="Avatar" />
-                                    <label class="form-check-label " for="driver2">
-                                        Jhon
-                                    </label>
-                                </div>
+        if (OrderTypeID == "2" && (MyRadio_repeatTask == undefined)) {
+            $("#CustomerRecipiantLocationId").css("border", "1px solid red");
+            IsValid = false;
+        }
 
-                            </div>
+        if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && repeatsMode == 0) {
+            $("#repeatsMode").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#repeatsMode").css("border", "1px solid #C3C1C1");
+        }
 
-                        </div>
-                    </div>
+        if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && (EndOnDate == 0 || EndOnDate == undefined)) {
+            $("#EndOnDate").css("border", "1px solid red");
+            IsValid = false;
+        }
+        else {
+            $("#EndOnDate").css("border", "1px solid #C3C1C1");
+        }
+        // if (OrderTypeID == "2" && MyRadio_repeatTask == "on" && repeatsMode == 2 && (repeatdaysname == "" || repeatdaysname == undefined)) {
+        //     $("#choices-multiple-remove-button").css("border", "1px solid red");
+        //     IsValid = false;
+        // }
+        return IsValid;
+    }
+    function ResetRepeat() {
+        debugger
+        $("#fullDayCheck").prop('checked', false);
+        $("#repeatsMode").val(0);
+        $("#EndOnDate").val('');
+    }
+    function Reset() {
+        document.querySelector("#orderType").style.pointerEvents = "auto";
+        document.querySelector("#PickUpType").style.pointerEvents = "auto";
+        document.querySelector("#priority").style.pointerEvents = "auto";
+        document.querySelector("#orderCreateDate").style.pointerEvents = "auto";
+        document.querySelector("#repeatsMode").style.pointerEvents = "auto";
+        document.querySelector("#EndOnDate").style.pointerEvents = "auto";
+        document.querySelector("#RepeatDaysName").style.pointerEvents = "auto";
+        document.querySelector("#OrderRouteId").style.pointerEvents = "auto";
+        $("#btnAddTaskInRows").attr('value', 'Save and Close');
+        document.querySelector("#OrderRouteId").style.pointerEvents = "auto";
+        document.querySelector("#pickupTime").style.pointerEvents = "auto";
+        $("#OrderNumber").val("");
+        $("#orderType").val(0);
+        $("#priority").val(0);
+        $("#OrderId").val("");
+        $("#PickUpType").val(0);
+        $("#orderCreateDate").val("");
+        $("#CustomerId").val(0);
+        $("#BranchID").val(0);
+        //$("#VaultID").val();
+        $("#CustomerRecipiantId").val(0);
+        $("#CustomerRecipiantLocationId").val(0);
+        $("#OrderRouteId").val(0);
+        $("#repeatsMode").val(0);
+        $("#EndOnDate").val("");
+        $("#RepeatDaysName").val("");
+        $("#fullDayCheck").prop('checked', false);
+        $("#fullDay").hide();
+        $("#repeatTaskSection").hide();
+        $("#repeatsSection").hide();
+        $("#repeatTask").prop("checked", false);
+        $("#btnAddTaskInRows").attr('disabled', false);
+        $('#fullDayCheck').prop('checked', false);
+        $("#IsEditTask").val(0);
+        $("TaskId").val(0);
+        $("#pickupTime").val("")
+    }
+    function EditTask(taskId) {
+        debugger
 
+        $.ajax({
+            type: "GET",
+            url: "/Task/GetEditTask_Details",
+            data: { "taskId": taskId },
+            dataType: "json",
+            success: function (data) {
+                // if (data.orderCreateStatus == true) {
+
+                $("#orderType").val(data.orderTypeID);
+
+                BindLocation(data.customerId);
+                BindCustRecipiantId(data.customerId);
+
+                document.querySelector("#orderType").style.pointerEvents = "none";
+                document.querySelector("#PickUpType").style.pointerEvents = "none";
+                document.querySelector("#priority").style.pointerEvents = "none";
+                document.querySelector("#orderCreateDate").style.pointerEvents = "none";
+                document.querySelector("#repeatsMode").style.pointerEvents = "none";
+                document.querySelector("#OrderRouteId").style.pointerEvents = "none";
+                document.querySelector("#OrderNumber").style.pointerEvents = "none";
+                $("#PickUpType").val(data.pickUpTypeId);
+                $("#priority").val(data.priorityId);
+                $("#orderCreateDate").val(data.orderCreateDate);
+                $("#CustomerId").val(data.customerId);
+                $("#OrderNumber").val(data.orderNumber);
+
+                $("#CustomerRecipiantId").val(data.customerRecipiantId);
+
+                if (data.orderTypeID == 2) {
+                    // if (data.fullDayCheck == true) {
+                    //     $("#fullDayCheck").prop('checked', true);
+                    //     $("#NewVehicleRequired").attr('disabled', true);
+                    // }
+                    $("#fullDay").show();
+                    $("#repeatTaskSection").show();
+                    $("#repeatsSection").show();
+                    $("#repeatTask").prop("checked", true);
+                    $("#repeatsMode").val(data.repeatId);
+                    $("#EndOnDate").val(data.endOnDate);
+                    $("#choices-multiple-remove-button").val(data.repeatDaysName);
+                }
+                else {
+                    // if (data.fullDayCheck == true) {
+                    //     $("#fullDayCheck").prop('checked', false);
+                    //     $("#NewVehicleRequired").attr('disabled', false);
+                    // }
+                    $("#fullDay").hide();
+                    $("#repeatTaskSection").hide();
+                    $("#repeatsSection").hide();
+                    $("#repeatTask").prop("checked", false);
+                }
+                $("#OrderRouteId").val(data.orderRouteId);
+                if (data.orderTypeID == 1) {
+                    //$("#btnAddTaskInRows").attr('disabled', true);
+                    document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                    document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
+                    $('#fullDayCheck').prop('checked', false);
+                }
+                if (data.orderTypeID == 2 && data.fullDayCheck == false) {
+                    //$("#btnAddTaskInRows").attr('disabled', true);
+                    document.querySelector("#EndOnDate").style.pointerEvents = "none";
+                    document.querySelector("#RepeatDaysName").style.pointerEvents = "none";
+                    $('#fullDayCheck').prop('checked', false);
+                }
+                if (data.orderTypeID == 2 && data.fullDayCheck == true) {
+                    //$("#btnAddTaskInRows").attr('disabled', false);
+                    $('#fullDayCheck').prop('checked', true);
+                }
+                $("#BranchID").val(data.branchID);
+                $("#CustomerRecipiantLocationId").val(data.customerRecipiantLocationId);
+                $("#btnAddTaskInRows").attr('value', 'Edit And Close');
+                $("#IsEditTask").val(1);
+                $("#TaskId").val(taskId);
+                $('#myModal').modal('show');
+                $("#choices-multiple-remove-button").val(data.repeatDaysName);
+                //}
+                // else {
+                //     alert("This order expired");
+                //     Reset();
+                // }
+            }
+        })
+    }
+</script>
+
+@*------------------------------- Order Creation Modal --------------------------*@
+
+<form enctype="multipart/form-data" asp-controller="Assignment" asp-action="Index" method="post" style="padding: 0px !important">
+    <input asp-for="RepeatDaysName" type="hidden" />
+    <input asp-for="IsEditTask" type="hidden" />
+    <input asp-for="TaskId" type="hidden" />
+    <input asp-for="UserRegionId" type="hidden" value="@UserRegionId" />
+
+    <div class="modal fade new-task-dashboard-data" id="myModal" aria-labelledby="myNewTaskModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 10px;">
+                    <h5 class="modal-title" id="myModalLabel">New Order</h5>
+                    <button type="button" id="btnpopupclose" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div id="modal-content" class="modal-body">
+                    <div id="orderMessage" style="display: none;">
+                        <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i> Multiple pickup and delivery task  can be linked by the same Order ID</p>
+                    </div>
+                    <div id="standingMessage" style="display: none;">
+                        <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i>  In Standing Order One Order Number can  bind with Multiple Task</p>
+                    </div>
+                    <div id="scheduledMessage" style="display: none;">
+                        <p style="background: #e29d1f; padding: 4px 10px; font-weight: 300; font-size: 13px; border-radius:4px;">  <i class="bi bi-info-circle-fill"></i>  In Scheduled Order One Order Number can Not  bind with Multiple Task</p>
+                    </div>
+                    <div class="row align-items-center g-0">
+                        <!-- OrderType Dropdown -->
+                        <div class="col-md-4 col-sm-12">
 
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-color" id="submitSelection">Assign</button>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-file-text-fill"></i></div>
+                                <select asp-for="OrderTypeID" class="form-select small-input" id="orderType"
+                                        asp-items="@(new SelectList(@Model.OrderTypelist,"OrderTypeID","TypeName"))">
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Priority Dropdown -->
+                        <div class="col-md-4 col-sm-12">
+                            <div class="input-group">
+                                <div class="input-group-text">Priority</div>
+                                <select asp-for="PriorityId" class="form-select small-input" id="priority"
+                                        asp-items="@(new SelectList(@Model.PriorityMasterlist,"PriorityId","PriorityName"))">
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Order ID Input -->
+                        <div class="col-md-4 col-sm-12">
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-credit-card-2-front-fill"></i></div>
+                                <input asp-for="OrderNumber" class="form-control small-input" placeholder="Enter Order Number" />
+                                @* <input type="number" placeholder="Enter Order Id" class="form-control small-input" id="OrderId" name="OrderId" min="1" max="100"> *@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center g-0">
+                        <div class="col-md-6 col-sm-12 mb-2 mt-2">
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-clipboard-fill"></i></div>
+                                <select asp-for="PickUpTypeId" class="form-select small-input" id="PickUpType"
+                                        asp-items="@(new SelectList(Model.Picktypemasterlst,"PickUpTypeId","PickUpTypeName"))">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12">
+                            @*    <div class="input-group">
+                            <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control small-input" placeholder="Choose date">
+                            </div> *@
+
+
+                            <div class="input-group">
+                                <input asp-for="OrderCreateDate" type="text" id="orderCreateDate" class="form-control" placeholder="Select order date">
+                                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 mt-2 mb-2">
+                            <div class="form-check  ms-1 mt-lg-0 mt-2" id="fullDay">
+                                <input asp-for="fullDayCheck" class="form-check-input" type="checkbox">
+                                <label class="form-check-label" for="fullDayCheck">
+                                    Full day occupancy
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mt-3 g-0">
+                        <h6>Sender / Pickup Location</h6>
+
+                        <div class="row g-0 mx-auto">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-text ">
+                                        <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Requester" -->
+                                    </div>
+                                    <select asp-for="CustomerId" class="form-select small-input"
+                                            asp-items="@(new SelectList(Model.customerslist,"CustomerId","CustomerName"))">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12 ">
+                                <div class="input-group ">
+                                    <div class="input-group-text ">
+                                        <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
+                                    </div>
+                                    <select asp-for="BranchID" class="form-select small-input">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12 mt-1">
+                                <label>Pickup Time</label>
+                                <div class="input-group mt-1">
+                                    <input asp-for="PickupTime" type="time" id="pickupTime" class="form-control" placeholder="Select time">
+                                    @* <span class="input-group-text"><i class="bi bi-clock"></i></span> *@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center g-0 mt-3">
+                            <h6>Recipient / Destination Location</h6>
+                            <div class="col-3">
+                                <div class="form-check  ms-1">
+                                    <input asp-for="isVault" type="checkbox" class="form-check-input">
+                                    <label class="form-check-label" for="isVault">IsVault</label>
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-sm-12  " id="vaultLocationContainer">
+                                <div class="input-group">
+                                    <div class="input-group-text">
+                                        <i class="bi bi-geo-alt-fill"></i> <!-- Replace with an appropriate icon for "Location" -->
+                                    </div>
+                                    <select asp-for="VaultID" class="form-select small-input"
+                                            asp-items="@(new SelectList(Model.vaultLovationMasters,"VaultID","VaultName"))">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check  ms-1" id="isVaultFinalContainer">
+                                    <input asp-for="isVaultFinal" type="checkbox" class="form-check-input" name="isVaultFinal">
+                                    <label class="form-check-label" for="isVaultFinal">isVault - final destination</label>
+                                </div>
+                            </div>
+                            <div class="row g-0 mt-3 mb-3 ">
+                                <!-- Recipient's Name Dropdown -->
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <i class="bi bi-person-fill"></i> <!-- Replace with an appropriate icon for "Recipient" -->
+                                        </div>
+                                        <select asp-for="CustomerRecipiantId" class="form-select small-input"
+                                                asp-items="@(new SelectList(Model.customerslist,"CustomerId","CustomerName"))">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Delivery Location Dropdown -->
+
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            <i class="bi bi-geo-fill"></i> <!-- Replace with an appropriate icon for "Delivery Location" -->
+                                        </div>
+                                        <select asp-for="CustomerRecipiantLocationId" class="form-select small-input">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Assign To Section -->
+                            <div class="row align-items-center  g-0  mb-2">
+                                <h6 class="mb-2">Assign To</h6>
+
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group">
+                                        <div class="input-group-text">
+                                            Route
+                                        </div>
+                                        <select asp-for="OrderRouteId" class="form-select small-input"
+                                                asp-items="@(new SelectList(Model.Orderrouteslst,"OrderRouteId","RouteName"))">
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div id="repeatTaskSection" class="mt-0 mb-2" style="display:none;">
+
+                                <!-- Repeat This Task Toggle -->
+                                <div class="form-check form-switch mb-2 fw-bold">
+                                    <input class="form-check-input" type="checkbox" id="repeatTask" name="repeatTask">
+                                    <label class="form-check-label" for="repeatTask">Repeat this task</label>
+                                </div>
+
+                                <!-- Repeats Section (Initially Hidden) -->
+                                <div class="row align-items-center g-0 repeats-section" id="repeatsSection">
+                                    <!-- Repeats Dropdown -->
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="input-group w-100">
+                                            <div class="input-group-text">Repeats</div>
+                                            <select asp-for="RepeatId" class="form-select small-input" id="repeatsMode"
+                                                    asp-items="@(new SelectList(Model.repeatsaskmasterslist, "RepeatId", "RepeatName"))">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Ends On Calendar -->
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="input-group w-100">
+                                            <div class="input-group-text">Ends on</div>
+                                            <input asp-for="EndOnDate" type="text" class="form-control small-input" placeholder="Select end date">
+                                            <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+
+                                        </div>
+                                    </div>
+                                    <!-- Repeats On Multi-select Dropdown -->
+                                    <div class="col-md-12 col-sm-12 mb-3">
+                                        <div class="input-group w-100">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text repeats-on-text">Repeats On</span>
+                                            </div>
+                                            <select id="choices-multiple-remove-button" class="form-select small-input" name="options" multiple>
+                                                <option value="Sunday">Sunday</option>
+                                                <option value="Monday">Monday</option>
+                                                <option value="Tuesday">Tuesday</option>
+                                                <option value="Wednesday">Wednesday</option>
+                                                <option value="Thursday">Thursday</option>
+                                                <option value="Friday">Friday</option>
+                                                <option value="Saturday">Saturday</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="modal-footer d-flex justify-content-between " style="font-size:12px !important; padding:0px !important">
+                        <button type="button" id="btnClose" style="font-size:12px !important;" class="btn btn-secondary mt-3" data-bs-dismiss="modal"><i class="bi bi-x-circle-fill"></i> Close</button>
+                        <div>
+                            <input type="button" style="font-size:12px !important; color: #032b56; border-color: #032b56; bi bi-file-earmark-pdf !important;" class="btn btn-outline mt-3" value="Save & Add Another" id="btnsave">
+                            <input type="submit" class="btn btn-color" id="btnAddmoreTask" style="display:none" />
+                            <input type="button" style="font-size:12px !important;" class="btn btn-color mt-3" value="Save and Close" id="btnAddTaskInRows" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
 
-</div>
+    @* ************************************************************************************************************ *@
 
+
+    <div class="tab-container-task-header mt-3 ms-3" style="width: 100%;">
+        <div class="group-data-action-container d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+
+                @* <button class="btn btn-color me-4 " data-bs-toggle="modal" data-bs-target="#vehicleAssignModal"><i class="bi bi-person-check-fill"></i></button> *@
+                <input type="button" class="btn btn-color me-4" value="Assign " data-bs-toggle="modal" data-bs-target="#vehicleAssignModal" />
+                <button class="btn btn-color" onclick="location.reload();" asp-controller="Assignment" asp-action="Index">Shuffle</button>
+
+
+                <a class="me-3" href="#"><i class="bi bi-pencil-square"></i></a>
+                <a class="me-3" href="#"><i class="bi bi-trash-fill"></i></a>
+                <a class="me-3" href="#"><i class="bi bi-arrow-down-circle-fill"></i></a>
+                <a class="me-3" href="#"><i class="bi bi-gear-fill"></i></a>
+
+                <input type="button" class="btn btn-color" value="Order Grouping" data-bs-toggle="modal" data-bs-target="#Groupmodal" />
+
+
+                <div class="dropdown-new-task  me-2 ms-3" style="width:100px  !important">
+                    <button type="button" class="btn btn-outline-secondary btn-color" data-bs-toggle="modal" id="btnAddTsk">
+                        <i class="bi bi-plus"></i> New Order
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex" style="margin-right: 21px;">
+                <div class="input-group w-100 me-2">
+                    <input type="text" id="filter-date" class="form-control small-input" placeholder="Select end date">
+                    <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                </div>
+
+                <input type="text" placeholder="Search..." style="padding: 5px" />
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-container mt-3 ms-3" style="width: 100%;">
+        <div class="table-wrapper" style=" max-height:90vh; margin-right: 21px;">
+            <table class="table datatable mt-3" id="task-table">
+                <thead class="sticky-header table-hover">
+                    <tr>
+                        <th></th>
+                        <th>Order Number</th>
+                        <th>Pickup Customer</th>
+                        <th>Pickup Location</th>
+                        <th>Delivery Customer</th>
+                        <th>Delivery Location</th>
+                        <th>Type</th>
+                        <th>Route</th>
+                        <th class="d-none">OrderID</th>
+                        <th>Crew Commander</th>
+                        <th>Lead Vehicle</th>
+                        <th>Chase Vehicle</th>
+                        <th>Date</th>
+                        <th>Pickup Time</th>
+                        <th>Status</th>
+
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    @* **************************************Grouped data modal************************* *@
+
+    <!-- Modal -->
+    @*   <div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="groupModalLabel" style="font-size:14px !important">Selected Orders</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="ms-4 mt-4" style="font-size:14px !important">
+    <span>Route Name : </span>
+    <input type="text" id="routeNameInput" placeholder="Enter Route..." style="padding:0px 3px" />
+    </div>
+    <div class="modal-body" id="modal-content" style="overflow-x:auto">
+    <table class="table table-bordered" style="font-size:12px !important">
+    <thead>
+    <tr>
+    <th>Pickup Customer</th>
+    <th>Delivery Customer</th>
+    <th>Delivery Location</th>
+    <th>Date</th>
+    <th>Type</th>
+    <th class="d-none">OrderID</th>
+    </tr>
+    </thead>
+    <tbody id="selectedOrdersTableBody">
+    <!-- Selected orders will be added here dynamically -->
+    </tbody>
+    </table>
+    </div>
+    <div class="modal-footer d-flex justify-content-between">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
+    <form method="post" asp-action="Index" asp-controller="Assignment" target="_blank">
+    target="_blank"
+    <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div> *@
+    <!-- Modal -->
+    <div class="modal fade" id="Groupmodal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="groupModalLabel" style="font-size:14px !important">Selected Orders</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="ms-4 mt-4" style="font-size:14px !important">
+                    <div class="d-flex align-items-center ">
+                        <label for="routeNameInput" class="form-label">Route Name : </label>
+
+                        <!-- Text input combined with dropdown (datalist) -->
+                        <input list="routeOptions" id="routeNameInput" name="RouteName" class="form-control ms-2" placeholder="Enter or select route..." style="width:24%" />
+                    </div>
+
+
+                    <!-- Datalist for displaying existing routes -->
+                    <datalist id="routeOptions">
+                        @if (Model.orderRouteDTOs != null && Model.orderRouteDTOs.Any())
+                        {
+                            @foreach (var route in Model.orderRouteDTOs)
+                            {
+                                <option value="@route.RouteName"></option>
+                            }
+                        }
+                        else
+                        {
+                            <option disabled>No routes available</option>
+                        }
+                    </datalist>
+                </div>
+
+
+
+
+                <div class="modal-body" id="modal-content" style="overflow-x:auto">
+                    <table class="table table-bordered" style="font-size:12px !important">
+                        <thead>
+                            <tr>
+                                <th>Pickup Customer</th>
+                                <th>Delivery Customer</th>
+                                <th>Delivery Location</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th class="d-none">OrderID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="selectedOrdersTableBody">
+                            <!-- Selected orders will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size:14px !important">Close</button>
+                    <form method="post" asp-action="Index" asp-controller="Assignment" target="_blank">
+                        @* target="_blank" *@
+                        <button type="submit" id="saveGroupButton" class="btn btn-color" style="font-size:14px !important">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @* ******************************************************************************************** *@
+
+
+    @* ************************************Vehicle Assignment Model ********************************* *@
+
+    <div class="modal fade custom-modal-size" id="vehicleAssignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <!-- Custom size class applied -->
+            <div class="modal-content" style="width:430px">
+                @*  <div class="modal-header">
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> *@
+                <div class="modal-body">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs " id="assignTabs" role="tablist">
+                        <li class="nav-item " role="presentation">
+                            <button class="nav-link active" id="leadVehicle-tab" data-bs-toggle="tab" data-bs-target="#leadVehicleDriver-tab" type="button" role="tab" aria-controls="lead" aria-selected="false">
+                                <i class="bi bi-car-front-fill "></i>
+                                <span class="ms-1 ">
+                                    Lead Vehicle
+                                </span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="chaseVehicle-tab" data-bs-toggle="tab" data-bs-target="#chaseVehicleDriver-tab" type="button" role="tab" aria-controls="Chase" aria-selected="false">
+                                <i class="bi bi-truck "></i> <span class="ms-1 ">Chase vehicle </span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="crew-tab" data-bs-toggle="tab" data-bs-target="#crewCommandor-tab" type="button" role="tab" aria-controls="crewCommandor" aria-selected="false">  <i class="bi bi-person-badge-fill "></i> <span class="ms-1 ">Crew Commander </span> </button>
+                        </li>
+
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content mt-3" style="height: 200px;">
+                        <!-- Lead Vehicle Tab -->
+                        <div class="tab-pane fade show active" id="leadVehicleDriver-tab" role="tabpanel" aria-labelledby="leadVehicle-tab">
+                            <h5>Select a Lead Vehicle driver to assign tasks:</h5>
+                            <div class="p-3">
+                                @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
+                                {
+                                    @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Lead"))
+                                    {
+                                        <div class="form-check d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input class="form-check-input lead-vehicle-checkbox" type="checkbox" name="leadVehicleDriver" id="leadVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
+                                                <i class="bi bi-car-front-fill" style="font-size: 25px;"></i>
+                                                <label class="form-check-label" for="leadVehicleDriver_@vehicle.VehicleID">
+                                                    @vehicle.RegistrationNo
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No vehicles available</p>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Chase Vehicle Tab -->
+                        <div class="tab-pane fade" id="chaseVehicleDriver-tab" role="tabpanel" aria-labelledby="chaseVehicle-tab">
+                            <h5>Select a Chase Vehicle driver to assign tasks:</h5>
+                            <div class="p-3">
+                                @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
+                                {
+                                    @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Chase"))
+                                    {
+                                        <div class="form-check d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input class="form-check-input chase-vehicle-checkbox" type="checkbox" name="chaseVehicleDriver" id="chaseVehicleDriver_@vehicle.VehicleID" value="@vehicle.VehicleID">
+                                                <i class="bi bi-truck" style="font-size: 25px;"></i>
+                                                <label class="form-check-label" for="chaseVehicleDriver_@vehicle.VehicleID">
+                                                    @vehicle.RegistrationNo
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No vehicles available</p>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Crew Commander Tab -->
+                        <div class="tab-pane fade assignment-container" id="crewCommandor-tab" role="tabpanel" aria-labelledby="crew-tab">
+                            <h5>Select a  Crew Commander to assign tasks:</h5>
+                            <div class="p-3">
+                                @if (Model.crews != null && Model.crews.Any())
+                                {
+                                    @foreach (var crewCommander in Model.crews)
+                                    {
+                                        <div class="form-check d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input class="form-check-input crew-commander-checkbox" type="checkbox" name="crewCommander" id="crewCommander_@crewCommander.UserID" value="@crewCommander.UserID">
+                                                <img src="~/assets/Images/userlogo.jpg" class="rounded-circle" style="width: 30px;" alt="Avatar" />
+                                                <label class="form-check-label" for="crewCommander_@crewCommander.UserID">
+                                                    @crewCommander.UserName
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No crew commanders available</p>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-color" id="submitVehicleAssignment">Assign</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</form>
+
+
+@* ******************************************************************************************* *@
+
+@* ************************************JavaSript for To Add the Selected Item in Modal popup*********** *@
+<script>
+    let firstSelectedPickupType = null; // Variable to store the first selected PickupType (ATM or CIT)
+
+    document.querySelectorAll('.row-checkbox').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            const row = checkbox.closest('tr');
+            const currentPickupType = row.cells[5].textContent.trim(); // Get PickupType of the current row
+
+            // If this is the first selection, set the firstSelectedPickupType and allow selection
+            if (!firstSelectedPickupType && checkbox.checked) {
+                firstSelectedPickupType = currentPickupType;
+                return; // Allow the first selection, no further checks needed
+            }
+
+            // If the user tries to select a different PickupType, show an alert and deselect the checkbox
+            if (firstSelectedPickupType && firstSelectedPickupType !== currentPickupType) {
+                alert(`You can only select tasks with the same Pickup Type (${firstSelectedPickupType}).`);
+                checkbox.checked = false; // Deselect the checkbox to prevent invalid selection
+            }
+
+            // If all checkboxes are unchecked, reset the firstSelectedPickupType
+            const anyChecked = Array.from(document.querySelectorAll('.row-checkbox:checked')).length > 0;
+            if (!anyChecked) {
+                firstSelectedPickupType = null; // Reset after all selections are cleared
+            }
+        });
+    });
+
+    // Logic for grouping and showing the selected tasks in the modal
+    // Logic for grouping and showing the selected tasks in the modal
+    document.querySelector('.group-button').addEventListener('click', function () {
+        $("[id*=groupPopup]").click(function () {
+            $('#Groupmodal').modal('show');
+        });
+
+        const selectedOrdersTableBody = document.getElementById('selectedOrdersTableBody');
+        selectedOrdersTableBody.innerHTML = ''; // Clear the table body
+
+        // Gather selected data from the grouped table
+        document.querySelectorAll('.row-checkbox:checked').forEach(function (checkbox) {
+            const row = checkbox.closest('tr');
+
+            // Check if this is the first row of a grouped OrderNumber (i.e., row with rowspan for OrderNumber)
+            const isGroupedRow = row.querySelector('[rowspan]') !== null;
+
+            // Adjust cell indices depending on whether the row is grouped or not
+            const pickupCustomerCellIndex = isGroupedRow ? 2 : 1;
+            const deliveryCustomerCellIndex = isGroupedRow ? 3 : 2;
+            const deliveryLocationCellIndex = isGroupedRow ? 5 : 4;
+            const timeCellIndex = isGroupedRow ? 12 : 11;
+            const typeCellIndex = isGroupedRow ? 6 : 5;
+            const orderIDCellIndex = isGroupedRow ? 8 : 7;
+
+            // Collect the task details
+            const PickupCustomer = row.cells[pickupCustomerCellIndex].textContent.trim();
+            const DeliveryCustomer = row.cells[deliveryCustomerCellIndex].textContent.trim();
+            const DeliveryLocation = row.cells[deliveryLocationCellIndex].textContent.trim();
+            const time = row.cells[timeCellIndex].textContent.trim();
+            const type = row.cells[typeCellIndex].textContent.trim();  // PickupType (ATM or CIT)
+            const orderID = row.cells[orderIDCellIndex].textContent.trim();
+
+            // Create a table row for the selected task
+            const tableRow = document.createElement('tr');
+            tableRow.innerHTML = `
+                                        <td>${PickupCustomer}</td>
+                                        <td>${DeliveryCustomer}</td>
+                                        <td>${DeliveryLocation}</td>
+                                        <td>${time}</td>
+                                        <td>${type}</td>
+                                        <td class="d-none">${orderID}</td>
+                                    `;
+            selectedOrdersTableBody.appendChild(tableRow);
+        });
+    });
+
+</script>
+
+
+
+@* ************************************************************************************************ *@
+
+
+@* ****************************JavaScript to get the OrderId and    RouteName ************************ *@
+<script src="~/js/config.js"></script>
+<script>
+    document.getElementById('saveGroupButton').addEventListener('click', function () {
+        const routeName = document.getElementById('routeNameInput').value.trim(); // Getting the route name
+
+        if (!routeName) {
+            alert("Please enter a route name.");
+            return;
+        }
+
+        const orderIds = [];
+        document.querySelectorAll('#selectedOrdersTableBody tr').forEach(function (row) {
+            const orderId = row.cells[5].textContent.trim(); // Changed to the correct column index
+            const parsedId = parseInt(orderId);
+
+            if (!isNaN(parsedId)) {
+                orderIds.push(parsedId); // Only push valid integers
+            }
+        });
+
+
+        if (orderIds.length === 0) {
+            alert("No orders selected.");
+            return;
+        }
+
+        // Prepare the data in the required format
+        const requestData = {
+            OrderIds: orderIds, // Array of order IDs
+            RouteName: routeName // Route name
+        };
+
+        console.log("requestData", requestData); // For debugging
+
+        // Send the data to the API
+        fetch(`${API_BASE_URL}/api/OrderRoute/updateRoute`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    // Handle non-200 responses
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("API Response:", data); // Log the entire response for debugging
+
+                if (data.message) {
+                    alert(data.message);
+                    $('#Groupmodal').modal('hide');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while saving the route.");
+            });
+
+    });
+</script>
+
+
+@* ******************************Filter data based on Date*********************************** *@
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let selectedPickupType = null;
+
+
+        // Define the status colors
+        const statusColors = {
+            "Unassigned": "#6c757d", // Grey
+            "Assigned": "#007bff",   // Blue
+            "Started": "#ffc107",    // Yellow
+            "ArrivedAtPickup": "#0dcaf0", // Teal
+            "Loaded": "#795548",     // Brown
+            "Transit": "#ff5722",    // Orange
+            "ArrivedAtDelivery": "#6f42c1", // Purple
+            "Unloaded": "#00796b",   // Greenish Teal
+            "Completed": "#198754",  // Green
+            "Failed": "#dc3545"      // Red
+        };
+
+        // Function to update the badge's color and text
+        function updateBadge(badgeElement, newStatus) {
+            if (statusColors[newStatus]) {
+                badgeElement.style.backgroundColor = statusColors[newStatus]; // Update color
+                badgeElement.textContent = newStatus; // Update status text
+            } else {
+                badgeElement.style.backgroundColor = statusColors["Unassigned"]; // Default color
+                badgeElement.textContent = "Unassigned"; // Default status
+            }
+        }
+
+        // Initialize flatpickr for the input with id 'filter-date'
+        flatpickr("#filter-date", {
+            dateFormat: "d-m-Y",  // Customize the date format to 'DD-MM-YYYY'
+            allowInput: true,     // Allow manual input into the field
+            defaultDate: new Date(), // Set the default date to today
+        });
+
+        // OR: Manually set the value to today's date in the specified format
+        const today = flatpickr.formatDate(new Date(), "d-m-Y");
+        document.getElementById('filter-date').value = today;
+
+        // Convert 'today' to 'YYYY-MM-DD' format for the API
+        const todayISO = new Date().toISOString().split('T')[0];
+        const regionId = $("#UserRegionId").val();
+        fetchTasksByDate(todayISO, regionId);
+
+        document.getElementById('filter-date').addEventListener('change', function () {
+            const selectedDate = this.value;
+
+            // Convert the selected date (DD-MM-YYYY) to (YYYY-MM-DD) for API
+            const [day, month, year] = selectedDate.split('-');
+            const formattedDateForAPI = `${year}-${month}-${day}`; // Format to 'YYYY-MM-DD'
+
+            fetchTasksByDate(formattedDateForAPI, regionId);
+        });
+
+        function fetchTasksByDate(date, regionId) {
+            debugger
+            fetch(`${API_BASE_URL}/api/Order/getOrdersList?date=${date}&regionId=${regionId}`)
+                .then(response => response.json())
+                .then(data => {
+
+                    const tableBody = document.querySelector('#task-table tbody');
+                    tableBody.innerHTML = ''; // Clear the table content
+
+                    if (data.result && data.result.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="12">No tasks available for the selected date.</td></tr>';
+                        return;
+                    }
+
+                    // Group tasks by orderType
+                    const tasksByOrderType = data.result.reduce((grouped, task) => {
+                        if (!grouped[task.orderType]) grouped[task.orderType] = [];
+                        grouped[task.orderType].push(task);
+                        return grouped;
+                    }, {});
+
+                    for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
+                        const orderTypeHeader = `
+                                                    <tr class="order-header">
+                                                        <td colspan="15" class="subheader-cell" style="background:#d9d9db !important;">
+                                                            <div>${orderType}</div>
+                                                        </td>
+                                                    </tr>`;
+                        tableBody.innerHTML += orderTypeHeader;
+
+                        // Group tasks by orderNumber within the current orderType
+                        const tasksByOrderNumber = tasks.reduce((grouped, task) => {
+                            if (!grouped[task.orderNumber]) grouped[task.orderNumber] = [];
+                            grouped[task.orderNumber].push(task);
+                            return grouped;
+                        }, {});
+
+                        for (const [orderNumber, orderTasks] of Object.entries(tasksByOrderNumber)) {
+                            const rowspan = orderTasks.length;
+                            let firstRow = true;
+
+                            orderTasks.forEach((task, index) => {
+                                const orderNumberCell = firstRow
+                                    ? `<td rowspan="${rowspan}">${orderNumber}</td>`
+                                    : ''; // Empty cell for subsequent rows in the group
+
+                                const row = `
+                                                            <tr class="table-border">
+                                                                <td><input type="checkbox" class="row-checkbox" data-pickup-type="${task.pickupType}"></td>
+                                                                ${orderNumberCell}
+                                                                <td>${task.pickupCustomerName || 'N/A'}</td>
+                                                                <td>${task.pickupLocation || 'N/A'}</td>
+                                                                <td>${task.deliveryCustomerName || 'N/A'}</td>
+                                                                <td>${task.deliveryLocation || 'N/A'}</td>
+                                                                <td>${task.pickupType || 'N/A'}</td>
+                                                                 <td>${task.routeName || 'N/A'}</td>
+                                                                <td class="d-none">${task.orderID || 'N/A'}</td>
+                                                                <td>${task.crewCommander || ''}</td>
+                                                                <td>${task.leadVehicle || ''}</td>
+                                                                <td>${task.chaseVehicle || ''}</td>
+                                                                <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                                <td>${task.pickupTime}</td>
+                                                                       <td>
+                                                <span class="badge" style="background-color: ${statusColors[task.taskStatus] || statusColors['Unassigned']};">
+                                                    ${task.taskStatus || 'Unassigned'}
+                                                </span>
+                                            </td>
+
+                                                                 <td><a><i class="bi bi-pencil-square" onclick="EditTask(${task.taskID})"></i></a></td>
+                                                            </tr>`;
+                                tableBody.innerHTML += row;
+                                firstRow = false; // Ensure only the first row has the order number cell
+                            });
+                        }
+                    }
+
+                    // Add event listeners for checkbox selection
+                    const checkboxes = document.querySelectorAll('.row-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', function () {
+                            const currentPickupType = this.dataset.pickupType;
+
+                            if (selectedPickupType === null && this.checked) {
+                                selectedPickupType = currentPickupType;
+                            }
+
+                            if (this.checked && currentPickupType !== selectedPickupType) {
+                                alert(`You can only select tasks with the same Pickup Type: ${selectedPickupType}`);
+                                this.checked = false;
+                            } else if (!this.checked) {
+                                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                                if (!anyChecked) selectedPickupType = null;
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+    });
+
+</script>
+
+
+
+@* *****************************************Vehicle Assignment in Task List ******************* *@
+
+@* ********************************************************************************************** *@
+
+@* **************************Full day occupancy check then desable the New wehicle required *** *@
+
+<script>
+    document.getElementById('fullDayCheck').addEventListener('change', function () {
+        // var newVehicleCheckbox = document.getElementById('NewVehicleRequired');
+
+        // if (this.checked) {
+        //     newVehicleCheckbox.disabled = true; // Disable the "New Vehicle Required" checkbox
+        // } else {
+        //     newVehicleCheckbox.disabled = false; // Enable the "New Vehicle Required" checkbox
+        // }
+
+        $("#CustomerId").css("border", "1px solid #C3C1C1");
+        $("#BranchID").css("border", "1px solid #C3C1C1");
+        $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
+        $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+    });
+
+    document.getElementById('NewVehicleRequired').addEventListener('change', function () {
+        var vehicleInput = document.querySelector('input[placeholder="Enter No of Vehicle"]');
+        var currentValue = parseInt(vehicleInput.value) || 1; // Default to 1 if empty or invalid value
+
+        if (this.checked) {
+            vehicleInput.value = currentValue + 1; // Increment value by 1 when checked
+        } else {
+            if (currentValue > 1) {
+                vehicleInput.value = currentValue - 1; // Decrement value by 1, but don't go below 1
+            }
+        }
+    });
+
+
+</script>
+
+@* ******************************************************************************************* *@
+@* **************If OrderType will be Standing then show the repeat this task show ***** *******@
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var orderTypeDropdown = document.getElementById('orderType');
+        var repeatTaskSection = document.getElementById('repeatTaskSection');
+        var fullDayOccupancy = document.getElementById('fullDay');
+
+        var repeatTaskCheckbox = document.getElementById('repeatTask');
+        var repeatsSection = document.getElementById('repeatsSection');
+
+
+        // Function to toggle visibility based on the selected OrderType
+        function toggleRepeatTaskSection() {
+            var selectedOrderType = orderTypeDropdown.options[orderTypeDropdown.selectedIndex].text;
+            if (selectedOrderType === 'Standing') {
+                repeatTaskSection.style.display = 'block';
+                fullDayOccupancy.style.display = 'block';
+                repeatTaskCheckbox.checked = true;
+                repeatsSection.style.display = 'flex';
+                $("#CustomerId").css("border", "1px solid #C3C1C1");
+                $("#BranchID").css("border", "1px solid #C3C1C1");
+                $("#CustomerRecipiantId").css("border", "1px solid #C3C1C1");
+                $("#CustomerRecipiantLocationId").css("border", "1px solid #C3C1C1");
+            } else {
+                repeatTaskSection.style.display = 'none';
+                fullDayOccupancy.style.display = 'none';
+            }
+            //Reset();
+        }
+
+        // Trigger the function when the page loads (in case a value is preselected)
+        toggleRepeatTaskSection();
+
+        // Attach the event listener to the dropdown
+        orderTypeDropdown.addEventListener('change', toggleRepeatTaskSection);
+    });
+</script>
+
+@* ******************************************************************************************* *@
+
+@* *********************************** Date Format js ******************************************* *@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#orderCreateDate", {
+            dateFormat: "d-m-Y",  // Customize the date format
+            allowInput: true,      // Optional: Allow manual input
+            minDate: "today"
+        });
+
+        flatpickr("#EndOnDate", {
+            dateFormat: "d-m-Y",  // Customize the date format
+            allowInput: true,      // Optional: Allow manual input
+            minDate: "today"
+        });
+    });
+</script>
+
+@* ********************************************************************************************* *@
+
+
+@* *********************************** Warning Message Js in Order Module ***************************** *@
+<script>
+
+    document.getElementById('OrderNumber').addEventListener('input', function () {
+        var OrderNumber = document.getElementById('OrderNumber').value;
+        var orderMessage = document.getElementById('orderMessage');
+
+        // Check if the input is not empty
+        if (OrderNumber.trim() !== '') {
+            orderMessage.style.display = 'block';  // Show the message when there's input
+        } else {
+            orderMessage.style.display = 'none';  // Hide the message when input is empty
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        var standingMessage = document.getElementById('standingMessage');
+        var scheduledMessage = document.getElementById('scheduledMessage');
+        var orderTypeDropdown = document.getElementById('orderType'); // Get the dropdown element itself, not its value
+
+        function messageSection() {
+            var selectedOrderType = orderTypeDropdown.options[orderTypeDropdown.selectedIndex]?.text || '';
+
+            if (selectedOrderType === 'Standing') {
+                standingMessage.style.display = 'block';
+                scheduledMessage.style.display = 'none'; // Ensure the other message is hidden
+            } else if (selectedOrderType === 'Scheduled') {
+                scheduledMessage.style.display = 'block';
+                standingMessage.style.display = 'none'; // Ensure the standing message is hidden
+            } else {
+                standingMessage.style.display = 'none';
+                scheduledMessage.style.display = 'none';
+            }
+        }
+
+        messageSection(); // Initial check when the page loads
+
+        // Attach the event listener to the dropdown
+        orderTypeDropdown.addEventListener('change', messageSection);
+    });
+
+
+</script>
+
+@* ********************************************************************************************************** *@
 
 <script src="~/js/config.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Add the click event listener to the button with the ID 'submitSelection'
-        document.getElementById('submitSelection').addEventListener('click', function () {
+        // Add the click event listener to the button with the ID 'submitVehicleAssignment'
+        document.getElementById('submitVehicleAssignment').addEventListener('click', function () {
             // Collect selected Lead Vehicle IDs as an array
             const leadVehicleIDs = Array.from(document.querySelectorAll('.lead-vehicle-checkbox:checked'))
                 .map(checkbox => parseInt(checkbox.value));
@@ -213,7 +1519,6 @@
             const crewCommanderIDs = Array.from(document.querySelectorAll('.crew-commander-checkbox:checked'))
                 .map(checkbox => parseInt(checkbox.value));
 
-
             // Check if the number of IDs are the same
             if (leadVehicleIDs.length !== chaseVehicleIDs.length ||
                 leadVehicleIDs.length !== crewCommanderIDs.length) {
@@ -221,15 +1526,18 @@
                 return; // Exit the function if the counts do not match
             }
 
-            // Prepare the data in the required format
+            // Prepare the data in the required format (matching the API response format)
             const requestData = {
-                leadID: leadVehicleIDs,
-                chaseID: chaseVehicleIDs,
-                crewCommanderID: crewCommanderIDs
+                crewId: crewCommanderIDs,
+                leadVehicleId: leadVehicleIDs,
+                chaseVehicleId: chaseVehicleIDs,
+                assignDate: new Date().toISOString() // Get the current date and time in ISO format
             };
-            console.log("requestData", requestData)
+
+            console.log("requestData", requestData);
+
             // Send data to the API using fetch
-            fetch(`${API_BASE_URL}/api/VehicleAssignment/AddAssignOrder`, {
+            fetch(`${API_BASE_URL}/api/Assignment/assign`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -246,19 +1554,45 @@
                 .then(data => {
                     alert('Selection submitted successfully!');
                     console.log('Success:', data);
+
+                    // Close the modal after successful submission
+                    const vehicleAssignModal = new bootstrap.Modal(document.getElementById('vehicleAssignModal'));
+                    vehicleAssignModal.hide();
                 })
                 .catch(error => {
-                    // alert(`An error occurred: ${error.message}`);
                     console.error('Error:', error);
                 });
-
-
         });
     });
-
-
 </script>
 
+<script>
+    // Initialize Tempus Dominus
+    const timePicker = new tempusDominus.TempusDominus(document.getElementById('timePickerWrapper'), {
+        display: {
+            components: {
+                calendar: false,
+                clock: true,
+                hours: true,
+                minutes: true,
+                seconds: false
+            }
+        },
+        restrictions: {
+            inputFormat: "hh:mm A" // Enforces AM/PM formatting
+        }
+    });
+
+    // Open time picker on click anywhere in the input group
+    document.getElementById('timePickerWrapper').addEventListener('click', function () {
+        timePicker.show(); // Open the time picker
+    });
+
+    // Prevent immediate blur if the user clicks inside the input
+    document.getElementById('pickupTime').addEventListener('focus', function () {
+        timePicker.show(); // Ensure the picker shows when the input is focused
+    });
+</script>
 
 
 
