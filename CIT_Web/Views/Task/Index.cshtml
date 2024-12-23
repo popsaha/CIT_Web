@@ -77,7 +77,7 @@
                         document.querySelector("#orderCreateDate").style.pointerEvents = "none";
                         document.querySelector("#repeatsMode").style.pointerEvents = "none";
                         document.querySelector("#OrderRouteId").style.pointerEvents = "none";
-                        document.querySelector("#pickupTime").style.pointerEvents = "none";
+                        // document.querySelector("#pickupTime").style.pointerEvents = "none";
                         $("#PickUpType").val(data.pickUpTypeId);
                         $("#priority").val(data.priorityId);
                         $("#orderCreateDate").val(data.orderCreateDate);
@@ -479,7 +479,7 @@
 
  @*------------------------------- Order Creation Modal --------------------------*@
 
-<form enctype="multipart/form-data" asp-controller="Task" asp-action="Index" method="post">
+<form enctype="multipart/form-data" asp-controller="Task" asp-action="Index" method="post" style="padding: 0px !important">
     <input asp-for="RepeatDaysName" type="hidden" />
     <input asp-for="IsEditTask" type="hidden" />
     <input asp-for="TaskId" type="hidden" />
@@ -789,6 +789,7 @@
                         <th>Lead Vehicle</th>
                         <th>Chase Vehicle</th>
                         <th>Date</th>
+                        <th>Pickup Time</th>
                         <th>Status</th>
 
                         <th>Action</th>
@@ -1274,7 +1275,7 @@
                     for (const [orderType, tasks] of Object.entries(tasksByOrderType)) {
                         const orderTypeHeader = `
                                                 <tr class="order-header">
-                                                    <td colspan="14" class="subheader-cell" style="background:#d9d9db !important;">
+                                                    <td colspan="15" class="subheader-cell" style="background:#d9d9db !important;">
                                                         <div>${orderType}</div>
                                                     </td>
                                                 </tr>`;
@@ -1311,6 +1312,7 @@
                                                             <td>${task.leadVehicle || ''}</td>
                                                             <td>${task.chaseVehicle || ''}</td>
                                                             <td>${new Date(task.orderDate).toLocaleDateString() || 'N/A'}</td>
+                                                                <td>${task.pickupTime} </td>
                                                                    <td>
                                             <span class="badge" style="background-color: ${statusColors[task.taskStatus] || statusColors['Unassigned']};">
                                                 ${task.taskStatus || 'Unassigned'}
