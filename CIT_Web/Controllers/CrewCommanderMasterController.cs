@@ -182,7 +182,8 @@ namespace CIT_Web.Controllers
                 UserName = dto.CrewUser.UserName,
                 Password = dto.CrewUser.Password,
                 RoleName = dto.CrewUser.RoleName,
-                RegionName = dto.CrewUser.RegionName
+                RegionName = dto.CrewUser.RegionName,
+                IsActive = dto.CrewUser.IsActive
             };
 
             var response = await _crewCommanderMasterService.UpdateAsync<APIResponse>(dtoData);
