@@ -1,4 +1,5 @@
-﻿using CIT_Web.Models.Dto.CrewCommander;
+﻿using CIT_Web.Models.Dto.ChaseVehicle;
+using CIT_Web.Models.Dto.CrewCommander;
 using CIT_Web.Models.Dto.Order;
 using CIT_Web.Models.Dto.OrderRoute;
 using CIT_Web.Models.Dto.Vehicle;
@@ -40,6 +41,7 @@ namespace CIT_Web.Models.ViewModel
         public List<TaskDTOlst> taskDTOlsts { get; set; }
         public List<OrderRoutes> Orderrouteslst { get; set; }
         public List<VehicleDTO> vehicledtolst { get; set; }
+        public List<ChaseVehicleDTO> chaseVehiclelst { get; set; }
         public List<CrewCommanderDTO> crews { get; set; }
         public int IsEditTask { get; set; }
         public int UserRegionId { get; set; }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CIT_Web.CITFlter;
 using CIT_Web.Models;
+using CIT_Web.Models.Dto.ChaseVehicle;
 using CIT_Web.Models.Dto.CrewCommander;
 using CIT_Web.Models.Dto.Login;
 using CIT_Web.Models.Dto.Order;
@@ -27,6 +28,7 @@ namespace CIT_Web.Controllers
         private readonly ITaskListService _taskListService;
         private readonly IMapper _mapper;
         private readonly IVehicleService _vehicleService;
+        private readonly IChaseVehicleService _chaseVehicleService;
         private readonly ICrewCommanderService _crewCommanderService;
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
@@ -36,7 +38,7 @@ namespace CIT_Web.Controllers
         //private readonly IOrderService _orderService;
         
         
-        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IOrderRouteService orderRouteService, IMapper mapper, ILoginService login_Service)
+        public TaskController(ItaskService taskService, ITaskListService taskListService, ICrewCommanderService crewCommanderService, IVehicleService vehicleService, IOrderRouteService orderRouteService, IMapper mapper, ILoginService login_Service, IChaseVehicleService chaseVehicleService)
         {
             _taskService = taskService;
             _taskListService = taskListService;
@@ -46,7 +48,7 @@ namespace CIT_Web.Controllers
             loginResponseDTO = login_Service.GetLoginDetails(loginRequestDTO, Refresh);
             //_orderService = orderService;
             _orderRouteService = orderRouteService;
-
+            _chaseVehicleService = chaseVehicleService;
         }
         public async Task<IActionResult> Index()
         {
@@ -132,6 +134,16 @@ namespace CIT_Web.Controllers
             else
             {
                 taskVM.vehicledtolst = new List<VehicleDTO>(); // Initialize empty list if the API fails
+            }
+
+            var chaseVehicleResponse = await _chaseVehicleService.GetAllVehicleAsync<APIResponse>();
+            if (chaseVehicleResponse != null && chaseVehicleResponse.IsSuccess)
+            {
+                taskVM.chaseVehiclelst = JsonConvert.DeserializeObject<List<ChaseVehicleDTO>>(Convert.ToString(chaseVehicleResponse.Result)) ?? new List<ChaseVehicleDTO>();
+            }
+            else
+            {
+                taskVM.chaseVehiclelst = new List<ChaseVehicleDTO>(); // Initialize empty list if the API fails
             }
 
             var crewResponse = await _crewCommanderService.GetAllCrewCommanderList<APIResponse>();
