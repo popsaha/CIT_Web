@@ -1,5 +1,11 @@
 ﻿@model CIT_Web.Models.ViewModel.CustomerVM
 
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
 <div class="card " style="margin: 10px;">
     <div class="card-header text-white btn-color">
         <h5 class="card-title btn-color">Customer Form</h5>
@@ -113,10 +119,10 @@
 </div>
 
 
-<div class="table-tab-content" id="myTabContent">
+<div class="table-tab-content" id="myTabContent" style="overflow-x: auto;">
     <div class="col-auto py-1 ms-2 mt-2">
         <div class="table-container" style=" margin-right: 16px;">
-            <table id="dataTable" class="table datatable table-bordered table-hover">
+            <table id="dataTable" class="table datatable table-bordered table-hover" >
                 <thead>
                     <tr>
                         <th></th>
@@ -165,3 +171,23 @@
 </div>
 
 
+<script>
+    $(document).ready(function () {
+        // Apply jQuery validation
+        $("form").validate({
+            errorClass: "text-danger",
+            highlight: function (element) {
+                $(element).addClass("is-invalid");
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("is-invalid");
+            },
+        });
+    });
+</script>
+
+<style>
+    .is-invalid {
+        border-color: red !important;
+    }
+</style>
