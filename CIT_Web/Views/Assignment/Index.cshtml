@@ -976,9 +976,9 @@
                         <div class="tab-pane fade" id="chaseVehicleDriver-tab" role="tabpanel" aria-labelledby="chaseVehicle-tab">
                             <h5>Select a Chase Vehicle driver to assign tasks:</h5>
                             <div class="p-3">
-                                @if (Model.vehicledtolst != null && Model.vehicledtolst.Any())
+                                @if (Model.chaseVehiclelst != null && Model.chaseVehiclelst.Any())
                                 {
-                                    @foreach (var vehicle in Model.vehicledtolst.Where(v => v.VehicleType == "Chase"))
+                                    @foreach (var vehicle in Model.chaseVehiclelst.Where(v => v.VehicleType == "Chase"))
                                     {
                                         <div class="form-check d-flex justify-content-between align-items-center">
                                             <div class="d-flex align-items-center gap-2">
