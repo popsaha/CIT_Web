@@ -95,9 +95,15 @@ namespace CIT_Web.Controllers
 
                 if (response != null && response.IsSuccess)
                 {
-                    return RedirectToAction("CrewCreate");
+                    // Redirect to the same action to avoid form resubmission
+                    TempData["SuccessMessage"] = "Crew saved successfully!";
+                    return RedirectToAction(nameof(CrewCreate));
                 }
-               
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Error saving Crew.");
+                }
+
             }
             catch (Exception ex)
             {
