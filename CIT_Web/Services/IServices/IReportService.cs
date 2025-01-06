@@ -13,6 +13,7 @@ namespace CIT_Web.Services.IServices
         public Task<T> GetCustomerList<T>();
         public Task<T> CallBranchList<T>();
         public Task<T> CallPickupTypeList<T>();
+        public List<Report> SaveReportsData(ReportDetailsParam _ObjParam);
 
     }
 }

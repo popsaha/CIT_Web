@@ -149,7 +149,8 @@ function FeatchData() {
         Branchid: $("#BranchSelectedText").html(),
         PickupTypeid: $("#ServiceSelectedText").html(),
         fromDate: $("#fromdate").val(),
-        ToDate: $("#todate").val()
+        ToDate: $("#todate").val(),
+        SaveTaskData: ""
     };
 
     console.log("Post requestData : " + requestData);
@@ -176,7 +177,7 @@ function FeatchData() {
 
 function createGridData(response) {
     var obj = JSON.stringify(response)
-    console.log("Sucess:" + response)
+    console.log("Sucess:" + obj)
     //obj.each(myFunction)
     let dynamicRowHTML = "";
     if (response.length > 0) {
@@ -200,6 +201,7 @@ function createGridData(response) {
 
             dynamicRowHTML = dynamicRowHTML + '<tr>' +
                 '<td> <input type="checkbox" id="' + (Key + 1) + '"/></td>' +
+                '<td style="display:none" id="TaskID' + (Key + 1) + '">' + Value.taskID + '</td>' +
                 '<td>' + Value.customerName + '</td>' +
                 '<td>' + Value.branchName + '</td>' +
                 '<td>' + Value.pickupTypeName + '</td>' +
@@ -241,6 +243,7 @@ function GetDiscount(id) {
 
 function BtnGenratebill() {
 
+    $("#BillSubmitProcess").text("");
     var CheckedID = [];
 
     $("input:checkbox").each(function () {
@@ -249,7 +252,11 @@ function BtnGenratebill() {
             CheckedID.push($this.attr("id"));
         }
     });
-    //console.log(CheckedID);
+    if (CheckedID.length == 0)
+        $("#BtnSave").hide();
+    else
+        $("#BtnSave").show();
+    //console.log("CheckedID check", CheckedID.length);
 
     var total = 0; $.each(CheckedID, function (index, value) {
         total = total + parseInt($("#finalCalc" + value).text())
@@ -260,5 +267,65 @@ function BtnGenratebill() {
     var vat = (total * 10) / 100
     $("#Tax").text(tax);
     $("#Vat").text(vat);
-    $("#FinalAmount").text(total - vat - tax);
+    $("#FinalAmount").text(total + vat + tax);
+}
+
+
+function BtnSaveBill() {
+
+    $("#BtnSave").hide(); //button disable
+    $("#BillSubmitProcess").text("Details Saving Please Wait....");
+    $('#BillSubmitProcess').addClass("SucessText");
+
+    var CheckedID = [];
+    $("input:checkbox").each(function () {
+        var $this = $(this);
+        if ($this.is(":checked")) {
+            CheckedID.push($this.attr("id"));
+        }
+    });
+    var ReqData = "";
+    $.each(CheckedID, function (index, value) {
+        var AfterDsicount = $("#finalCalc" + value).text();
+        var tax = (AfterDsicount * 5) / 100;
+        var vat = (AfterDsicount * 10) / 100;
+        var FinalAmount = parseInt(AfterDsicount) + parseInt(vat) + parseInt(tax);
+        ReqData = ReqData + $("#TaskID" + value).text() + "|" + $("#Bill" + value).text() + "|" + $("#discount" + value).val() + '|' + AfterDsicount + "|" + tax + "|" + vat + "|" + FinalAmount + ",";
+
+    });
+    ReqData = ReqData.slice(0, -1);
+    //console.log("SaveBill " + ReqData);
+
+    const requestData = {
+        Customerid: $("#CustomerSelectedText").html(),
+        Branchid: $("#BranchSelectedText").html(),
+        PickupTypeid: $("#ServiceSelectedText").html(),
+        fromDate: $("#fromdate").val(),
+        ToDate: $("#todate").val(),
+        SaveTaskData: ReqData
+    };
+
+    $.ajax(
+        {
+            type: 'POST',
+            contentType: 'application/json',
+            url: '/Report/SaveReportsData',
+            data: JSON.stringify(requestData),
+            success:
+                function (response) {
+                    $("#BillSubmitProcess").text("Details Save Sucessfully");
+                    $("#tbody").empty();
+                    createGridData(response);
+                },
+            error:
+                function (response) {
+                    $("#BillSubmitProcess").text("Oops! Details Save Failed. Please try after sometime.");
+                    $('#BillSubmitProcess').removeClass("SucessText");
+                    $('#BillSubmitProcess').addClass("failText");
+                    $("#BtnSave").show();
+                    console.log("Error:" + response)
+                }
+        });
+
+    return false;
 }

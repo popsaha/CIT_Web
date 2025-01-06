@@ -10,22 +10,24 @@ using Newtonsoft.Json;
 
 namespace CIT_Web.Services
 {
-    public class ReportService : BaseService,IReportService
+    public class ReportService : BaseService, IReportService
     {
         private readonly IHttpClientFactory _clientFactory;
         private string citUrl;
+
 
         public ReportService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
         {
             _clientFactory = clientFactory;
             citUrl = configuration.GetValue<string>("ServiceUrls:CitAPI");
+
         }
 
         public List<Report> GetAllReportDetails()
         {
             //List<Report> _Report = new List<Report>();
             var ReportData = CallReportData<Report>();
-           // _Report = JsonConvert.DeserializeObject<List<Report>>(Convert.ToString(ReportData));
+            // _Report = JsonConvert.DeserializeObject<List<Report>>(Convert.ToString(ReportData));
             return ReportData.Result.result;
         }
 
@@ -37,6 +39,14 @@ namespace CIT_Web.Services
             return ReportData.Result.result;
         }
 
+        public List<Report> SaveReportsData(ReportDetailsParam obj)
+        {
+            //List<Report> _Report = new List<Report>();
+            var SaveReport = SaveReportData<Report>(obj);
+            //_Report = JsonConvert.DeserializeObject<List<Report>>(Convert.ToString(ReportData));
+            return SaveReport.Result.result;
+        }
+
 
         public List<SelectListItem> GetallList()
         {
@@ -45,8 +55,8 @@ namespace CIT_Web.Services
             var CustomerGroup = new SelectListGroup { Name = "Customer" };
             var ServicesGroup = new SelectListGroup { Name = "Service" };
             var BranchGroup = new SelectListGroup { Name = "Branch" };
-            
-            var Custresponse =  GetCustomerList<Customer>();
+
+            var Custresponse = GetCustomerList<Customer>();
             if (Custresponse != null)
             {
                 for (int i = 0; i < Custresponse.Result.result.Count; i++)
@@ -58,7 +68,7 @@ namespace CIT_Web.Services
             var Branchresponse = CallBranchList<Branch>();
             if (Branchresponse != null)
             {
-               for (int i = 0; i < Branchresponse.Result.result.Count; i++)
+                for (int i = 0; i < Branchresponse.Result.result.Count; i++)
                 {
                     listCust.Add(new SelectListItem { Text = Branchresponse.Result.result[i].branchName, Value = Branchresponse.Result.result[i].branchID, Group = BranchGroup });
                 }
@@ -82,7 +92,7 @@ namespace CIT_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = citUrl + "/api/Report/GetReportsData", //"http://localhost:5112/GetReportsData",
+                Url = citUrl + "/api/Report/GetReportsData", //"http://localhost:7192/GetReportsData",
             });
         }
 
@@ -93,6 +103,16 @@ namespace CIT_Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = obj,
                 Url = citUrl + "/api/Report/GetFilterReportsData", //"http://localhost:5112/GetFilterReportsData",
+            });
+        }
+
+        public Task<T> SaveReportData<T>(ReportDetailsParam obj)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = citUrl + "/api/Report/SaveReportsData", //"http://localhost:5112/GetFilterReportsData",
             });
         }
 
@@ -125,6 +145,6 @@ namespace CIT_Web.Services
             });
         }
 
-       
+
     }
 }

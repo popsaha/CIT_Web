@@ -11,12 +11,12 @@ namespace CIT_Web.Controllers
 {
     public class ReportController : Controller
     {
-        
+
         private readonly IReportService _ReportService;
         ViewModel _ViewModel = new ViewModel();
-       
+
         public ReportController(IReportService reportService)
-        {           
+        {
             _ReportService = reportService;
         }
 
@@ -38,7 +38,7 @@ namespace CIT_Web.Controllers
 
         public List<Report> GetAllReportData()
         {
-            List<Report> _Report = new List<Report>();           
+            List<Report> _Report = new List<Report>();
             _Report = _ReportService.GetAllReportDetails();
             return _Report;
         }
@@ -51,5 +51,12 @@ namespace CIT_Web.Controllers
             return _Report;
         }
 
-    }   
+        public List<Report> SaveReportsData([FromBody] ReportDetailsParam _ObjParam)
+        {
+            List<Report> _Report = new List<Report>();
+            _Report = _ReportService.SaveReportsData(_ObjParam);
+            return _Report;
+        }
+
+    }
 }
