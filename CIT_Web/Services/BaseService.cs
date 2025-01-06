@@ -27,7 +27,7 @@ namespace CIT_Web.Services
                 message.RequestUri = new Uri(apiRequest.Url);
                 //Data will not be null in POST/PUT HTTP calls
                 if (apiRequest.Data != null)
-                {
+                {   
                     message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),
                         Encoding.UTF8, "application/json");
                 }

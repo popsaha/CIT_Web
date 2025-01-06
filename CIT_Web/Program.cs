@@ -80,6 +80,9 @@ builder.Services.AddScoped<ICrewCommanderMasterService, CrewCommanderMasterServi
 builder.Services.AddHttpClient<IPoliceService, PoliceService>();
 builder.Services.AddScoped<IPoliceService, PoliceService>();
 
+builder.Services.AddHttpClient<IReportService, ReportService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+
 builder.Services.AddHttpClient<IUserService, UserService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
