@@ -200,7 +200,7 @@ function createGridData(response) {
         $.each(JSON.parse(obj), function (Key, Value) {
 
             dynamicRowHTML = dynamicRowHTML + '<tr>' +
-                '<td> <input type="checkbox" id="' + (Key + 1) + '"/></td>' +
+                '<td> <input class="TaskSelected" type="checkbox" id="' + (Key + 1) + '"/></td>' +
                 '<td style="display:none" id="TaskID' + (Key + 1) + '">' + Value.taskID + '</td>' +
                 '<td>' + Value.customerName + '</td>' +
                 '<td>' + Value.branchName + '</td>' +
@@ -246,12 +246,15 @@ function BtnGenratebill() {
     $("#BillSubmitProcess").text("");
     var CheckedID = [];
 
-    $("input:checkbox").each(function () {
+    $(".TaskSelected").each(function () {
         var $this = $(this);
         if ($this.is(":checked")) {
             CheckedID.push($this.attr("id"));
         }
     });
+
+    console.log("CheckedID data: ", CheckedID)
+
     if (CheckedID.length == 0)
         $("#BtnSave").hide();
     else
@@ -278,7 +281,7 @@ function BtnSaveBill() {
     $('#BillSubmitProcess').addClass("SucessText");
 
     var CheckedID = [];
-    $("input:checkbox").each(function () {
+    $(".TaskSelected").each(function () {
         var $this = $(this);
         if ($this.is(":checked")) {
             CheckedID.push($this.attr("id"));
