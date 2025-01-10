@@ -42,7 +42,14 @@
                             <option selected disabled>Select a role</option>
                             @foreach (var role in Model.Roles)
                             {
-                                <option value="@role.RoleName">@role.RoleName</option> <!-- Change RoleID to RoleName -->
+                                if (role.RoleName == "User")
+                                {
+                                    <option value="@role.RoleName">@role.RoleName</option>
+                                }
+                                else
+                                {
+                                    <option value="@role.RoleName" disabled>@role.RoleName</option>
+                                }
                             }
                         </select>
 

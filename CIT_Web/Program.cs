@@ -95,6 +95,9 @@ builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddHttpClient<IChaseVehicleService, ChaseVehicleService>();
 builder.Services.AddScoped<IChaseVehicleService, ChaseVehicleService>();
 
+builder.Services.AddHttpClient<IOrderRouteService, OrderRouteService>();
+builder.Services.AddScoped<IOrderRouteService, OrderRouteService>();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
