@@ -1,0 +1,84 @@
+﻿@model CIT_Web.Models.Dto.OrderRoute.OrderRouteUpdateDTOs
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+<div class="card" style="margin: 10px;">
+    <div class="card-header text-white btn-color-main">
+        <h5 class="card-title btn-color-main">Edit Order Route</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-action="EditRoute" novalidate>
+            <input type="hidden" asp-for="OrderRouteId" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Route Name</label>
+                        <input class="form-control" asp-for="RouteName" />
+                        <span class="text-danger" asp-validation-for="RouteName"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Route Description</label>
+                        <input class="form-control" asp-for="RouteDescription" />
+                        <span class="text-danger" asp-validation-for="RouteDescription"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">              
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="IsActive">Active</label>
+                        <select class="form-select" id="IsActive" asp-for="IsActive">
+                            <option value="" disabled selected>Select Active Type</option>
+                            <option value="True">Yes</option>
+                            <option value="False">No</option>
+                        </select>
+                        <span class="text-danger" asp-validation-for="IsActive"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-color me-2">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+                <a asp-action="PoliceIndex" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // Apply jQuery validation
+        $("form").validate({
+            errorClass: "text-danger",
+            highlight: function (element) {
+                $(element).addClass("is-invalid");
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("is-invalid");
+            },
+        });
+    });
+</script>
+
+<style>
+    .is-invalid {
+        border-color: red !important;
+    }
+</style>

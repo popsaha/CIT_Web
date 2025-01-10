@@ -1,6 +1,6 @@
 ﻿namespace CIT_Web.Models.Dto.OrderRoute
 {
-    public class OrderRouteDTO
+    public class OrderRouteCreateDTO
     {
         public int? OrderRouteId { get; set; }
         public string RouteName { get; set; }
